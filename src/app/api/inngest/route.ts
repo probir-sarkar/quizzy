@@ -1,7 +1,7 @@
 import { serve } from "inngest/next";
 import { helloWorld } from "@/inngest/functions";
 import { inngest } from "@/inngest/client";
-import { generateQuizFn } from "@/inngest/generate-quiz";
+import { generateQuizFn } from "@/inngest/geretare-quiz";
 
 // Create an API that serves zero functions
 export const { GET, POST, PUT } = serve({

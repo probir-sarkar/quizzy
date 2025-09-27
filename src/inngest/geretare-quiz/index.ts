@@ -1,32 +1,9 @@
-import { inngest } from "./client";
+import { inngest } from "../client";
 import { google } from "@ai-sdk/google";
 import { generateObject } from "ai";
-import { z } from "zod";
 import prisma from "@/lib/prisma";
-
-/** Single, merged schema: idea + quiz */
-const QuizDoc = z.object({
-  quizPageTitle: z.string().min(3),
-  quizPageDescription: z.string().min(20).max(300),
-  category: z.string().min(3),
-  tags: z.array(z.string()).min(1).max(10),
-  difficulty: z.enum(["easy", "medium", "hard"]),
-  title: z.string(),
-  description: z.string(),
-  questions: z
-    .array(
-      z.object({
-        id: z.string(),
-        prompt: z.string(),
-        options: z.array(z.string()).min(2).max(6),
-        correctIndex: z.number().int().min(0),
-        explanation: z.string().optional(),
-        tags: z.array(z.string()).optional(),
-      })
-    )
-    .min(5)
-    .max(10),
-});
+import { kebabCase } from "es-toolkit";
+import { QuizDoc } from "./schema";
 
 function randomDifficulty(): "easy" | "medium" | "hard" {
   const values = ["easy", "medium", "hard"] as const;
@@ -66,8 +43,8 @@ Hard rules:
 Return ONLY JSON that matches the schema.
         `,
         providerOptions: {
-          google: { structuredOutputs: true, temperature: 0.65 },
-        },
+          google: { structuredOutputs: true, temperature: 0.65 }
+        }
       })
     );
 
@@ -82,10 +59,7 @@ Return ONLY JSON that matches the schema.
           difficulty: quizDoc.difficulty,
           title: quizDoc.title,
           description: quizDoc.description,
-          slug: quizDoc.quizPageTitle
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/(^-|-$)+/g, ""),
+          slug: kebabCase(quizDoc.quizPageTitle),
           isPublished: false,
           questions: {
             create: quizDoc.questions.map((q) => ({
@@ -93,11 +67,11 @@ Return ONLY JSON that matches the schema.
               options: q.options,
               correctIndex: q.correctIndex,
               explanation: q.explanation ?? null,
-              tags: q.tags ?? [],
-            })),
-          },
+              tags: q.tags ?? []
+            }))
+          }
         },
-        include: { questions: true },
+        include: { questions: true }
       })
     );
 
