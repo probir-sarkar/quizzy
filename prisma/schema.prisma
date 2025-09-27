@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum QuizStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum Visibility {
+  PUBLIC
+  UNLISTED
+  PRIVATE
+}
+
+enum QuestionType {
+  SINGLE_CHOICE
+  MULTIPLE_CHOICE
+  TRUE_FALSE
+  FILL_IN
+}
+
+model Quiz {
+  id          String  @id @default(uuid())
+  slug        String  @unique @db.Citext // case-insensitive unique
+  title       String  @db.Text
+  description String? @db.Text // page copy / long desc
+
+  status      QuizStatus @default(DRAFT)
+  visibility  Visibility @default(PUBLIC)
+  publishedAt DateTime?
+  scheduledAt DateTime?
+
+  // Behavior
+  shuffleQuestions Boolean @default(false)
+  shuffleChoices   Boolean @default(false)
+  showExplanations Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  questions Question[]
+
+  @@index([status, publishedAt])
+  @@index([visibility, slug])
+}
+
+model Question {
+  id     String @id @default(uuid())
+  quizId String
+  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  type        QuestionType @default(SINGLE_CHOICE)
+  order       Int
+  text        String       @db.Text
+  explanation String?      @db.Text
+  imageUrl    String?      @db.Text
+
+  // For FILL_IN (accepted answers, flags, etc.)
+  fillInSpec Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  choices Choice[]
+
+  @@unique([quizId, order])
+  @@index([quizId])
+}
+
+model Choice {
+  id         String   @id @default(uuid())
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  order     Int
+  text      String  @db.Text
+  isCorrect Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([questionId, order])
+  @@index([questionId, isCorrect])
+}
