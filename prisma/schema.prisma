@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
   output   = "../src/generated/prisma"
 }
 
@@ -15,14 +15,25 @@ enum QuizDifficulty {
   hard
 }
 
+enum QuestionType {
+  mcq
+  true_false
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  slug      String   @unique
+  quizzes   Quiz[]
+  createdAt DateTime @default(now())
+}
+
 model Quiz {
   id String @id @default(cuid())
 
   // SEO / page
-  quizPageTitle       String   @unique
+  quizPageTitle       String @unique
   quizPageDescription String
-  category            String
-  tags                String[]
 
   // Meta
   difficulty  QuizDifficulty
@@ -36,16 +47,34 @@ model Quiz {
   views       Int       @default(0)
 
   // Relations
-  questions Question[]
+  questions  Question[]
+  categoryId Int?
+  category   Category?  @relation(fields: [categoryId], references: [id])
+  tags       QuizTag[]
 
   // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([category])
   @@index([difficulty])
   @@index([createdAt])
   @@index([isPublished])
+}
+
+model Tag {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  quizzes   QuizTag[]
+  createdAt DateTime  @default(now())
+}
+
+model QuizTag {
+  quizId String
+  tagId  Int
+  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([quizId, tagId]) // composite key prevents duplicates
 }
 
 model Question {
@@ -53,11 +82,12 @@ model Question {
   quizId String
   quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
 
-  prompt       String
-  options      String[]
+  text         String
+  options      String[] // ["A", "B", "C", "D"]
   correctIndex Int
   explanation  String?
-  tags         String[] @default([])
+  order        Int          @default(0)
+  type         QuestionType @default(mcq)
 
   createdAt DateTime @default(now())
 }
