@@ -111,7 +111,7 @@ function QuizCard({ quiz, onSelect, delay = 0 }: { quiz: Quiz; onSelect?: (q: Qu
       whileTap={{ scale: 0.98 }}
       onClick={() => onSelect?.(quiz)}
     >
-      <Card className="relative w-full max-w-[350px] overflow-hidden cursor-pointer border bg-white dark:bg-gray-900 rounded-2xl shadow-lg pt-0">
+      <Card className="relative w-full h-full overflow-hidden cursor-pointer border bg-white dark:bg-gray-900 rounded-2xl shadow-lg pt-0">
         {/* Animated border overlay */}
         <ShineBorder shineColor={shineColors} borderWidth={2} duration={14} />
 
