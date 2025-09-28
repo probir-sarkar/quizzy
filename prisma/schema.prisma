@@ -15,10 +15,6 @@ enum QuizDifficulty {
   hard
 }
 
-enum QuestionType {
-  mcq
-  true_false
-}
 
 model Category {
   id        Int      @id @default(autoincrement())
@@ -87,7 +83,6 @@ model Question {
   correctIndex Int
   explanation  String?
   order        Int          @default(0)
-  type         QuestionType @default(mcq)
 
   createdAt DateTime @default(now())
 }

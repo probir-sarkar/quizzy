@@ -1,27 +1,32 @@
-"use client";
-
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-
-const categories = ["All", "Programming", "Science", "Geography", "Movies", "History"];
-
-export default function CategoryFilters() {
+import { HomePageData } from "@/queries/home-page";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+export default function CategoryFilters({ data }: { data: HomePageData }) {
   return (
     <div className="px-4 mt-6 container mx-auto">
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-        {categories.map((cat) => (
-          <motion.div key={cat} whileTap={{ scale: 0.95 }}>
-            <Badge
-              className={`px-4 py-2 rounded-full cursor-pointer whitespace-nowrap transition-colors
-                ${cat === "All"
-                  ? "bg-gradient-to-r from-violet-500 to-fuchsia-600 text-white shadow-lg hover:opacity-90"
-                  : "bg-white text-gray-700 shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                }
-              `}
-            >
-              {cat}
-            </Badge>
-          </motion.div>
+        {data.map((cat) => (
+          <div key={cat.slug} className="shrink-0 ">
+            <Link href={`#${cat.slug}`}>
+              <Badge
+                className={cn(
+                  // base layout
+                  "px-4 py-2 rounded-full whitespace-nowrap cursor-pointer",
+                  "inline-flex items-center gap-2",
+                  "text-gray-700 dark:text-gray-300",
+                  "bg-white dark:bg-gray-800",
+                  "border border-gray-200/70 dark:border-gray-700 shadow-sm",
+                  "transition-all duration-300 ease-out",
+                  "hover:bg-gradient-to-r hover:from-violet-500 hover:to-fuchsia-600 hover:text-white hover:shadow-lg",
+                  "active:scale-95",
+                )}
+              >
+                {cat.name}
+              </Badge>
+            </Link>
+          </div>
         ))}
       </div>
     </div>
