@@ -8,7 +8,6 @@ name: Demo Push
 on:
   push:
     branches:
-      - master
       - seed
     tags:
       - v*
