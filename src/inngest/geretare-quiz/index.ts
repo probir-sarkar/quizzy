@@ -21,6 +21,11 @@ export const generateQuizFn = inngest.createFunction(
     const difficulty = randomDifficulty();
     const count = randomCount();
 
+    const category = await step.run("get-random-category", async () => {
+      const categories = await prisma.category.findMany();
+      return categories[Math.floor(Math.random() * categories.length)];
+    });
+
     // STEP 1: Generate quiz JSON
     const { object: quizDoc } = await step.run("generate-quiz-json", async () =>
       generateObject({
@@ -29,10 +34,11 @@ export const generateQuizFn = inngest.createFunction(
         system: "Return strict JSON only. No markdown, no prose outside JSON.",
         prompt: `
 Create ONE complete, publish-ready quiz for a general audience.
+Category: ${category.name}
 
 Hard rules:
 - Be catchy/interesting/funny but accessible.
-- SEO-friendly: provide 'quizPageTitle', 'quizPageDescription', 'category', 'tags'.
+- SEO-friendly: provide 'quizPageTitle', 'quizPageDescription',, 'tags'.
 - The quiz must be TEXT-ONLY (no images/audio).
 - Difficulty: ${difficulty}.
 - Provide ${count} MCQ questions.
@@ -54,8 +60,18 @@ Return ONLY JSON that matches the schema.
         data: {
           quizPageTitle: quizDoc.quizPageTitle,
           quizPageDescription: quizDoc.quizPageDescription,
-          category: quizDoc.category,
-          tags: quizDoc.tags,
+          categoryId: category.id,
+          tags: {
+            create: quizDoc.tags.map((name) => ({
+              tag: {
+                connectOrCreate: {
+                  where: { name },
+                  create: { name }
+                }
+              }
+            }))
+          },
+
           difficulty: quizDoc.difficulty,
           title: quizDoc.title,
           description: quizDoc.description,
@@ -63,11 +79,10 @@ Return ONLY JSON that matches the schema.
           isPublished: false,
           questions: {
             create: quizDoc.questions.map((q) => ({
-              prompt: q.prompt,
+              text: q.prompt,
               options: q.options,
               correctIndex: q.correctIndex,
-              explanation: q.explanation ?? null,
-              tags: q.tags ?? []
+              explanation: q.explanation ?? null
             }))
           }
         },
