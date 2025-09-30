@@ -16,7 +16,7 @@ export default async function Home() {
         <section key={cat.slug} id={cat.slug} className="container mx-auto pt-16">
           {/* Title */}
           <SectionHeader id={cat.slug} title={cat.name} />
-          <QuizListing key={cat.slug} />
+          <QuizListing key={cat.slug} quizzes={cat.quizzes} />
         </section>
       ))}
     </>

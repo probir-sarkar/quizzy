@@ -2,17 +2,27 @@ import prisma from "@/lib/prisma";
 
 export async function getHomePageData() {
   return prisma.category.findMany({
+    where: {
+      quizzes: {
+        some: {}
+      }
+    },
     orderBy: {
       name: "asc"
     },
-    select: {
-      _count: true,
-      name: true,
-      slug: true,
+    include: {
       quizzes: {
         take: 15,
         orderBy: {
           createdAt: "desc"
+        },
+        include: {
+          category: true,
+          _count: {
+            select: {
+              questions: true
+            }
+          }
         }
       }
     }
@@ -20,3 +30,4 @@ export async function getHomePageData() {
 }
 
 export type HomePageData = Awaited<ReturnType<typeof getHomePageData>>;
+export type QuizCard = HomePageData[number]["quizzes"][number];
