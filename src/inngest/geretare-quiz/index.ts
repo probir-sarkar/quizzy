@@ -15,8 +15,8 @@ function randomCount(): number {
 }
 
 export const generateQuizFn = inngest.createFunction(
-  { id: "generate-quiz-merged" },
-  { event: "quiz/generate.requested" },
+  { id: "generate-quiz", retries: 2 },
+  [{ event: "test/generate-quiz" }, { cron: "*/1 * * * *" }],
   async ({ step }) => {
     const difficulty = randomDifficulty();
     const count = randomCount();
@@ -29,7 +29,7 @@ export const generateQuizFn = inngest.createFunction(
     // STEP 1: Generate quiz JSON
     const { object: quizDoc } = await step.run("generate-quiz-json", async () =>
       generateObject({
-        model: google("gemini-2.5-flash-lite"),
+        model: google("gemini-2.5-flash"),
         schema: QuizDoc,
         system: "Return strict JSON only. No markdown, no prose outside JSON.",
         prompt: `
