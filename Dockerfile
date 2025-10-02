@@ -52,6 +52,10 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+
+# For Prisma
+RUN apt-get update -y && apt-get install -y openssl
+
 USER nextjs
 
 EXPOSE 3000
