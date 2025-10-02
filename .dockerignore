@@ -6,4 +6,5 @@ README.md
 .next
 .git
 .env
+.pnpm-store
 /src/generated/prisma
