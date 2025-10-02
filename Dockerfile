@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------------
 
 # Use Bun's official image
-FROM --platform=arm64 oven/bun:latest AS base
+FROM oven/bun:latest AS base
 
 WORKDIR /app
 
