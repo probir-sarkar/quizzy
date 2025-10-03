@@ -31,3 +31,29 @@ export async function getHomePageData() {
 
 export type HomePageData = Awaited<ReturnType<typeof getHomePageData>>;
 export type QuizCard = HomePageData[number]["quizzes"][number];
+
+export async function getQuiz(slug: string) {
+  return prisma.quiz.findUnique({
+    where: { slug },
+    include: {
+      category: true,
+      questions: true,
+      tags: {
+        include: {
+          tag: true
+        }
+      },
+      _count: {
+        select: {
+          questions: true
+        }
+      }
+    }
+  });
+}
+
+// quiz page type without null
+export type QuizPageType = NonNullable<Awaited<ReturnType<typeof getQuiz>>>;
+
+// question type helper
+export type QuestionType = QuizPageType["questions"][number];
