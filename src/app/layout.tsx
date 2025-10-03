@@ -1,6 +1,8 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import NextTopLoader from "nextjs-toploader";
+
 // @ts-ignore
 import "./globals.css";
 import Navbar from "@/components/common/navbar";
@@ -22,6 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
       <body className={` ${poppins.className} flex min-h-full flex-col antialiased`}>
+        <NextTopLoader color="#c800de" showSpinner={false} />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <Navbar />
           <main>{children}</main>
