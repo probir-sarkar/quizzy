@@ -58,7 +58,7 @@ async function QuizPage({ params }: Props) {
       <QuizQuestions questions={quiz.questions} />
 
       {moreQuizzes?.length > 0 && (
-        <div className="bg-purple-100 dark:bg-gray-900  p-8 shadow-sm mt-12">
+        <div className="bg-purple-100 dark:bg-gray-900  p-8 shadow-sm mt-12 ">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-2xl font-bold mb-6">Check These Out Too</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
