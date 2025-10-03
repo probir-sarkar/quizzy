@@ -1,5 +1,5 @@
 import { inngest } from "../client";
-import { google } from "@ai-sdk/google";
+import { groq } from '@ai-sdk/groq';
 import { generateObject } from "ai";
 import prisma from "@/lib/prisma";
 import { kebabCase } from "es-toolkit";
@@ -16,7 +16,7 @@ function randomCount(): number {
 
 export const generateQuizFn = inngest.createFunction(
   { id: "generate-quiz", retries: 2 },
-  [{ event: "test/generate-quiz" }, { cron: "0 */4 * * *" }],
+  [{ event: "test/generate-quiz" }, { cron: "0 */1 * * *" }],
   async ({ step }) => {
     const difficulty = randomDifficulty();
     const count = randomCount();
@@ -29,7 +29,7 @@ export const generateQuizFn = inngest.createFunction(
     // STEP 1: Generate quiz JSON
     const { object: quizDoc } = await step.run("generate-quiz-json", async () =>
       generateObject({
-        model: google("gemini-2.5-flash"),
+        model: groq("meta-llama/llama-4-scout-17b-16e-instruct"),
         schema: QuizDoc,
         system: "Return strict JSON only. No markdown, no prose outside JSON.",
         prompt: `
