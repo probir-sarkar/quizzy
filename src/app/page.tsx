@@ -5,6 +5,7 @@ import QuizListing from "@/components/home-page/quiz-listing";
 import SearchSection from "@/components/home-page/search-section";
 import { getHomePageData } from "@/queries/home-page";
 export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 export default async function Home() {
   const data = await getHomePageData();
   return (
