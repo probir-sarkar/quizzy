@@ -14,7 +14,6 @@ async function main() {
     "Sports",
     "Mathematics & Logic",
     "Mythology & Philosophy",
-    "Current Affairs",
 
     // Entertainment & Lifestyle
     "Movies & TV",

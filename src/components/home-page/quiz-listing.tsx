@@ -6,6 +6,7 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { ShineBorder } from "../ui/shine-border";
 import { useTheme } from "next-themes";
 import { QuizCard as QuizCardType } from "@/queries/home-page";
+import Link from "next/link";
 
 // ---- Types ----
 type Difficulty = "easy" | "medium" | "hard";
@@ -18,7 +19,7 @@ const gradients = [
   "from-red-500 to-rose-600",
   "from-pink-500 to-fuchsia-600"
 ];
- function getGradient(index: number) {
+export function getGradient(index: number) {
   return gradients[index % gradients.length];
 }
 
@@ -34,7 +35,7 @@ export default function QuizListing({ quizzes }: { quizzes: QuizCardType[] }) {
 }
 
 // ---- Card ----
-function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay?: number, index: number }) {
+function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay?: number; index: number }) {
   const { resolvedTheme } = useTheme();
 
   // 🎨 Colorful shine colors
@@ -57,61 +58,63 @@ function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay?: numb
   const shineColors = resolvedTheme === "dark" ? darkShineColors : lightShineColors;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay }}
-      whileHover={{ scale: 1.02, y: -4 }}
-      whileTap={{ scale: 0.98 }}
-    >
-      <Card className="relative w-full h-full overflow-hidden cursor-pointer border bg-white dark:bg-gray-900 rounded-2xl shadow-lg pt-0">
-        {/* Animated border overlay */}
-        <ShineBorder shineColor={shineColors} borderWidth={2} duration={14} />
+    <Link prefetch href={`/quiz/${quiz.slug}`}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay }}
+        whileHover={{ scale: 1.02, y: -4 }}
+        whileTap={{ scale: 0.98 }}
+      >
+        <Card className="relative w-full h-full overflow-hidden cursor-pointer border bg-white dark:bg-gray-900 rounded-2xl shadow-lg pt-0">
+          {/* Animated border overlay */}
+          <ShineBorder shineColor={shineColors} borderWidth={2} duration={14} />
 
-        {/* Top gradient banner */}
-        <CardHeader className={`aspect-[3/1] bg-gradient-to-br ${getGradient(index)} relative overflow-hidden`}>
-          <div className="absolute inset-0 bg-black/10" />
-          <div className="absolute top-3 right-3">
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              className="p-2 rounded-full bg-white/20 backdrop-blur-sm"
-              onClick={(e) => e.stopPropagation()}
-              aria-label="Bookmark quiz"
-            >
-              <Bookmark className="w-4 h-4 text-white" />
-            </motion.button>
-          </div>
-        </CardHeader>
+          {/* Top gradient banner */}
+          <CardHeader className={`aspect-[3/1] bg-gradient-to-br ${getGradient(index)} relative overflow-hidden`}>
+            <div className="absolute inset-0 bg-black/10" />
+            <div className="absolute top-3 right-3">
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                className="p-2 rounded-full bg-white/20 backdrop-blur-sm"
+                onClick={(e) => e.stopPropagation()}
+                aria-label="Bookmark quiz"
+              >
+                <Bookmark className="w-4 h-4 text-white" />
+              </motion.button>
+            </div>
+          </CardHeader>
 
-        <CardContent className="">
-          <div className="flex items-center gap-2">
-            <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
-              {quiz.category?.name}
-            </span>
-            <DifficultyBadge difficulty={quiz.difficulty} />
-          </div>
+          <CardContent className="">
+            <div className="flex items-center gap-2">
+              <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                {quiz.category?.name}
+              </span>
+              <DifficultyBadge difficulty={quiz.difficulty} />
+            </div>
 
-          <h3 className="font-bold text-lg mb-1 text-gray-900 dark:text-white">{quiz.title}</h3>
-          <p className="text-sm mb-3 text-gray-600 dark:text-gray-400">{quiz.description}</p>
+            <h3 className="font-bold text-lg mb-1 text-gray-900 dark:text-white">{quiz.title}</h3>
+            <p className="text-sm mb-3 text-gray-600 dark:text-gray-400">{quiz.description}</p>
 
-          <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-            <span className="flex items-center gap-1">
-              <Target className="w-4 h-4" />
-              {quiz._count.questions} Questions
-            </span>
-            <span className="flex items-center gap-1">
-              <TrendingUp className="w-4 h-4" />
-              {/* {quiz.plays} */}
-            </span>
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
+            <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+              <span className="flex items-center gap-1">
+                <Target className="w-4 h-4" />
+                {quiz._count.questions} Questions
+              </span>
+              <span className="flex items-center gap-1">
+                <TrendingUp className="w-4 h-4" />
+                {/* {quiz.plays} */}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </Link>
   );
 }
 
 // ---- Difficulty Badge ----
-function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
+export function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
   const map: Record<Difficulty, string> = {
     easy: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
     medium: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
