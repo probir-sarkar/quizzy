@@ -57,3 +57,19 @@ export type QuizPageType = NonNullable<Awaited<ReturnType<typeof getQuiz>>>;
 
 // question type helper
 export type QuestionType = QuizPageType["questions"][number];
+
+export async function getMoreQuizzes(currentSlug: string) {
+  return prisma.quiz.findMany({
+    where: { slug: { not: currentSlug } },
+    take: 6,
+    orderBy: { publishedAt: "desc" },
+    include: {
+      category: true,
+      _count: {
+        select: {
+          questions: true
+        }
+      }
+    }
+  });
+}

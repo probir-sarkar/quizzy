@@ -35,7 +35,7 @@ export default function QuizListing({ quizzes }: { quizzes: QuizCardType[] }) {
 }
 
 // ---- Card ----
-function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay?: number; index: number }) {
+export function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay?: number; index: number }) {
   const { resolvedTheme } = useTheme();
 
   // 🎨 Colorful shine colors
@@ -58,13 +58,14 @@ function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay?: numb
   const shineColors = resolvedTheme === "dark" ? darkShineColors : lightShineColors;
 
   return (
-    <Link prefetch href={`/quiz/${quiz.slug}`}>
+    <Link prefetch href={`/quiz/${quiz.slug}`} className="w-full h-full">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay }}
         whileHover={{ scale: 1.02, y: -4 }}
         whileTap={{ scale: 0.98 }}
+        className="w-full h-full"
       >
         <Card className="relative w-full h-full overflow-hidden cursor-pointer border bg-white dark:bg-gray-900 rounded-2xl shadow-lg pt-0">
           {/* Animated border overlay */}
