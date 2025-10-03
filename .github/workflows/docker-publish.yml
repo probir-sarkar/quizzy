@@ -34,3 +34,5 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: ghcr.io/${{github.repository}}:latest
+          secrets: |
+            DATABASE_URL=${{secrets.DATABASE_URL}}
