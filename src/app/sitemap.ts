@@ -2,7 +2,7 @@
 import type { MetadataRoute } from "next";
 import prisma from "@/lib/prisma";
 import { BASE_URL } from "@/lib/constants";
-
+export const revalidate = 3600 * 24;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const quizzes = await prisma.quiz.findMany({
     orderBy: { id: "asc" },

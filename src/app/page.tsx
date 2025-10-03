@@ -4,7 +4,7 @@ import HeroSection from "@/components/home-page/hero-section";
 import QuizListing from "@/components/home-page/quiz-listing";
 import SearchSection from "@/components/home-page/search-section";
 import { getHomePageData } from "@/queries/home-page";
- export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 export default async function Home() {
   const data = await getHomePageData();
   return (

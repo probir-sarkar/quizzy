@@ -7,6 +7,8 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-24.04-arm
+    env:
+      DATABASE_URL: ${{{secrets.DATABASE_URL}}}
     permissions:
       contents: read
       packages: write
@@ -34,5 +36,3 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: ghcr.io/${{github.repository}}:latest
-          secrets: |
-            DATABASE_URL=${{secrets.DATABASE_URL}}
