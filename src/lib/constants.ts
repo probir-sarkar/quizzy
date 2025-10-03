@@ -1,1 +1,1 @@
-export const BASE_URL = "https://quizzone.club/"
+export const BASE_URL = "https://quizzone.club"
