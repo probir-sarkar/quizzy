@@ -12,6 +12,7 @@
   "dependencies": {
     "@ai-sdk/groq": "^2.0.22",
     "@ai-sdk/openai-compatible": "^1.0.19",
+    "@next/third-parties": "^15.5.4",
     "@prisma/client": "^6.16.2",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-slot": "^1.2.3",
