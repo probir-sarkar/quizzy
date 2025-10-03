@@ -7,8 +7,6 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-24.04-arm
-    env:
-      DATABASE_URL: ${{{secrets.DATABASE_URL}}}
     permissions:
       contents: read
       packages: write
