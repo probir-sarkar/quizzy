@@ -2,8 +2,7 @@
 import type { MetadataRoute } from "next";
 import prisma from "@/lib/prisma";
 import { BASE_URL } from "@/lib/constants";
-// export const dynamic = "force-dynamic";
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const quizzes = await prisma.quiz.findMany({
     orderBy: { id: "asc" },
