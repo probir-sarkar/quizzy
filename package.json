@@ -17,6 +17,7 @@
     "ai": "^5.0.56",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
     "es-toolkit": "^1.39.10",
     "inngest": "^3.43.1",

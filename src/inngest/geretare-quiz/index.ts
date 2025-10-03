@@ -1,17 +1,29 @@
 import { inngest } from "../client";
-import { groq } from '@ai-sdk/groq';
+import { groq } from "@ai-sdk/groq";
 import { generateObject } from "ai";
 import prisma from "@/lib/prisma";
 import { kebabCase } from "es-toolkit";
 import { QuizDoc } from "./schema";
+import { format } from "date-fns";
 
-function randomDifficulty(): "easy" | "medium" | "hard" {
-  const values = ["easy", "medium", "hard"] as const;
+const today = format(new Date(), "MMMM d, yyyy");
+const nonce = `${today}-${Math.random().toString(36).slice(2)}`;
+
+type Difficulty = "easy" | "medium" | "hard";
+
+const difficultyModelMap: Record<Difficulty, string> = {
+  easy: "meta-llama/llama-4-scout-17b-16e-instruct",
+  medium: "meta-llama/llama-4-maverick-17b-128e-instruct",
+  hard: "openai/gpt-oss-120b"
+};
+
+function randomDifficulty(): Difficulty {
+  const values: Difficulty[] = ["easy", "medium", "hard"];
   return values[Math.floor(Math.random() * values.length)];
 }
 
 function randomCount(): number {
-  return Math.floor(Math.random() * (10 - 5 + 1)) + 5; // 5–10
+  return 5 + Math.floor(Math.random() * 6); // random int 5–10
 }
 
 export const generateQuizFn = inngest.createFunction(
@@ -29,28 +41,33 @@ export const generateQuizFn = inngest.createFunction(
     // STEP 1: Generate quiz JSON
     const { object: quizDoc } = await step.run("generate-quiz-json", async () =>
       generateObject({
-        model: groq("meta-llama/llama-4-scout-17b-16e-instruct"),
+        model: groq(difficultyModelMap[difficulty]),
         schema: QuizDoc,
-        system: "Return strict JSON only. No markdown, no prose outside JSON.",
+        system: `Strict JSON only. No markdown. No extra commentary.`,
         prompt: `
-Create ONE complete, publish-ready quiz for a general audience.
+Create ONE complete, TEXT-ONLY, publish-ready quiz.
 Category: ${category.name}
+Difficulty: ${difficulty}
+Question count: ${count}
+
+Additional context (for freshness): Today is ${today}.
+Nonce: ${nonce}
 
 Hard rules:
-- Be catchy/interesting/funny but accessible.
-- SEO-friendly: provide 'quizPageTitle', 'quizPageDescription',, 'tags'.
-- The quiz must be TEXT-ONLY (no images/audio).
-- Difficulty: ${difficulty}.
-- Provide ${count} MCQ questions.
-- Each question has 2–6 text options and a valid 'correctIndex'.
-- Short explanations are okay (optional).
-- 'title'/'description' can mirror the SEO fields or be concise display copies.
+- Provide "quizPageTitle", "quizPageDescription", "tags".
+- "title"/"description" distinct from SEO fields.
+- ${count} MCQs; each has 2–6 text options and a valid 0-based "correctIndex".
+- Optional short "explanation".
+- Plain text only; avoid markdown characters.
+- Each question must be objective and allow exactly one defensible correct option. Avoid opinion-based or preference-based wording.
 
-Return ONLY JSON that matches the schema.
-        `,
-        providerOptions: {
-          google: { structuredOutputs: true, temperature: 0.65 }
-        }
+Uniqueness rules:
+- Vary sentence length, verbs, and specificity across fields.
+- Avoid repeating key nouns between title/description/prompts.
+- Tags should be diverse, short, and non-redundant.
+
+Return ONLY schema-valid JSON. No extra fields, no comments.
+`
       })
     );
 
