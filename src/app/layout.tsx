@@ -2,6 +2,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
+import { GoogleTagManager } from '@next/third-parties/google'
+
 
 // @ts-ignore
 import "./globals.css";
@@ -23,6 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
+      <GoogleTagManager gtmId="G-KMP0FXVWFL" />
       <body className={` ${poppins.className} flex min-h-full flex-col antialiased`}>
         <NextTopLoader color="#c800de" showSpinner={false} />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
