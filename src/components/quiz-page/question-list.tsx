@@ -110,7 +110,7 @@ function QuestionCard({ q, index }: { q: QuestionType; index: number }) {
               disabled={answered}
             >
               <span className="inline-flex items-center gap-3">
-                <span className={`${dotBase} ${dotClass}`} />
+                <span className={`${dotBase} ${dotClass} shrink-0`} />
                 <span>{opt}</span>
               </span>
             </button>
