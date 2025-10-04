@@ -16,7 +16,8 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "Quiz Zone – Fun Quizzes, Horoscopes & More",
-  description: "Quiz Zone – Your hub for quizzes, horoscopes, and fun knowledge adventures all in one place."
+  description: "Quiz Zone – Your hub for quizzes, horoscopes, and fun knowledge adventures all in one place.",
+  metadataBase: new URL("https://quizzone.club/"),
 };
 export default function RootLayout({
   children
