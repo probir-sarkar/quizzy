@@ -1,11 +1,22 @@
 import { ImageResponse } from "next/og";
+import prisma from "@/lib/prisma";
+
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function Image() {
-  const GRADIENT_FROM = "#7c3aed"; // purple
-  const GRADIENT_TO = "#ec4899";   // fuchsia
+type Props = { params: { slug: string } };
+
+export default async function Image({ params }: Props) {
+  const quiz = await prisma.quiz.findUnique({
+    where: { slug: params.slug },
+    select: { title: true, description: true },
+  });
+
+  const title = quiz?.title ?? "Quizzone Quiz";
+  const subtitle = quiz?.description ?? "Sharpen your skills with today’s challenge.";
+  const GRADIENT_FROM = "#7c3aed";
+  const GRADIENT_TO = "#ec4899";
 
   return new ImageResponse(
     (
@@ -27,25 +38,25 @@ export default function Image() {
         <div
           style={{
             display: "flex",
-            width: 100,
-            height: 100,
-            borderRadius: 24,
+            width: 90,
+            height: 90,
+            borderRadius: 20,
             background: "rgba(255,255,255,0.12)",
             alignItems: "center",
             justifyContent: "center",
             marginBottom: 16,
           }}
         >
-          <div style={{ fontSize: 48 }}>🏆</div>
+          <div style={{ fontSize: 44 }}>📝</div>
         </div>
 
         {/* Brand name */}
         <div
           style={{
             display: "flex",
-            fontSize: 28,
+            fontSize: 26,
             fontWeight: 700,
-            color: "#fdf4ff", // soft lilac/white
+            color: "#fdf4ff",
             marginBottom: 12,
             letterSpacing: 0.5,
           }}
@@ -53,39 +64,42 @@ export default function Image() {
           Quiz Zone
         </div>
 
-        {/* Title */}
+        {/* Quiz title */}
         <div
           style={{
             display: "flex",
-            fontSize: 56,
+            fontSize: 48,
             fontWeight: 800,
             color: "#fff",
+            maxWidth: 960,
+            lineHeight: 1.2,
           }}
         >
-          Challenge Yourself
+          {title}
         </div>
 
-        {/* Subtitle */}
+        {/* Quiz subtitle */}
         <div
           style={{
             display: "flex",
-            marginTop: 12,
-            fontSize: 24,
+            marginTop: 16,
+            fontSize: 22,
             color: "rgba(255,255,255,0.9)",
+            maxWidth: 880,
           }}
         >
-          Test your knowledge with daily quizzes
+          {subtitle}
         </div>
 
         {/* Badge */}
         <div
           style={{
             display: "flex",
-            marginTop: 36,
-            padding: "12px 24px",
+            marginTop: 32,
+            padding: "10px 20px",
             borderRadius: 12,
             background: "rgba(255,255,255,0.15)",
-            fontSize: 22,
+            fontSize: 20,
             fontWeight: 700,
             color: "#fff",
           }}
