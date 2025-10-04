@@ -8,12 +8,12 @@ const TELEGRAM_CHAT = process.env.TELEGRAM_CHANNEL_USERNAME || "@quizzone_club";
 const BASE_URL = "https://quizzone.club";
 
 // Initialize once
-const bot = new Bot(TELEGRAM_BOT_TOKEN);
 
 export const socialMediaShare = inngest.createFunction(
   { id: "social-media-share" },
   { event: "quiz/social-media-share" },
   async ({ step }) => {
+    const bot = new Bot(TELEGRAM_BOT_TOKEN);
     const pastDay = new Date();
     pastDay.setDate(pastDay.getDate() - 1);
 
