@@ -1,56 +1,57 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider      = "prisma-client"
+  output        = "../src/generated/prisma"
   binaryTargets = ["native", "linux-arm64-openssl-1.1.x"]
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
-
-enum QuizDifficulty {
-  easy
-  medium
-  hard
-}
-
 
 model Category {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  slug      String   @unique
-  quizzes   Quiz[]
-  createdAt DateTime @default(now())
+  id            Int           @id @default(autoincrement())
+  name          String        @unique
+  slug          String        @unique
+  createdAt     DateTime      @default(now())
+  subCategories SubCategory[]
+  quizzes       Quiz[]
+}
+
+model SubCategory {
+  id         Int      @id @default(autoincrement())
+  name       String
+  slug       String
+  createdAt  DateTime @default(now())
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  quizzes    Quiz[]
+
+  @@unique([categoryId, name])
 }
 
 model Quiz {
-  id String @id @default(cuid())
-
-  // SEO / page
-  quizPageTitle       String @unique
+  id                  String         @id @default(cuid())
+  quizPageTitle       String         @unique
   quizPageDescription String
+  difficulty          QuizDifficulty
+  title               String
+  description         String
+  slug                String         @unique
+  isPublished         Boolean        @default(false)
+  publishedAt         DateTime?
+  views               Int            @default(0)
+  categoryId          Int?
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  questions           Question[]
+  category            Category?      @relation(fields: [categoryId], references: [id])
 
-  // Meta
-  difficulty  QuizDifficulty
-  title       String
-  description String
-
-  // Extra basics
-  slug        String    @unique
-  isPublished Boolean   @default(false)
-  publishedAt DateTime?
-  views       Int       @default(0)
-
-  // Relations
-  questions  Question[]
-  categoryId Int?
-  category   Category?  @relation(fields: [categoryId], references: [id])
-  tags       QuizTag[]
-
-  // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  // For SubCategory
+  subCategoryId Int?
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+  tags          QuizTag[]
 
   @@index([difficulty])
   @@index([createdAt])
@@ -60,8 +61,8 @@ model Quiz {
 model Tag {
   id        Int       @id @default(autoincrement())
   name      String    @unique
-  quizzes   QuizTag[]
   createdAt DateTime  @default(now())
+  quizzes   QuizTag[]
 }
 
 model QuizTag {
@@ -70,19 +71,23 @@ model QuizTag {
   quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
   tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
-  @@id([quizId, tagId]) // composite key prevents duplicates
+  @@id([quizId, tagId])
 }
 
 model Question {
-  id     String @id @default(cuid())
-  quizId String
-  quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
-
+  id           String   @id @default(cuid())
+  quizId       String
   text         String
-  options      String[] // ["A", "B", "C", "D"]
+  options      String[]
   correctIndex Int
   explanation  String?
-  order        Int          @default(0)
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  quiz         Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
 
-  createdAt DateTime @default(now())
+enum QuizDifficulty {
+  easy
+  medium
+  hard
 }
