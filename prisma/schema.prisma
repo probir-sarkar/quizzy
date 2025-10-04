@@ -5,16 +5,30 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model Category {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  slug      String   @unique
-  createdAt DateTime @default(now())
-  quizzes   Quiz[]
+  id            Int           @id @default(autoincrement())
+  name          String        @unique
+  slug          String        @unique
+  createdAt     DateTime      @default(now())
+  subCategories SubCategory[]
+  quizzes       Quiz[]
+}
+
+model SubCategory {
+  id         Int      @id @default(autoincrement())
+  name       String
+  slug       String
+  createdAt  DateTime @default(now())
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  quizzes    Quiz[]
+
+  @@unique([categoryId, name])
 }
 
 model Quiz {
@@ -33,7 +47,11 @@ model Quiz {
   updatedAt           DateTime       @updatedAt
   questions           Question[]
   category            Category?      @relation(fields: [categoryId], references: [id])
-  tags                QuizTag[]
+
+  // For SubCategory
+  subCategoryId Int?
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+  tags          QuizTag[]
 
   @@index([difficulty])
   @@index([createdAt])

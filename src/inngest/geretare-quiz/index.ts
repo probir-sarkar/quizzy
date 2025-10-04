@@ -33,9 +33,32 @@ export const generateQuizFn = inngest.createFunction(
     const difficulty = randomDifficulty();
     const count = randomCount();
 
-    const category = await step.run("get-random-category", async () => {
-      const categories = await prisma.category.findMany();
-      return categories[Math.floor(Math.random() * categories.length)];
+    // STEP 0: Pick a random Category *that has subcategories*, then a random SubCategory
+    const { category, subCategory } = await step.run("pick-random-category-and-sub", async () => {
+      // Only consider categories that have at least one subcategory
+      const total = await prisma.category.count({
+        where: { subCategories: { some: {} } }
+      });
+      if (total === 0) {
+        throw new Error("No categories with subcategories found. Seed some data first.");
+      }
+
+      const skipCat = Math.floor(Math.random() * total);
+
+      const pickedCategory = await prisma.category.findFirst({
+        where: { subCategories: { some: {} } },
+        skip: skipCat,
+        orderBy: { id: "asc" }, // deterministic base ordering
+        include: { subCategories: { select: { id: true, name: true, slug: true } } }
+      });
+      if (!pickedCategory || pickedCategory.subCategories.length === 0) {
+        throw new Error("Selected category has no subcategories (unexpected).");
+      }
+
+      const subIdx = Math.floor(Math.random() * pickedCategory.subCategories.length);
+      const pickedSub = pickedCategory.subCategories[subIdx];
+
+      return { category: pickedCategory, subCategory: pickedSub };
     });
 
     // STEP 1: Generate quiz JSON
@@ -47,6 +70,7 @@ export const generateQuizFn = inngest.createFunction(
         prompt: `
 Create ONE complete, TEXT-ONLY, publish-ready quiz.
 Category: ${category.name}
+Subcategory: ${subCategory.name}
 Difficulty: ${difficulty}
 Question count: ${count}
 
@@ -60,6 +84,7 @@ Hard rules:
 - Optional short "explanation".
 - Plain text only; avoid markdown characters.
 - Each question must be objective and allow exactly one defensible correct option. Avoid opinion-based or preference-based wording.
+- The quiz theme must clearly reflect both the category and subcategory.
 
 Uniqueness rules:
 - Vary sentence length, verbs, and specificity across fields.
@@ -78,6 +103,7 @@ Return ONLY schema-valid JSON. No extra fields, no comments.
           quizPageTitle: quizDoc.quizPageTitle,
           quizPageDescription: quizDoc.quizPageDescription,
           categoryId: category.id,
+          subCategoryId: subCategory.id,
           tags: {
             create: quizDoc.tags.map((name) => ({
               tag: {
