@@ -6,7 +6,7 @@ import { useState } from "react";
 export default function QuizQuestions({ questions }: { questions: QuestionType[] }) {
   return (
     <div id="questions" className="mx-auto max-w-7xl">
-      <div className="px-6 pt-10">
+      <div className="px-6 py-10">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">
           Quiz Questions
         </h2>
@@ -15,7 +15,7 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
         </p>
       </div>
 
-      <ol className=" max-w-4xl px-4 md:px-6 py-10 space-y-8">
+      <ol className=" max-w-4xl pl-7 pr-6 space-y-8">
         {questions
           .slice()
           .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))

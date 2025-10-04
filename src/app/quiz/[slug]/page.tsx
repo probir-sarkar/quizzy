@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { QuizCard } from "@/components/home-page/quiz-listing";
 import ShareButtons from "@/components/common/ShareButtons";
+import TelegramCTA from "@/components/common/telegram-cta";
 type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -17,7 +18,6 @@ export async function generateMetadata({ params, searchParams }: Props, parent: 
   const post = await prisma.quiz.findUnique({
     where: { slug },
     select: {
-      
       quizPageTitle: true,
       quizPageDescription: true,
       category: {
@@ -58,12 +58,14 @@ async function QuizPage({ params }: Props) {
     <section>
       <QuizPageHero quiz={quiz} />
       <QuizQuestions questions={quiz.questions} />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <div className="max-w-7xl mx-auto pl-7 pr-6">
+        <TelegramCTA className="max-w-xl " />
         <ShareButtons url={process.env.NEXT_PUBLIC_URL + "/quiz/" + slug} title={quiz.quizPageTitle} />
       </div>
       {moreQuizzes?.length > 0 && (
-        <div className="bg-purple-100 dark:bg-gray-900  p-8 shadow-sm mt-12 ">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-purple-100 dark:bg-gray-900  py-8 px-6 shadow-sm mt-12 ">
+          <div className="max-w-7xl mx-auto  ">
             <h2 className="text-2xl font-bold mb-6">Check These Out Too</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {moreQuizzes.map((q, i) => (
