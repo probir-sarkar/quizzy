@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { kebabCase } from "es-toolkit";
 import { QuizDoc } from "./schema";
 import { format } from "date-fns";
+import { NonRetriableError } from "inngest";
 
 const today = format(new Date(), "MMMM d, yyyy");
 const nonce = `${today}-${Math.random().toString(36).slice(2)}`;
@@ -27,7 +28,7 @@ function randomCount(): number {
 }
 
 export const generateQuizFn = inngest.createFunction(
-  { id: "generate-quiz", retries: 2 },
+  { id: "generate-quiz", retries: 0 },
   [{ event: "quiz/generate-quiz" }, { cron: "*/5 * * * *" }],
   async ({ step }) => {
     const difficulty = randomDifficulty();
@@ -97,41 +98,45 @@ Return ONLY schema-valid JSON. No extra fields, no comments.
     );
 
     // STEP 2: Save quiz in DB
-    const savedQuiz = await step.run("save-quiz-db", async () =>
-      prisma.quiz.create({
-        data: {
-          quizPageTitle: quizDoc.quizPageTitle,
-          quizPageDescription: quizDoc.quizPageDescription,
-          categoryId: category.id,
-          subCategoryId: subCategory.id,
-          tags: {
-            create: quizDoc.tags.map((name) => ({
-              tag: {
-                connectOrCreate: {
-                  where: { name },
-                  create: { name }
+    const savedQuiz = await step
+      .run("save-quiz-db", async () =>
+        prisma.quiz.create({
+          data: {
+            quizPageTitle: quizDoc.quizPageTitle,
+            quizPageDescription: quizDoc.quizPageDescription,
+            categoryId: category.id,
+            subCategoryId: subCategory.id,
+            tags: {
+              create: quizDoc.tags.map((name) => ({
+                tag: {
+                  connectOrCreate: {
+                    where: { name },
+                    create: { name }
+                  }
                 }
-              }
-            }))
-          },
+              }))
+            },
 
-          difficulty: quizDoc.difficulty,
-          title: quizDoc.title,
-          description: quizDoc.description,
-          slug: kebabCase(quizDoc.quizPageTitle),
-          isPublished: false,
-          questions: {
-            create: quizDoc.questions.map((q) => ({
-              text: q.prompt,
-              options: q.options,
-              correctIndex: q.correctIndex,
-              explanation: q.explanation ?? null
-            }))
-          }
-        },
-        include: { questions: true }
-      })
-    );
+            difficulty: quizDoc.difficulty,
+            title: quizDoc.title,
+            description: quizDoc.description,
+            slug: kebabCase(quizDoc.quizPageTitle),
+            isPublished: false,
+            questions: {
+              create: quizDoc.questions.map((q) => ({
+                text: q.prompt,
+                options: q.options,
+                correctIndex: q.correctIndex,
+                explanation: q.explanation ?? null
+              }))
+            }
+          },
+          include: { questions: true }
+        })
+      )
+      .catch((err) => {
+        throw new NonRetriableError(err);
+      });
 
     return { quiz: savedQuiz };
   }
