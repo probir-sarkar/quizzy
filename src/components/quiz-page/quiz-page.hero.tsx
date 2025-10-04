@@ -54,11 +54,11 @@ export default function QuizHero({ quiz }: { quiz: QuizPageType }) {
           {/* Left: Title + Info */}
           <div className="flex-1">
             <div className="flex items-center gap-4 mb-5">
-              <h1 className="text-3xl md:text-4xl font-bold leading-snug tracking-tight">{quiz.quizPageTitle}</h1>
+              <h1 className="text-3xl md:text-4xl font-bold leading-snug tracking-tight">{quiz.title}</h1>
             </div>
 
             <p className="max-w-2xl text-white/85 text-base md:text-lg mb-6 leading-relaxed">
-              {quiz.quizPageDescription ?? "Put your knowledge to the test with these fun and tricky questions!"}
+              {quiz.description ?? "Put your knowledge to the test with these fun and tricky questions!"}
             </p>
 
             {/* Tags */}
@@ -67,7 +67,7 @@ export default function QuizHero({ quiz }: { quiz: QuizPageType }) {
                 {quiz.tags.map((tag) => (
                   <span
                     key={tag.tagId}
-                    className="px-3 py-1.5 rounded-full text-sm font-medium bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-colors"
+                    className="px-3 py-1.5 rounded-full text-sm font-medium bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-colors capitalize"
                   >
                     {tag.tag.name}
                   </span>

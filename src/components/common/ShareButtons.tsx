@@ -27,7 +27,7 @@ export default function ShareButtons({ url, title = "Check this out!" }: Props) 
         <XIcon size={40} round />
       </TwitterShareButton>
 
-      <WhatsappShareButton url={url} title={title} separator=":: ">
+      <WhatsappShareButton url={url} title={title}>
         <WhatsappIcon size={40} round />
       </WhatsappShareButton>
 
