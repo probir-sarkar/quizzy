@@ -5,6 +5,7 @@ import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { QuizCard } from "@/components/home-page/quiz-listing";
+import ShareButtons from "@/components/common/ShareButtons";
 type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -56,7 +57,9 @@ async function QuizPage({ params }: Props) {
     <section>
       <QuizPageHero quiz={quiz} />
       <QuizQuestions questions={quiz.questions} />
-
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ShareButtons url={process.env.NEXT_PUBLIC_URL + "/quiz/" + slug} title={quiz.quizPageTitle} />
+      </div>
       {moreQuizzes?.length > 0 && (
         <div className="bg-purple-100 dark:bg-gray-900  p-8 shadow-sm mt-12 ">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
