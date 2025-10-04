@@ -17,6 +17,7 @@ export async function generateMetadata({ params, searchParams }: Props, parent: 
   const post = await prisma.quiz.findUnique({
     where: { slug },
     select: {
+      
       quizPageTitle: true,
       quizPageDescription: true,
       category: {
