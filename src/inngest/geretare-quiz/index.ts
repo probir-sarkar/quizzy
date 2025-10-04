@@ -28,7 +28,7 @@ function randomCount(): number {
 
 export const generateQuizFn = inngest.createFunction(
   { id: "generate-quiz", retries: 2 },
-  [{ event: "quiz/generate-quiz" }, { cron: "0 */1 * * *" }],
+  [{ event: "quiz/generate-quiz" }, { cron: "*/5 * * * *" }],
   async ({ step }) => {
     const difficulty = randomDifficulty();
     const count = randomCount();
