@@ -11,7 +11,7 @@ const BASE_URL = "https://quizzone.club";
 
 export const socialMediaShare = inngest.createFunction(
   { id: "social-media-share" },
-  { event: "quiz/social-media-share" },
+  [{ event: "quiz/social-media-share" }, { cron: "0 0 * * *" }],
   async ({ step }) => {
     const bot = new Bot(TELEGRAM_BOT_TOKEN);
     const pastDay = new Date();
