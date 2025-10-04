@@ -7,12 +7,13 @@ export async function getHomePageData() {
         some: {}
       }
     },
+    take: 6,
     orderBy: {
       name: "asc"
     },
     include: {
       quizzes: {
-        take: 15,
+        take: 4,
         orderBy: {
           createdAt: "desc"
         },
