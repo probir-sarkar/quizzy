@@ -1,4 +1,3 @@
-import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { HomePageData } from "@/queries/home-page";
 import Link from "next/link";
@@ -20,7 +19,7 @@ export default function CategoryFilters({ data }: { data: HomePageData }) {
                   "border border-gray-200/70 dark:border-gray-700 shadow-sm",
                   "transition-all duration-300 ease-out",
                   "hover:bg-gradient-to-r hover:from-violet-500 hover:to-fuchsia-600 hover:text-white hover:shadow-lg",
-                  "active:scale-95",
+                  "active:scale-95"
                 )}
               >
                 {cat.name}

@@ -7,7 +7,6 @@ export async function getHomePageData() {
         some: {}
       }
     },
-    take: 6,
     orderBy: {
       name: "asc"
     },
