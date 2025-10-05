@@ -69,7 +69,7 @@ export function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay
       >
         <Card className="relative w-full h-full overflow-hidden cursor-pointer border bg-white dark:bg-gray-900 rounded-2xl shadow-lg pt-0">
           {/* Animated border overlay */}
-          <ShineBorder shineColor={shineColors} borderWidth={2} duration={14} />
+          {/* <ShineBorder shineColor={shineColors} borderWidth={2} duration={14} /> */}
 
           {/* Top gradient banner */}
           <CardHeader className={`aspect-[3/1] bg-gradient-to-br ${getGradient(index)} relative overflow-hidden`}>
