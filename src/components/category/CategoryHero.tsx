@@ -44,11 +44,11 @@ export default function CategoryHero({ category }: { category: CategoryPageType 
         {/* Home button in corner */}
         <div className="mb-8">
           <Link
-            href="/"
+            href="/category"
             className="inline-flex items-center gap-2 rounded-full bg-white/20 hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 backdrop-blur-sm px-3 py-1.5 text-sm font-medium transition"
           >
             <ChevronLeft className="w-4 h-4" />
-            Home
+            Back
           </Link>
         </div>
 

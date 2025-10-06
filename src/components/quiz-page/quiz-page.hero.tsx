@@ -42,7 +42,7 @@ export default function QuizHero({ quiz }: { quiz: QuizPageType }) {
         {/* Top bar: Back pill */}
         <div className="mb-6">
           <Link
-            href={"/"}
+            href={ `/category/${quiz.category?.slug}` }
             className="inline-flex items-center gap-2 rounded-full bg-white/20 hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 backdrop-blur-sm px-3 py-1.5 text-sm"
           >
             <ChevronLeft className="w-4 h-4" />
