@@ -1,0 +1,102 @@
+"use server";
+
+import React from "react";
+import Link from "next/link";
+import { Sparkles, ChevronLeft } from "lucide-react";
+import prisma from "@/lib/prisma";
+
+export default async function CategoriesPage() {
+  const categories = await prisma.category.findMany({
+    include: {
+      subCategories: true,
+      _count: { select: { quizzes: true, subCategories: true } }
+    }
+  });
+
+  const gradient = "bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600";
+
+  return (
+    <main className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <section className={`relative ${gradient} text-white overflow-hidden`}>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/15" />
+        <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-white/5 blur-3xl" />
+
+        <div className="relative container mx-auto px-6 py-20">
+          <div className="mb-6">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 rounded-full bg-white/20 hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 backdrop-blur-sm px-3 py-1.5 text-sm font-medium transition"
+            >
+              <ChevronLeft className="w-4 h-4" /> Home
+            </Link>
+          </div>
+
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-3 mb-3">
+              <Sparkles className="w-6 h-6 opacity-95" />
+              <h1 className="text-3xl md:text-4xl font-bold tracking-tight">All Categories</h1>
+            </div>
+
+            <p className="text-white/90 text-base md:text-lg leading-relaxed mb-6 max-w-2xl">
+              Explore all quiz categories and their subcategories. Choose a topic and test your knowledge!
+            </p>
+
+            <div className="flex flex-wrap gap-4">
+              <span className="px-4 py-1.5 bg-white/10 border border-white/10 rounded-full text-sm font-medium">
+                {categories.length} Categories
+              </span>
+              <span className="px-4 py-1.5 bg-white/10 border border-white/10 rounded-full text-sm font-medium">
+                {categories.reduce((acc, c) => acc + c.subCategories.length, 0)} Subcategories
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Category List Section */}
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-14 -mt-10">
+        <div className="max-w-4xl">
+          <div className="space-y-8">
+            {categories.map((cat) => (
+              <div
+                key={cat.id}
+                className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h2 className="text-xl font-semibold text-gray-800">{cat.name}</h2>
+                    <p className="text-xs text-gray-500">{cat._count?.quizzes ?? 0} quizzes</p>
+                  </div>
+                  <Link
+                    href={`/category/${cat.slug}`}
+                    className="text-sm font-medium text-fuchsia-600  hover:underline"
+                  >
+                    View all →
+                  </Link>
+                </div>
+
+                {cat.subCategories?.length ? (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {cat.subCategories.map((sub) => (
+                      <Link
+                        key={sub.id}
+                        href={`/category/${cat.slug}?sub=${sub.slug}`}
+                        className="px-3 py-1 text-sm rounded-full border border-gray-200 bg-gray-50 hover:bg-indigo-50 hover:text-fuchsia-600 transition"
+                      >
+                        {sub.name}
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-400">No subcategories</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
