@@ -2,18 +2,28 @@ import React from "react";
 import Link from "next/link";
 import { Sparkles, ChevronLeft } from "lucide-react";
 import prisma from "@/lib/prisma";
+import { unstable_cache } from "next/cache";
 
-
-export const revalidate = 3600;
+// export const revalidate = 3600;
 export const dynamic = "force-dynamic";
 
+const getCategories = unstable_cache(
+  async () => {
+    return prisma.category.findMany({
+      include: {
+        subCategories: true,
+        _count: { select: { quizzes: true, subCategories: true } }
+      }
+    });
+  },
+  ["category-page"],
+  {
+    revalidate: 3600
+  }
+);
+
 export default async function CategoriesPage() {
-  const categories = await prisma.category.findMany({
-    include: {
-      subCategories: true,
-      _count: { select: { quizzes: true, subCategories: true } }
-    }
-  });
+  const categories = await getCategories();
 
   const gradient = "bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600";
 

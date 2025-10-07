@@ -4,10 +4,21 @@ import HeroSection from "@/components/home-page/hero-section";
 import QuizListing from "@/components/home-page/quiz-listing";
 import SearchSection from "@/components/home-page/search-section";
 import { getHomePageData } from "@/queries/home-page";
-export const revalidate = 3600;
+import { unstable_cache } from "next/cache";
+
 export const dynamic = "force-dynamic";
+
+const homePage = unstable_cache(
+  async () => {
+    return getHomePageData();
+  },
+  ['home-page'],
+  {
+    revalidate: 3600
+  }
+);
 export default async function Home() {
-  const data = await getHomePageData();
+  const data = await homePage();
 
   return (
     <>
