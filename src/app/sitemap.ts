@@ -6,10 +6,10 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const categories = await prisma.category.findMany({
     orderBy: { id: "asc" },
-    select: { id: true }
+    select: { slug: true }
   });
 
   return categories.map((q) => ({
-    url: `${BASE_URL}/category/sitemap/${q.id}.xml`
+    url: `${BASE_URL}/category/${q.slug}`,
   }));
 }
