@@ -4,7 +4,6 @@ import { Sparkles, ChevronLeft } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 
-// export const revalidate = 3600;
 export const dynamic = "force-dynamic";
 
 const getCategories = unstable_cache(
@@ -25,21 +24,20 @@ const getCategories = unstable_cache(
 export default async function CategoriesPage() {
   const categories = await getCategories();
 
-  const gradient = "bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600";
-
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Hero Section */}
-      <section className={`relative ${gradient} text-white overflow-hidden`}>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/15" />
-        <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-white/10 blur-3xl" />
-        <div className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-white/5 blur-3xl" />
+      <section className="relative bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-700 dark:via-purple-700 dark:to-pink-700 text-white overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20 dark:from-black/30 dark:to-black/40" />
+        <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-white/10 dark:bg-white/5 blur-3xl" />
+        <div className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-white/5 dark:bg-white/3 blur-3xl" />
 
         <div className="relative container mx-auto px-6 py-20">
           <div className="mb-6">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 rounded-full bg-white/20 hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 backdrop-blur-sm px-3 py-1.5 text-sm font-medium transition"
+              prefetch
+              className="inline-flex items-center gap-2 rounded-full bg-white/20 hover:bg-white/30 dark:bg-white/10 dark:hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 backdrop-blur-sm px-3 py-1.5 text-sm font-medium transition"
             >
               <ChevronLeft className="w-4 h-4" /> Home
             </Link>
@@ -51,15 +49,15 @@ export default async function CategoriesPage() {
               <h1 className="text-3xl md:text-4xl font-bold tracking-tight">All Categories</h1>
             </div>
 
-            <p className="text-white/90 text-base md:text-lg leading-relaxed mb-6 max-w-2xl">
+            <p className="text-white/90 dark:text-white/80 text-base md:text-lg leading-relaxed mb-6 max-w-2xl">
               Explore all quiz categories and their subcategories. Choose a topic and test your knowledge!
             </p>
 
             <div className="flex flex-wrap gap-4">
-              <span className="px-4 py-1.5 bg-white/10 border border-white/10 rounded-full text-sm font-medium">
+              <span className="px-4 py-1.5 bg-white/10 dark:bg-white/5 border border-white/10 dark:border-white/5 rounded-full text-sm font-medium">
                 {categories.length} Categories
               </span>
-              <span className="px-4 py-1.5 bg-white/10 border border-white/10 rounded-full text-sm font-medium">
+              <span className="px-4 py-1.5 bg-white/10 dark:bg-white/5 border border-white/10 dark:border-white/5 rounded-full text-sm font-medium">
                 {categories.reduce((acc, c) => acc + c.subCategories.length, 0)} Subcategories
               </span>
             </div>
@@ -74,16 +72,17 @@ export default async function CategoriesPage() {
             {categories.map((cat) => (
               <div
                 key={cat.id}
-                className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition"
+                className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm hover:shadow-md dark:hover:shadow-xl dark:hover:shadow-purple-900/10 transition"
               >
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h2 className="text-xl font-semibold text-gray-800">{cat.name}</h2>
-                    <p className="text-xs text-gray-500">{cat._count?.quizzes ?? 0} quizzes</p>
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-50">{cat.name}</h2>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{cat._count?.quizzes ?? 0} quizzes</p>
                   </div>
                   <Link
                     href={`/category/${cat.slug}`}
-                    className="text-sm font-medium text-fuchsia-600  hover:underline"
+                    prefetch
+                    className="text-sm font-medium text-fuchsia-600 dark:text-fuchsia-400 hover:underline"
                   >
                     View all →
                   </Link>
@@ -94,15 +93,16 @@ export default async function CategoriesPage() {
                     {cat.subCategories.map((sub) => (
                       <Link
                         key={sub.id}
+                        prefetch
                         href={`/category/${cat.slug}?sub=${sub.slug}`}
-                        className="px-3 py-1 text-sm rounded-full border border-gray-200 bg-gray-50 hover:bg-indigo-50 hover:text-fuchsia-600 transition"
+                        className="px-3 py-1 text-sm rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-indigo-950 hover:text-fuchsia-600 dark:hover:text-fuchsia-400 hover:border-indigo-200 dark:hover:border-indigo-800 transition"
                       >
                         {sub.name}
                       </Link>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-400">No subcategories</p>
+                  <p className="text-sm text-gray-400 dark:text-gray-500">No subcategories</p>
                 )}
               </div>
             ))}
