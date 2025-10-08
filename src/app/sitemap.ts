@@ -4,13 +4,12 @@ import prisma from "@/lib/prisma";
 import { BASE_URL } from "@/lib/constants";
 export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const quizzes = await prisma.quiz.findMany({
+  const categories = await prisma.category.findMany({
     orderBy: { id: "asc" },
-    select: { slug: true, updatedAt: true }
+    select: { id: true }
   });
 
-  return quizzes.map((q) => ({
-    url: `${BASE_URL}/quiz/${q.slug}`,
-    lastModified: q.updatedAt
+  return categories.map((q) => ({
+    url: `${BASE_URL}/category/sitemap/${q.id}.xml`
   }));
 }
