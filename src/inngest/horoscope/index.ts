@@ -1,7 +1,7 @@
 import { inngest } from "../client";
 import { google } from "@ai-sdk/google";
 import { generateObject } from "ai";
-import { addDays, format, startOfDay, differenceInCalendarDays } from "date-fns";
+import { addDays, format, startOfDay, differenceInCalendarDays, isValid } from "date-fns";
 import { UTCDate } from "@date-fns/utc";
 import { AllZodiacDailySchema } from "./schema";
 import prisma from "@/lib/prisma";
@@ -13,20 +13,28 @@ const MAX_GENERATION_DAYS = 30;
 export const generateHoroscopeFn = inngest.createFunction(
   { id: "generate-horoscope", retries: 0 },
   [{ event: "manual/generate-horoscope" }, { cron: "5 * * * *" }],
-  async ({ step }) => {
+  async ({ event, step }) => {
     const nonce = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    let nextDate: Date | null = null;
+    if (event.data?.date && isValid(new Date(event.data.date))) {
+      nextDate = startOfDay(event.data.date);
+    } else {
+      // 1) last saved date (one DB call)
+      const last = await prisma.horoscope.findFirst({
+        orderBy: { date: "desc" },
+        select: { date: true }
+      });
+      const lastSavedDate = last?.date ?? DEFAULT_START_DATE;
+      nextDate = startOfDay(addDays(lastSavedDate, 1));
 
-    // 1) last saved date (one DB call)
-    const last = await prisma.horoscope.findFirst({
-      orderBy: { date: "desc" },
-      select: { date: true }
-    });
-    const lastSavedDate = last?.date ?? DEFAULT_START_DATE;
-    const nextDate = startOfDay(addDays(lastSavedDate, 1));
-
-    // 2) guard: don't generate too far ahead
-    if (differenceInCalendarDays(nextDate, lastSavedDate) > MAX_GENERATION_DAYS) {
-      return { ok: true, message: `Already generated ${MAX_GENERATION_DAYS} days ahead`, lastGenerated: lastSavedDate };
+      // 2) guard: don't generate too far ahead
+      if (differenceInCalendarDays(nextDate, lastSavedDate) > MAX_GENERATION_DAYS) {
+        return {
+          ok: true,
+          message: `Already generated ${MAX_GENERATION_DAYS} days ahead`,
+          lastGenerated: lastSavedDate
+        };
+      }
     }
 
     // 3) generate once
@@ -58,6 +66,6 @@ Return only the JSON object. Include nonce: ${nonce}
     // 5) batch insert; skipDuplicates prevents multiple inserts when unique constraint exists
     await prisma.horoscope.createMany({ data: rows, skipDuplicates: true });
 
-    return { ok: true, displayDate: format(nextDate, "yyyy-MM-dd"), nonce };
+    return { ok: true, displayDate: format(nextDate, "yyyy-MM-dd"), nonce, payload: event.data };
   }
 );
