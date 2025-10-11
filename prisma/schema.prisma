@@ -1,7 +1,7 @@
 generator client {
-  provider      = "prisma-client"
-  output        = "../src/generated/prisma"
-  engineType    = "client"
+  provider   = "prisma-client"
+  output     = "../src/generated/prisma"
+  engineType = "client"
 }
 
 datasource db {
@@ -90,4 +90,35 @@ enum QuizDifficulty {
   easy
   medium
   hard
+}
+
+// For Horoscope
+
+enum ZodiacSign {
+  ARIES
+  TAURUS
+  GEMINI
+  CANCER
+  LEO
+  VIRGO
+  LIBRA
+  SCORPIO
+  SAGITTARIUS
+  CAPRICORN
+  AQUARIUS
+  PISCES
+}
+
+model Horoscope {
+  id          Int        @id @default(autoincrement())
+  zodiacSign  ZodiacSign
+  date        DateTime
+  description String
+  luckyColor  String?
+  luckyNumber Int?
+  mood        String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@unique([zodiacSign, date]) // ensure one horoscope per sign per day
 }

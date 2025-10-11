@@ -7,9 +7,6 @@ import { QuizDoc } from "./schema";
 import { format } from "date-fns";
 import { NonRetriableError } from "inngest";
 
-const today = format(new Date(), "MMMM d, yyyy");
-const nonce = `${today}-${Math.random().toString(36).slice(2)}`;
-
 type Difficulty = "easy" | "medium" | "hard";
 
 const difficultyModelMap: Record<Difficulty, string> = {
@@ -31,6 +28,8 @@ export const generateQuizFn = inngest.createFunction(
   { id: "generate-quiz", retries: 0 },
   [{ event: "quiz/generate-quiz" }, { cron: "*/5 * * * *" }],
   async ({ step }) => {
+    const today = format(new Date(), "MMMM d, yyyy");
+    const nonce = `${today}-${Math.random().toString(36).slice(2)}`;
     const difficulty = randomDifficulty();
     const count = randomCount();
 
