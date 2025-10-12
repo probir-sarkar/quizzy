@@ -19,7 +19,7 @@ export const ZodiacSignEnum = z.enum(zodiacSigns);
 
 // ✅ Schema for a single sign's daily horoscope
 const DailyHoroscopeSchema = z.object({
-  description: z.string().min(30, "Description must be at least 30 characters long"),
+  description: z.string().min(60, "Description must be at least 60 characters long"),
   luckyColor: z.string().optional(),
   luckyNumber: z.number().int().min(1).max(99).optional(),
   mood: z.string().optional()
