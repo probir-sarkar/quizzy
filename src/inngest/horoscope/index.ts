@@ -6,13 +6,14 @@ import { UTCDate } from "@date-fns/utc";
 import { AllZodiacDailySchema } from "./schema";
 import prisma from "@/lib/prisma";
 import { ZodiacSign } from "@/generated/prisma/enums";
+import { zai } from "@/lib/ai-models";
 
 const DEFAULT_START_DATE = new UTCDate(2025, 0, 1);
 const MAX_GENERATION_DAYS = 30;
 
 export const generateHoroscopeFn = inngest.createFunction(
   { id: "generate-horoscope", retries: 0 },
-  [{ event: "manual/generate-horoscope" }, { cron: "5 * * * *" }],
+  [{ event: "manual/generate-horoscope" }, { cron: "*/5 * * * *" }],
   async ({ event, step }) => {
     const nonce = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     let nextDate: Date | null = null;
@@ -50,7 +51,7 @@ Return only the JSON object. Include nonce: ${nonce}
 `.trim();
 
     const generated = await step.run("generate-horoscope", async () =>
-      generateObject({ model: google("gemini-2.5-flash"), prompt, schema: AllZodiacDailySchema })
+      generateObject({ model: zai("glm-4.5-flash"), prompt, schema: AllZodiacDailySchema })
     );
 
     // 4) map to DB rows
