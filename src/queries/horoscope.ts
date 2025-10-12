@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { ZodiacSign } from "@/generated/prisma/client";
+import { endOfDay, startOfDay } from "date-fns";
 
 export async function getHoroscopeBySignAndDate(zodiacSign: ZodiacSign, date: Date) {
   return prisma.horoscope.findUnique({
@@ -15,17 +16,15 @@ export async function getHoroscopeBySignAndDate(zodiacSign: ZodiacSign, date: Da
 export async function getAllHoroscopesForDate(date: Date) {
   return prisma.horoscope.findMany({
     where: {
-      date: date
+      date: {
+        gte: startOfDay(date),
+        lte: endOfDay(date)
+      }
     },
     orderBy: {
       zodiacSign: "asc"
     }
   });
-}
-
-export async function getTodayHoroscopes() {
-  const today = new Date();
-  return getAllHoroscopesForDate(today);
 }
 
 export type HoroscopeData = Awaited<ReturnType<typeof getHoroscopeBySignAndDate>>;

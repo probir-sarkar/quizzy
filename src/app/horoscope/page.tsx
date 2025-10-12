@@ -1,10 +1,13 @@
 import { getAllHoroscopesForDate } from "@/queries/horoscope";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { unstable_cache } from "next/cache";
-import { format, parseISO, isValid, startOfMonth } from "date-fns";
+import { format, parseISO, isValid, startOfMonth, addDays, subDays } from "date-fns";
 import { ZodiacSign } from "@/generated/prisma/client";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const zodiacSignInfo = {
   ARIES: { symbol: "/zodiac/aries.svg", dates: "Mar 21 - Apr 19", element: "Fire", accentColor: "text-red-600" },
@@ -61,26 +64,34 @@ const getHoroscopesForDateCached = unstable_cache(
     tags: ["horoscopes"]
   }
 );
+type Props = {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+};
 
-export default async function HoroscopePage({ searchParams }: { searchParams: { date?: string; month?: string } }) {
+export default async function HoroscopePage({ searchParams }: Props) {
   // Parse the date from query params or use today
+  const { date } = await searchParams;
   let selectedDate = new Date();
 
-  if (searchParams.date) {
-    const parsedDate = parseISO(searchParams.date);
+  if (date) {
+    const parsedDate = parseISO(date);
     if (isValid(parsedDate)) {
       selectedDate = parsedDate;
-    }
-  } else if (searchParams.month) {
-    const parsedMonth = parseISO(searchParams.month);
-    if (isValid(parsedMonth)) {
-      selectedDate = parsedMonth;
     }
   }
 
   const horoscopes = await getHoroscopesForDateCached(selectedDate);
   const formattedDate = format(selectedDate, "EEEE, MMMM d, yyyy");
-  const currentMonth = startOfMonth(selectedDate);
+
+  // Calculate navigation dates
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set to start of day for comparison
+  selectedDate.setHours(0, 0, 0, 0);
+
+  const previousDate = subDays(selectedDate, 1);
+  const nextDate = addDays(selectedDate, 1);
+  const canGoNext = nextDate <= today; // Prevent going to future dates
 
   // Create a map of zodiac signs to horoscopes for easy lookup
   const horoscopeMap = new Map(horoscopes.map((h) => [h.zodiacSign, h]));
@@ -160,6 +171,54 @@ export default async function HoroscopePage({ searchParams }: { searchParams: { 
             </Card>
           );
         })}
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="flex items-center justify-center gap-4 mt-6">
+        <Button variant="outline" size="sm" asChild>
+          <a href={`?date=${format(previousDate, "yyyy-MM-dd")}`} className="flex items-center gap-2">
+            <ChevronLeft className="w-4 h-4" />
+            Previous
+          </a>
+        </Button>
+
+        <Button
+          variant={selectedDate.getTime() === today.getTime() ? "default" : "outline"}
+          size="sm"
+          asChild
+          disabled={selectedDate.getTime() === today.getTime()}
+          className={selectedDate.getTime() === today.getTime() ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700" : ""}
+        >
+          {selectedDate.getTime() !== today.getTime() ? (
+            <Link href="/horoscope" className="flex items-center gap-2">
+              Today
+            </Link>
+          ) : (
+            <span className="flex items-center gap-2">
+              Today
+            </span>
+          )}
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          asChild
+          disabled={!canGoNext}
+          className={!canGoNext ? "opacity-50 cursor-not-allowed" : ""}
+        >
+          {canGoNext ? (
+            <Link href={`?date=${format(nextDate, "yyyy-MM-dd")}`} className="flex items-center gap-2">
+              Next
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          ) : (
+            <span className="flex items-center gap-2">
+              Next
+              <ChevronRight className="w-4 h-4" />
+            </span>
+          )}
+        </Button>
       </div>
 
       {/* Footer Note */}
