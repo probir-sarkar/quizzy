@@ -16,9 +16,9 @@ const Navbar = () => {
 
   const navigationItems = [
     { href: "/", label: "Home", icon: Home },
-    { href: "/category", label: "Categories", icon: BookOpen },
-    { href: "/horoscope", label: "Horoscope", icon: Star },
-    { href: "/quiz", label: "Quizzes", icon: Gamepad2 },
+    { href: "/category", label: "Quiz Categories", icon: BookOpen },
+    { href: "/horoscope", label: "Horoscope", icon: Star }
+    // { href: "/quiz", label: "Quizzes", icon: Gamepad2 },
   ];
 
   const toggleMobileMenu = () => {
@@ -41,9 +41,9 @@ const Navbar = () => {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -62,7 +62,7 @@ const Navbar = () => {
           <span className={`font-bold text-lg  dark:text-white text-gray-900`}>Quiz Zone</span>
         </Link>
 
-            {/* Desktop Navigation */}
+        {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-4">
           <div className="relative" ref={dropdownRef}>
             <Button
@@ -105,17 +105,8 @@ const Navbar = () => {
         {/* Mobile Navigation */}
         <div className="md:hidden flex items-center gap-2">
           <ThemeToggle />
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleMobileMenu}
-            className="h-9 w-9"
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
+          <Button variant="ghost" size="icon" onClick={toggleMobileMenu} className="h-9 w-9">
+            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
         </div>
       </div>
