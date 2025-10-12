@@ -36,24 +36,29 @@ Quizzy is an AI-powered quiz platform built with Next.js 15, React 19, and TypeS
 - Daily horoscope generation for all 12 zodiac signs using Z.AI's GLM model
 - Structured output validation with Zod schemas
 - Batch generation with duplicate prevention
+- Real-time content scheduling with Inngest cron jobs
 
 **Database Schema:**
 - Hierarchical structure: Categories → SubCategories → Quizzes → Questions
 - Many-to-many relationship between Quizzes and Tags
-- Horoscope entity with zodiac sign and date indexing
+- Horoscope entity with zodiac sign and date indexing using `ZodiacSign` enum
+- Unique constraint on zodiac sign + date combination (one horoscope per sign per day)
+- Horoscope fields: description, luckyColor, luckyNumber, mood, createdAt, updatedAt
 - Draft/published workflow for quiz content management
 
 **Caching Strategy:**
 - Next.js `unstable_cache` for performance optimization
 - Home page data cached for 1 hour
 - Category pages cached for 1 hour
-- Selective cache invalidation patterns
+- Horoscope data cached for 1 hour with date-based cache invalidation
+- Selective cache invalidation patterns using cache tags
 
 **Background Processing:**
 - Inngest functions handle automated content generation
 - Hourly quiz generation via cron jobs
-- Daily horoscope generation with 5-minute intervals
+- Daily horoscope generation with 5-minute intervals using Z.AI's GLM-4.5-flash model
 - Telegram bot integration for social media sharing
+- Automatic content generation with date-based scheduling and duplicate prevention
 
 ### Directory Structure
 
@@ -64,6 +69,9 @@ src/
 │   ├── category/          # Category listing and detail pages
 │   ├── quiz/[slug]/       # Individual quiz pages
 │   └── horoscope/         # Daily horoscope display
+│       ├── page.tsx       # Main horoscope page with date navigation
+│       ├── layout.tsx     # Horoscope page layout with metadata
+│       └── opengraph-image.tsx # Social media image generation
 ├── components/
 │   ├── ui/                # Shadcn/ui base components
 │   ├── common/            # Shared components (navbar, share buttons)
@@ -76,11 +84,29 @@ src/
 │   ├── constants.ts       # Application constants
 │   └── utils.ts           # Utility functions
 ├── queries/               # Database query functions with caching
+│   └── horoscope.ts       # Horoscope database queries with caching
 ├── inngest/              # Background job functions
 │   ├── horoscope/        # Daily horoscope generation
+│   │   ├── index.ts      # Main horoscope generation function
+│   │   └── schema.ts     # Zod schemas for horoscope validation
 │   ├── geretare-quiz/    # Automated quiz generation
 │   └── social-media-share/ # Telegram posting
 └── generated/prisma/     # Auto-generated Prisma client (don't edit manually)
+
+public/
+└── zodiac/               # Zodiac sign SVG assets
+    ├── aries.svg         # Aries symbol
+    ├── taurus.svg        # Taurus symbol
+    ├── gemini.svg        # Gemini symbol
+    ├── cancer.svg        # Cancer symbol
+    ├── leo.svg           # Leo symbol
+    ├── virgo.svg         # Virgo symbol
+    ├── libra.svg         # Libra symbol
+    ├── scorpio.svg       # Scorpio symbol
+    ├── sagittarius.svg   # Sagittarius symbol
+    ├── capricorn.svg     # Capricorn symbol
+    ├── aquarius.svg      # Aquarius symbol
+    └── pisces.svg        # Pisces symbol
 ```
 
 ### Important Implementation Details
@@ -92,13 +118,18 @@ src/
 
 **AI Model Configuration:**
 - Multiple AI providers configured in `lib/ai-models.ts`
-- Model selection based on difficulty level
+- Model selection based on difficulty level for quiz generation
+- Z.AI's GLM-4.5-flash model for horoscope generation
 - Structured generation with Zod schema validation
+- Batch processing for efficient content generation
 
 **Component Architecture:**
 - Server components for optimal performance
 - Client components for interactivity (theme toggle, quiz interactions)
 - Atomic design principles with reusable UI components
+- Horoscope cards with responsive grid layout and date navigation
+- Dynamic theming with gradient effects and glass morphism design
+- Zodiac sign information with symbols, elements, and color-coded accents
 
 **Deployment:**
 - Docker multi-stage builds with Bun runtime
@@ -109,10 +140,12 @@ src/
 ### Testing and Quality
 
 Currently no automated tests are configured. When implementing tests, focus on:
-- AI content generation validation
-- Database query caching behavior
-- Background job execution
-- Component rendering with different theme states
+- AI content generation validation (both quiz and horoscope content)
+- Database query caching behavior with date-based invalidation
+- Background job execution for scheduled horoscope generation
+- Component rendering with different theme states and zodiac sign data
+- Horoscope date navigation and boundary conditions
+- Zod schema validation for AI-generated content
 
 ### Environment Variables Required
 
@@ -132,12 +165,21 @@ Key environment variables for development:
 4. Add corresponding page routes
 
 **When modifying AI generation:**
-1. Update schemas in `lib/ai-models.ts`
+1. Update schemas in `lib/ai-models.ts` or `src/inngest/horoscope/schema.ts` for horoscopes
 2. Modify Inngest functions in `src/inngest/`
 3. Test with different AI providers
 4. Validate structured output formats
+
+**When modifying horoscope functionality:**
+1. Update horoscope schemas in `src/inngest/horoscope/schema.ts`
+2. Modify generation logic in `src/inngest/horoscope/index.ts`
+3. Update database queries in `src/queries/horoscope.ts`
+4. Refresh zodiac sign information in the main page component
+5. Test date navigation and caching behavior
 
 **Cache Management:**
 - Use `unstable_cache` for expensive database queries
 - Consider cache invalidation strategies for content updates
 - Monitor cache hit rates in production
+- Horoscope data uses date-based cache keys for efficient invalidation
+- Cache tags like "horoscopes" for selective cache clearing
