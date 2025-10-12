@@ -56,9 +56,7 @@ Return only the JSON object. Include nonce: ${nonce}
     if (!generated.object) {
       return {
         ok: false,
-        message: "Failed to generate horoscope",
-        payload: event.data,
-        error: generated.error
+        message: "Failed to generate horoscope"
       };
     }
 
