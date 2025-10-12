@@ -1,8 +1,8 @@
-import { getTodayHoroscopes } from "@/queries/horoscope";
+import { getAllHoroscopesForDate } from "@/queries/horoscope";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { unstable_cache } from "next/cache";
-import { format } from "date-fns";
+import { format, parseISO, isValid, startOfMonth } from "date-fns";
 import { ZodiacSign } from "@/generated/prisma/client";
 import Image from "next/image";
 
@@ -14,43 +14,76 @@ const zodiacSignInfo = {
   LEO: { symbol: "/zodiac/leo.svg", dates: "Jul 23 - Aug 22", element: "Fire", accentColor: "text-orange-600" },
   VIRGO: { symbol: "/zodiac/virgo.svg", dates: "Aug 23 - Sep 22", element: "Earth", accentColor: "text-emerald-600" },
   LIBRA: { symbol: "/zodiac/libra.svg", dates: "Sep 23 - Oct 22", element: "Air", accentColor: "text-pink-600" },
-  SCORPIO: { symbol: "/zodiac/scorpio.svg", dates: "Oct 23 - Nov 21", element: "Water", accentColor: "text-purple-600" },
-  SAGITTARIUS: { symbol: "/zodiac/sagittarius.svg", dates: "Nov 22 - Dec 21", element: "Fire", accentColor: "text-indigo-600" },
-  CAPRICORN: { symbol: "/zodiac/capricorn.svg", dates: "Dec 22 - Jan 19", element: "Earth", accentColor: "text-slate-600" },
+  SCORPIO: {
+    symbol: "/zodiac/scorpio.svg",
+    dates: "Oct 23 - Nov 21",
+    element: "Water",
+    accentColor: "text-purple-600"
+  },
+  SAGITTARIUS: {
+    symbol: "/zodiac/sagittarius.svg",
+    dates: "Nov 22 - Dec 21",
+    element: "Fire",
+    accentColor: "text-indigo-600"
+  },
+  CAPRICORN: {
+    symbol: "/zodiac/capricorn.svg",
+    dates: "Dec 22 - Jan 19",
+    element: "Earth",
+    accentColor: "text-slate-600"
+  },
   AQUARIUS: { symbol: "/zodiac/aquarius.svg", dates: "Jan 20 - Feb 18", element: "Air", accentColor: "text-cyan-600" },
   PISCES: { symbol: "/zodiac/pisces.svg", dates: "Feb 19 - Mar 20", element: "Water", accentColor: "text-violet-600" }
 };
 
 const getElementColor = (element: string) => {
   switch (element) {
-    case "Fire": return "bg-red-100 text-red-800 border-red-200";
-    case "Earth": return "bg-green-100 text-green-800 border-green-200";
-    case "Air": return "bg-blue-100 text-blue-800 border-blue-200";
-    case "Water": return "bg-cyan-100 text-cyan-800 border-cyan-200";
-    default: return "bg-gray-100 text-gray-800 border-gray-200";
+    case "Fire":
+      return "bg-red-100 text-red-800 border-red-200";
+    case "Earth":
+      return "bg-green-100 text-green-800 border-green-200";
+    case "Air":
+      return "bg-blue-100 text-blue-800 border-blue-200";
+    case "Water":
+      return "bg-cyan-100 text-cyan-800 border-cyan-200";
+    default:
+      return "bg-gray-100 text-gray-800 border-gray-200";
   }
 };
 
-const getTodayHoroscopesCached = unstable_cache(
-  async () => {
-    return getTodayHoroscopes();
+const getHoroscopesForDateCached = unstable_cache(
+  async (date: Date) => {
+    return getAllHoroscopesForDate(date);
   },
-  ['today-horoscopes'],
+  ["horoscopes-by-date"],
   {
     revalidate: 3600, // Cache for 1 hour
-    tags: ['horoscopes']
+    tags: ["horoscopes"]
   }
 );
 
-export default async function HoroscopePage() {
-  const horoscopes = await getTodayHoroscopesCached();
-  const today = new Date();
-  const formattedDate = format(today, "EEEE, MMMM d, yyyy");
+export default async function HoroscopePage({ searchParams }: { searchParams: { date?: string; month?: string } }) {
+  // Parse the date from query params or use today
+  let selectedDate = new Date();
+
+  if (searchParams.date) {
+    const parsedDate = parseISO(searchParams.date);
+    if (isValid(parsedDate)) {
+      selectedDate = parsedDate;
+    }
+  } else if (searchParams.month) {
+    const parsedMonth = parseISO(searchParams.month);
+    if (isValid(parsedMonth)) {
+      selectedDate = parsedMonth;
+    }
+  }
+
+  const horoscopes = await getHoroscopesForDateCached(selectedDate);
+  const formattedDate = format(selectedDate, "EEEE, MMMM d, yyyy");
+  const currentMonth = startOfMonth(selectedDate);
 
   // Create a map of zodiac signs to horoscopes for easy lookup
-  const horoscopeMap = new Map(
-    horoscopes.map(h => [h.zodiacSign, h])
-  );
+  const horoscopeMap = new Map(horoscopes.map((h) => [h.zodiacSign, h]));
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -59,12 +92,8 @@ export default async function HoroscopePage() {
         <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
           Daily Horoscopes
         </h1>
-        <p className="text-muted-foreground text-lg">
-          Discover what the stars have in store for you today
-        </p>
-        <p className="text-sm text-muted-foreground mt-2">
-          {formattedDate}
-        </p>
+        <p className="text-muted-foreground text-lg">Discover what the stars have in store for you today</p>
+        <p className="text-sm text-muted-foreground mt-2">{formattedDate}</p>
       </div>
 
       {/* Zodiac Signs Grid */}
@@ -89,10 +118,7 @@ export default async function HoroscopePage() {
                       <p className="text-sm text-muted-foreground">{info.dates}</p>
                     </div>
                   </div>
-                  <Badge
-                    variant="outline"
-                    className={`${getElementColor(info.element)}`}
-                  >
+                  <Badge variant="outline" className={`${getElementColor(info.element)}`}>
                     {info.element}
                   </Badge>
                 </div>
@@ -101,9 +127,7 @@ export default async function HoroscopePage() {
               <CardContent className="pt-0">
                 {horoscope ? (
                   <div className="space-y-4">
-                    <p className="text-sm leading-relaxed">
-                      {horoscope.description}
-                    </p>
+                    <p className="text-sm leading-relaxed">{horoscope.description}</p>
 
                     <div className="flex flex-wrap gap-2 pt-2">
                       {horoscope.luckyColor && (
@@ -143,8 +167,9 @@ export default async function HoroscopePage() {
         <div className="max-w-2xl mx-auto">
           <h2 className="text-2xl font-semibold mb-4">About Daily Horoscopes</h2>
           <p className="text-muted-foreground leading-relaxed">
-            Our daily horoscopes are generated using astrological insights and AI technology to provide you with personalized guidance for each day.
-            Whether you&apos;re seeking advice on love, career, or personal growth, discover what the universe has in store for your zodiac sign.
+            Our daily horoscopes are generated using astrological insights and AI technology to provide you with
+            personalized guidance for each day. Whether you&apos;re seeking advice on love, career, or personal growth,
+            discover what the universe has in store for your zodiac sign.
           </p>
         </div>
       </div>
