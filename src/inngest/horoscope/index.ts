@@ -9,7 +9,7 @@ import { ZodiacSign } from "@/generated/prisma/enums";
 import { zai } from "@/lib/ai-models";
 
 const DEFAULT_START_DATE = new UTCDate(2025, 0, 1);
-const MAX_GENERATION_DAYS = 30;
+const MAX_GENERATION_DAYS = 730;
 
 export const generateHoroscopeFn = inngest.createFunction(
   { id: "generate-horoscope", retries: 0 },
