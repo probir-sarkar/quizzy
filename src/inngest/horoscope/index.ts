@@ -9,7 +9,7 @@ import { ZodiacSign } from "@/generated/prisma/enums";
 import { zai } from "@/lib/ai-models";
 
 const DEFAULT_START_DATE = new UTCDate(2025, 0, 1);
-const MAX_GENERATION_DAYS = 30;
+const MAX_GENERATION_DAYS = 730;
 
 export const generateHoroscopeFn = inngest.createFunction(
   { id: "generate-horoscope", retries: 0 },
@@ -43,7 +43,7 @@ export const generateHoroscopeFn = inngest.createFunction(
 Generate daily horoscopes for ALL zodiac signs for ${format(nextDate, "yyyy-MM-dd")} (UTC).
 Return a JSON object where each key is a zodiac sign (ARIES, TAURUS, ..., PISCES).
 Each sign must include:
-- description: detailed description (≥30 chars)
+- description: detailed description (≥60 chars)
 - luckyColor (optional)
 - luckyNumber (optional integer 1-99)
 - mood (optional)
