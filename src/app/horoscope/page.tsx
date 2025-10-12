@@ -3,11 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { unstable_cache } from "next/cache";
-import { format, parseISO, isValid, startOfMonth, addDays, subDays } from "date-fns";
+import { format, parseISO, isValid, startOfMonth, addDays, subDays, parse } from "date-fns";
 import { ZodiacSign } from "@/generated/prisma/client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { UTCDate } from "@date-fns/utc";
 
 const zodiacSignInfo = {
   ARIES: {
@@ -117,10 +118,10 @@ type Props = {
 export default async function HoroscopePage({ searchParams }: Props) {
   // Parse the date from query params or use today
   const { date } = await searchParams;
-  let selectedDate = new Date();
+  let selectedDate = new UTCDate();
 
   if (date) {
-    const parsedDate = parseISO(date);
+    const parsedDate = parse(date, "yyyy-MM-dd", new UTCDate());
     if (isValid(parsedDate)) {
       selectedDate = parsedDate;
     }

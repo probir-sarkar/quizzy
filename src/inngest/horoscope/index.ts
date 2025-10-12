@@ -18,7 +18,7 @@ export const generateHoroscopeFn = inngest.createFunction(
     const nonce = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     let nextDate: Date | null = null;
     if (event.data?.date && isValid(new Date(event.data.date))) {
-      nextDate = startOfDay(event.data.date);
+      nextDate = startOfDay(new UTCDate(event.data.date));
     } else {
       // 1) last saved date (one DB call)
       const last = await prisma.horoscope.findFirst({
@@ -26,7 +26,7 @@ export const generateHoroscopeFn = inngest.createFunction(
         select: { date: true }
       });
       const lastSavedDate = last?.date ?? DEFAULT_START_DATE;
-      nextDate = startOfDay(addDays(lastSavedDate, 1));
+      nextDate = startOfDay(new UTCDate(addDays(lastSavedDate, 1)));
 
       // 2) guard: don't generate too far ahead
       if (differenceInCalendarDays(nextDate, lastSavedDate) > MAX_GENERATION_DAYS) {
@@ -53,6 +53,14 @@ Return only the JSON object. Include nonce: ${nonce}
     const generated = await step.run("generate-horoscope", async () =>
       generateObject({ model: zai("glm-4.5-flash"), prompt, schema: AllZodiacDailySchema })
     );
+    if (!generated.object) {
+      return {
+        ok: false,
+        message: "Failed to generate horoscope",
+        payload: event.data,
+        error: generated.error
+      };
+    }
 
     // 4) map to DB rows
     const rows = Object.entries(generated.object).map(([sign, data]) => ({
