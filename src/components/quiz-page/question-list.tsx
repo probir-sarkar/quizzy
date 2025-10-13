@@ -26,7 +26,7 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.05
       }
     }
   };
@@ -128,7 +128,7 @@ function QuestionCard({
         className="absolute -left-3 -top-3 select-none"
         initial={{ scale: 0, rotate: -180 }}
         animate={{ scale: 1, rotate: 0 }}
-        transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+        transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
       >
         <span className="inline-flex h-8 min-w-8 items-center justify-center rounded-full bg-gray-900 text-white dark:bg-gray-200 dark:text-gray-900 text-sm font-semibold shadow">
           {index + 1}
@@ -140,7 +140,7 @@ function QuestionCard({
         className="mb-4 pr-2 text-base md:text-lg font-semibold text-gray-900 dark:text-gray-100 leading-relaxed"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
+        transition={{ delay: 0.15 }}
       >
         {q.text}
       </motion.h2>
@@ -210,7 +210,7 @@ function QuestionCard({
               disabled={isDisabled}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 + i * 0.1 }}
+              transition={{ delay: 0.2 + i * 0.05 }}
               whileHover={!isDisabled ? { scale: 1.02, x: 5 } : {}}
               whileTap={!isDisabled ? { scale: 0.98 } : {}}
             >
@@ -226,7 +226,7 @@ function QuestionCard({
                     className="ml-auto text-green-600 dark:text-green-400 text-sm font-medium"
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.6 }}
+                    transition={{ delay: 0.3 }}
                   >
                     ✓ Correct
                   </motion.span>
@@ -236,7 +236,7 @@ function QuestionCard({
                     className="ml-auto text-red-600 dark:text-red-400 text-sm font-medium"
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.6 }}
+                    transition={{ delay: 0.3 }}
                   >
                     ✗ Incorrect
                   </motion.span>
@@ -253,7 +253,7 @@ function QuestionCard({
           className="mt-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-white/5 px-4 py-3 text-sm text-gray-700 dark:text-gray-200"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.4 }}
+          transition={{ delay: 0.35, duration: 0.3 }}
         >
           <div className="flex items-start gap-2">
             <motion.svg
