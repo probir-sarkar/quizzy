@@ -26,7 +26,7 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.05
+        staggerChildren: 0.03
       }
     }
   };
@@ -64,7 +64,7 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
 
       {/* Questions List */}
       <motion.ol
-        className="max-w-4xl pl-7 pr-6 space-y-8"
+        className="max-w-4xl pl-4 sm:pl-7 pr-4 sm:pr-6 space-y-6 sm:space-y-8"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -74,7 +74,7 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
             id={`question-${i + 1}`}
             key={q.id}
             variants={itemVariants}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.3 }}
           >
             <QuestionCard
               q={q}
@@ -117,10 +117,10 @@ function QuestionCard({
 
   return (
     <motion.div
-      className="relative rounded-2xl border border-gray-200/70 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-sm p-5 md:p-6"
+      className="relative rounded-2xl border border-gray-200/70 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-sm p-4 sm:p-5 md:p-6"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.3 }}
       whileHover={{ boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}
     >
       {/* number chip */}
@@ -137,7 +137,7 @@ function QuestionCard({
 
       {/* question text */}
       <motion.h2
-        className="mb-4 pr-2 text-base md:text-lg font-semibold text-gray-900 dark:text-gray-100 leading-relaxed"
+        className="mb-3 sm:mb-4 pr-2 text-sm sm:text-base md:text-lg font-semibold text-gray-900 dark:text-gray-100 leading-relaxed"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.15 }}
@@ -156,7 +156,7 @@ function QuestionCard({
 
           // base (light + dark)
           let cls =
-            "w-full text-left px-4 py-2.5 rounded-lg border transition-all duration-300 shadow-sm " +
+            "w-full text-left px-3 sm:px-4 py-2.5 rounded-lg border transition-all duration-200 shadow-sm " +
             "bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 " +
             "border-gray-200 dark:border-gray-700 " +
             "hover:bg-gray-50 dark:hover:bg-white/5 " +
@@ -166,29 +166,29 @@ function QuestionCard({
           if (answered) {
             if (isPicked && isCorrect) {
               cls =
-                "w-full text-left px-4 py-2.5 rounded-lg border shadow-sm transition-all duration-300 " +
+                "w-full text-left px-3 sm:px-4 py-2.5 rounded-lg border shadow-sm transition-all duration-200 " +
                 "bg-green-50 dark:bg-green-900/30 border-green-500 " +
                 "text-green-900 dark:text-green-100";
             } else if (isPicked && !isCorrect) {
               cls =
-                "w-full text-left px-4 py-2.5 rounded-lg border shadow-sm transition-all duration-300 " +
+                "w-full text-left px-3 sm:px-4 py-2.5 rounded-lg border shadow-sm transition-all duration-200 " +
                 "bg-red-50 dark:bg-red-900/30 border-red-500 " +
                 "text-red-900 dark:text-red-100";
             } else if (isCorrect) {
               cls =
-                "w-full text-left px-4 py-2.5 rounded-lg border shadow-sm transition-all duration-300 " +
+                "w-full text-left px-3 sm:px-4 py-2.5 rounded-lg border shadow-sm transition-all duration-200 " +
                 "bg-green-50/70 dark:bg-green-900/20 border-green-400 " +
                 "text-green-900/90 dark:text-green-200";
             } else {
               cls =
-                "w-full text-left px-4 py-2.5 rounded-lg border shadow-sm transition-all duration-300 " +
+                "w-full text-left px-3 sm:px-4 py-2.5 rounded-lg border shadow-sm transition-all duration-200 " +
                 "bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 " +
                 "border-gray-200 dark:border-gray-700 opacity-60 cursor-not-allowed";
             }
           }
 
           // decorative radio dot (light + dark states)
-          const dotBase = "inline-block h-4 w-4 rounded-full border transition-all duration-300";
+          const dotBase = "inline-block h-4 w-4 rounded-full border transition-all duration-200";
           const dotClass = answered
             ? isPicked
               ? isCorrect
@@ -210,7 +210,7 @@ function QuestionCard({
               disabled={isDisabled}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 + i * 0.05 }}
+              transition={{ delay: 0.1 + i * 0.03 }}
               whileHover={!isDisabled ? { scale: 1.02, x: 5 } : {}}
               whileTap={!isDisabled ? { scale: 0.98 } : {}}
             >
@@ -221,27 +221,7 @@ function QuestionCard({
                   transition={{ duration: 0.3 }}
                 />
                 <span>{opt}</span>
-                {answered && isCorrect && (
-                  <motion.span
-                    className="ml-auto text-green-600 dark:text-green-400 text-sm font-medium"
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    ✓ Correct
-                  </motion.span>
-                )}
-                {answered && isPicked && !isCorrect && (
-                  <motion.span
-                    className="ml-auto text-red-600 dark:text-red-400 text-sm font-medium"
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    ✗ Incorrect
-                  </motion.span>
-                )}
-              </span>
+                </span>
             </motion.button>
           );
         })}
@@ -250,10 +230,10 @@ function QuestionCard({
       {/* explanation */}
       {isAnswered && q.explanation && (
         <motion.div
-          className="mt-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-white/5 px-4 py-3 text-sm text-gray-700 dark:text-gray-200"
+          className="mt-3 sm:mt-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-white/5 px-3 sm:px-4 py-3 text-sm text-gray-700 dark:text-gray-200"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.3 }}
+          transition={{ delay: 0.1, duration: 0.2 }}
         >
           <div className="flex items-start gap-2">
             <motion.svg
