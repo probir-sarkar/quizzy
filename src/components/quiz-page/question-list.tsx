@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 import { QuestionType } from "@/queries/home-page";
 import { useEffect } from "react";
 import { useQuizStore } from "@/stores/quiz-store";
@@ -12,14 +12,17 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
   const answers = useQuizStore((state) => state.answers);
   const showResults = useQuizStore((state) => state.showResults);
   const setAnswer = useQuizStore((state) => state.setAnswer);
+  const reset = useQuizStore((state) => state.reset);
 
-  const sortedQuestions = questions
-    .slice()
-    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const sortedQuestions = questions.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
   useEffect(() => {
     setCurrentQuiz(sortedQuestions);
   }, [sortedQuestions, setCurrentQuiz]);
+
+  useEffect(() => {
+    return () => reset();
+  }, [reset]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -42,22 +45,14 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
       <QuizProgressBar />
 
       {/* Header */}
-      <motion.div
-        className="px-6 py-10"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
+      <motion.div className="px-6 py-10" variants={containerVariants} initial="hidden" animate="visible">
         <motion.h2
           className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2"
           variants={itemVariants}
         >
           Quiz Questions
         </motion.h2>
-        <motion.p
-          className="text-gray-600 dark:text-gray-300"
-          variants={itemVariants}
-        >
+        <motion.p className="text-gray-600 dark:text-gray-300" variants={itemVariants}>
           Answer all questions below and test your knowledge.
         </motion.p>
       </motion.div>
@@ -70,19 +65,8 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
         animate="visible"
       >
         {sortedQuestions.map((q, i) => (
-          <motion.li
-            id={`question-${i + 1}`}
-            key={q.id}
-            variants={itemVariants}
-            transition={{ duration: 0.3 }}
-          >
-            <QuestionCard
-              q={q}
-              index={i}
-              selected={answers[i]}
-              onAnswer={setAnswer}
-              showResult={showResults}
-            />
+          <motion.li id={`question-${i + 1}`} key={q.id} variants={itemVariants} transition={{ duration: 0.3 }}>
+            <QuestionCard q={q} index={i} selected={answers[i]} onAnswer={setAnswer} showResult={showResults} />
           </motion.li>
         ))}
       </motion.ol>
@@ -221,7 +205,7 @@ function QuestionCard({
                   transition={{ duration: 0.3 }}
                 />
                 <span>{opt}</span>
-                </span>
+              </span>
             </motion.button>
           );
         })}
@@ -244,7 +228,12 @@ function QuestionCard({
               animate={{ rotate: [0, 5, -5, 0] }}
               transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </motion.svg>
             <span>{q.explanation}</span>
           </div>

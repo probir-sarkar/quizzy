@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { QuestionType } from '@/queries/home-page';
+import { create } from "zustand";
+import { QuestionType } from "@/queries/home-page";
 
 interface QuizState {
   answers: { [key: number]: number };
@@ -13,9 +13,10 @@ interface QuizState {
   resetQuiz: () => void;
   showResultsNow: () => void;
   hideResults: () => void;
+  reset: () => void;
 }
 
-export const useQuizStore = create<QuizState>((set, get) => ({
+export const useQuizStore = create<QuizState>((set, get, store) => ({
   answers: {},
   showResults: false,
   isCompleted: false,
@@ -66,6 +67,9 @@ export const useQuizStore = create<QuizState>((set, get) => ({
 
   hideResults: () => {
     set({ showResults: false });
+  },
+  reset: () => {
+    set(store.getInitialState());
   }
 }));
 
@@ -84,9 +88,7 @@ export const useQuizScore = () => {
   const currentQuiz = useQuizStore((state) => state.currentQuiz);
 
   return (() => {
-    const sortedQuestions = currentQuiz
-      ?.slice()
-      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0)) || [];
+    const sortedQuestions = currentQuiz?.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0)) || [];
 
     let correct = 0;
     sortedQuestions.forEach((question, index) => {

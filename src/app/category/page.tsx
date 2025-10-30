@@ -3,8 +3,14 @@ import Link from "next/link";
 import { Sparkles, ChevronLeft } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "All Quiz Categories - Quizzy",
+  description: "Explore all quiz categories and test your knowledge across various topics. From science to pop culture, find quizzes that match your interests and challenge yourself.",
+};
 
 const getCategories = unstable_cache(
   async () => {

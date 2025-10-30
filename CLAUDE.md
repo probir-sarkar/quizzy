@@ -131,6 +131,15 @@ public/
 - Dynamic theming with gradient effects and glass morphism design
 - Zodiac sign information with symbols, elements, and color-coded accents
 
+**Quiz Component Optimizations:**
+- Clean interface with color-coded feedback (green for correct, red for incorrect)
+- Removed text labels ("Correct"/"Incorrect") for cleaner visual design
+- Mobile-optimized layout with responsive padding and spacing
+- Fast animations: reduced explanation delay from 350ms to 100ms
+- Performance improvements: 200ms transitions and optimized staggered animations
+- Fixed layout shifting issues with stable component sizing
+- Touch-friendly interactions optimized for mobile devices
+
 **Deployment:**
 - Docker multi-stage builds with Bun runtime
 - Standalone output configuration for container efficiency
@@ -176,6 +185,14 @@ Key environment variables for development:
 3. Update database queries in `src/queries/horoscope.ts`
 4. Refresh zodiac sign information in the main page component
 5. Test date navigation and caching behavior
+
+**When modifying quiz components:**
+1. Main quiz component located at `src/components/quiz-page/question-list.tsx`
+2. Color-coded feedback system: use green-*/red-* color variants for answer states
+3. Keep animations fast: use duration-200 for transitions and minimal delays
+4. Maintain mobile-first responsive design with `sm:` breakpoints
+5. Test layout stability across different screen sizes
+6. Avoid text labels for feedback - rely on colors and visual indicators only
 
 **Cache Management:**
 - Use `unstable_cache` for expensive database queries
