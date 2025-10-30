@@ -81,7 +81,6 @@ model Question {
   options      String[]
   correctIndex Int
   explanation  String?
-  order        Int      @default(0)
   createdAt    DateTime @default(now())
   quiz         Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
 }
