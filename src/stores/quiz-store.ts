@@ -85,19 +85,17 @@ export const useQuizProgress = () => {
 
 export const useQuizScore = () => {
   const answers = useQuizStore((state) => state.answers);
-  const currentQuiz = useQuizStore((state) => state.currentQuiz);
+  const currentQuiz = useQuizStore((state) => state.currentQuiz) || [];
 
   return (() => {
-    const sortedQuestions = currentQuiz?.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0)) || [];
-
     let correct = 0;
-    sortedQuestions.forEach((question, index) => {
+    currentQuiz.forEach((question, index) => {
       if (answers[index] === question.correctIndex) {
         correct++;
       }
     });
 
-    const total = sortedQuestions.length;
+    const total = currentQuiz.length;
     const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
 
     return { correct, total, percentage };

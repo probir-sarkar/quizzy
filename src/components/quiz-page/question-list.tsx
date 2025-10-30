@@ -14,11 +14,9 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
   const setAnswer = useQuizStore((state) => state.setAnswer);
   const reset = useQuizStore((state) => state.reset);
 
-  const sortedQuestions = questions.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-
   useEffect(() => {
-    setCurrentQuiz(sortedQuestions);
-  }, [sortedQuestions, setCurrentQuiz]);
+    setCurrentQuiz(questions);
+  }, [questions, setCurrentQuiz]);
 
   useEffect(() => {
     return () => reset();
@@ -64,7 +62,7 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
         initial="hidden"
         animate="visible"
       >
-        {sortedQuestions.map((q, i) => (
+        {questions.map((q, i) => (
           <motion.li id={`question-${i + 1}`} key={q.id} variants={itemVariants} transition={{ duration: 0.3 }}>
             <QuestionCard q={q} index={i} selected={answers[i]} onAnswer={setAnswer} showResult={showResults} />
           </motion.li>
