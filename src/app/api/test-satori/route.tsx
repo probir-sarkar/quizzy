@@ -43,7 +43,6 @@ export async function GET(req: Request) {
       images: generatedImages.map(img => ({
         zodiacSign: img.zodiacSign,
         filename: img.filename,
-        filepath: img.filepath,
         date: format(img.date, "yyyy-MM-dd")
       }))
     });
