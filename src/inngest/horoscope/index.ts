@@ -13,7 +13,7 @@ const MAX_GENERATION_DAYS = 730;
 
 export const generateHoroscopeFn = inngest.createFunction(
   { id: "generate-horoscope", retries: 0 },
-  [{ event: "manual/generate-horoscope" }, { cron: "*/5 * * * *" }],
+  [{ event: "manual/generate-horoscope" }],
   async ({ event, step }) => {
     const nonce = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     let nextDate: Date | null = null;

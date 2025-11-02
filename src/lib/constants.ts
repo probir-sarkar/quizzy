@@ -76,3 +76,4 @@ export const zodiacSigns = [
     element: { name: "Water", icon: "💧" }
   }
 ];
+

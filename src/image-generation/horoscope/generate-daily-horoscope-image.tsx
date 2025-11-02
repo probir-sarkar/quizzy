@@ -1,4 +1,4 @@
-import { getAllHoroscopesForDate } from "@/queries/horoscope";
+import { getAllHoroscopesForDate, HoroscopeData } from "@/queries/horoscope";
 import { UTCDate } from "@date-fns/utc";
 import { format } from "date-fns";
 import { getHoroscopeImageKey, uploadToS3 } from "@/lib/s3";
@@ -47,7 +47,8 @@ const generateAndSaveHoroscopeImage = async (date: Date): Promise<GeneratedHoros
           zodiacSign: horoscope.zodiacSign,
           s3Key,
           filename,
-          date: horoscope.date
+          date: horoscope.date,
+          horoscope: horoscope
         });
 
         console.log(`Generated and uploaded horoscope image to S3: ${s3Key}`);
@@ -72,4 +73,5 @@ export type GeneratedHoroscopeImage = {
   s3Key: string;
   filename: string;
   date: Date;
+  horoscope: HoroscopeData;
 };
