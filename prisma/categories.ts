@@ -1,11 +1,37 @@
 export const categories = [
   {
     category: "General Knowledge",
-    subcategories: ["Current Affairs", "World Records", "Famous Personalities", "Inventions", "Awards & Honors"]
+    subcategories: [
+      "Current Affairs",
+      "World Records",
+      "Famous Personalities",
+      "Inventions",
+      "Awards & Honors",
+      "Geography Facts",
+      "Important Days",
+      "Historical Milestones",
+      "Science Discoveries",
+      "Global Organizations",
+      "Human Achievements",
+      "Random Facts"
+    ]
   },
   {
     category: "Science & Nature",
-    subcategories: ["Biology", "Chemistry", "Physics", "Earth Science", "Environmental Science", "Astronomy"]
+    subcategories: [
+      "Biology",
+      "Chemistry",
+      "Physics",
+      "Earth Science",
+      "Environmental Science",
+      "Astronomy",
+      "Genetics",
+      "Human Anatomy",
+      "Scientific Instruments",
+      "Scientific Laws & Theories",
+      "Evolution & Life",
+      "Science in Everyday Life"
+    ]
   },
   {
     category: "Technology & Programming",
@@ -15,7 +41,13 @@ export const categories = [
       "Hardware",
       "Internet & Web",
       "Artificial Intelligence",
-      "Cybersecurity"
+      "Cybersecurity",
+      "Data Science",
+      "Machine Learning",
+      "Cloud Computing",
+      "Blockchain",
+      "Quantum Computing",
+      "Programming Languages"
     ]
   },
   {
@@ -26,7 +58,13 @@ export const categories = [
       "Modern History",
       "World Wars",
       "Civilizations",
-      "Historical Figures"
+      "Historical Figures",
+      "Colonialism",
+      "Revolutions",
+      "Empires & Dynasties",
+      "Trade Routes",
+      "Inventions in History",
+      "World Heritage"
     ]
   },
   {
@@ -37,16 +75,48 @@ export const categories = [
       "Human Geography",
       "Maps & Globes",
       "Natural Resources",
-      "Climate & Weather"
+      "Climate & Weather",
+      "Oceans & Seas",
+      "Mountains & Rivers",
+      "Geopolitics",
+      "Deserts & Forests",
+      "World Borders",
+      "Continents & Regions"
     ]
   },
   {
     category: "Sports",
-    subcategories: ["Football (Soccer)", "Basketball", "Cricket", "Tennis", "Olympics", "Extreme Sports"]
+    subcategories: [
+      "Football (Soccer)",
+      "Basketball",
+      "Cricket",
+      "Tennis",
+      "Olympics",
+      "Extreme Sports",
+      "Athletics",
+      "Esports",
+      "Motorsports",
+      "Sports Rules & Records",
+      "Famous Athletes",
+      "Winter Sports"
+    ]
   },
   {
     category: "Mathematics & Logic",
-    subcategories: ["Algebra", "Geometry", "Calculus", "Statistics", "Logic Puzzles", "Number Theory"]
+    subcategories: [
+      "Algebra",
+      "Geometry",
+      "Calculus",
+      "Statistics",
+      "Logic Puzzles",
+      "Number Theory",
+      "Probability",
+      "Trigonometry",
+      "Mathematical Constants",
+      "Mathematical History",
+      "Brain Teasers",
+      "Patterns & Sequences"
+    ]
   },
   {
     category: "Mythology & Philosophy",
@@ -56,20 +126,65 @@ export const categories = [
       "Norse Mythology",
       "Eastern Philosophy",
       "Western Philosophy",
-      "Ethics"
+      "Ethics",
+      "Mythical Creatures",
+      "Philosophers & Thinkers",
+      "Spiritual Beliefs",
+      "Creation Myths",
+      "Moral Dilemmas",
+      "Religious Philosophy"
     ]
   },
   {
     category: "Movies & TV",
-    subcategories: ["Hollywood", "International Cinema", "TV Series", "Animation", "Directors & Actors", "Film Genres"]
+    subcategories: [
+      "Hollywood",
+      "International Cinema",
+      "TV Series",
+      "Animation",
+      "Directors & Actors",
+      "Film Genres",
+      "Film Awards",
+      "Cinematography",
+      "Streaming Platforms",
+      "Screenwriting",
+      "Documentaries",
+      "Classic Films"
+    ]
   },
   {
     category: "Music",
-    subcategories: ["Classical Music", "Pop Music", "Rock Music", "Jazz & Blues", "World Music", "Musical Instruments"]
+    subcategories: [
+      "Classical Music",
+      "Pop Music",
+      "Rock Music",
+      "Jazz & Blues",
+      "World Music",
+      "Musical Instruments",
+      "Music Theory",
+      "Composers & Artists",
+      "Music Awards",
+      "Genres & Styles",
+      "Electronic Music",
+      "Cultural Music Traditions"
+    ]
   },
   {
     category: "Arts & Literature",
-    subcategories: ["Painting", "Sculpture", "Literature", "Art Movements", "Famous Artists", "Literary Devices"]
+    subcategories: [
+      "Painting",
+      "Sculpture",
+      "Literature",
+      "Art Movements",
+      "Famous Artists",
+      "Literary Devices",
+      "Poetry",
+      "Novels & Authors",
+      "Modern Art",
+      "Museums & Galleries",
+      "Classic Literature",
+      "Art Techniques"
+    ]
   },
   {
     category: "Food & Culture",
@@ -79,109 +194,31 @@ export const categories = [
       "Food History",
       "Cultural Traditions",
       "Festivals",
-      "Beverages"
+      "Beverages",
+      "Regional Dishes",
+      "Street Food",
+      "Culinary Arts",
+      "Nutrition & Diets",
+      "Food Science",
+      "Gastronomy"
     ]
   },
   {
-    category: "Entertainment",
-    subcategories: ["Games", "Comics", "Magic & Illusion", "Circus", "Theme Parks", "Toys"]
-  },
-  {
-    category: "Travel & Places",
+    category: "Technology Trends",
     subcategories: [
-      "Tourist Destinations",
-      "World Heritage Sites",
-      "Travel Tips",
-      "Transportation",
-      "Accommodation",
-      "Adventure Travel"
+      "Artificial Intelligence",
+      "Internet of Things (IoT)",
+      "5G & Connectivity",
+      "Virtual Reality",
+      "Augmented Reality",
+      "Autonomous Vehicles",
+      "Wearable Tech",
+      "Cybersecurity",
+      "Blockchain",
+      "Edge Computing",
+      "Space Tech",
+      "Digital Twins"
     ]
-  },
-  {
-    category: "Lifestyle & Hobbies",
-    subcategories: ["Fitness & Health", "Gardening", "Photography", "Crafts", "Pets", "Fashion"]
-  },
-  {
-    category: "English Grammar",
-    subcategories: [
-      "Parts of Speech",
-      "Tenses",
-      "Sentence Structure",
-      "Punctuation",
-      "Common Errors",
-      "Advanced Grammar"
-    ]
-  },
-  {
-    category: "Vocabulary Builder",
-    subcategories: [
-      "Synonyms & Antonyms",
-      "Word Origins",
-      "Prefixes & Suffixes",
-      "Difficult Words",
-      "Business Vocabulary",
-      "Academic Vocabulary"
-    ]
-  },
-  {
-    category: "Idioms & Phrases",
-    subcategories: ["Common Idioms", "Proverbs", "Phrasal Verbs", "Sayings", "Slang", "Expressions"]
-  },
-  {
-    category: "Fun Facts",
-    subcategories: [
-      "Animal Facts",
-      "Space Facts",
-      "Historical Facts",
-      "Science Facts",
-      "Human Body Facts",
-      "Nature Facts"
-    ]
-  },
-  {
-    category: "Riddles & Brain Teasers",
-    subcategories: [
-      "Logic Riddles",
-      "Math Riddles",
-      "Word Puzzles",
-      "Lateral Thinking",
-      "Trivia Teasers",
-      "Pattern Recognition"
-    ]
-  },
-  {
-    category: "Business & Finance",
-    subcategories: ["Economics", "Accounting", "Marketing", "Management", "Personal Finance", "Stock Market"]
-  },
-  {
-    category: "Health & Medicine",
-    subcategories: [
-      "Human Body",
-      "Diseases & Disorders",
-      "Nutrition",
-      "Mental Health",
-      "Medical History",
-      "Healthcare Systems"
-    ]
-  },
-  {
-    category: "Politics & Government",
-    subcategories: [
-      "Political Systems",
-      "International Relations",
-      "Law",
-      "Human Rights",
-      "Elections",
-      "Political Ideologies"
-    ]
-  },
-  {
-    category: "Religion",
-    subcategories: ["Christianity", "Islam", "Hinduism", "Buddhism", "Judaism", "Comparative Religion"]
-  },
-  {
-    category: "Environment",
-    subcategories: ["Climate Change", "Conservation", "Pollution", "Renewable Energy", "Ecosystems", "Sustainability"]
   },
   {
     category: "Space & Astronomy",
@@ -191,233 +228,115 @@ export const categories = [
       "Space Exploration",
       "Astronauts",
       "Space Missions",
-      "Astrophysics"
+      "Astrophysics",
+      "Cosmology",
+      "Black Holes",
+      "Telescopes & Observations",
+      "Planets & Moons",
+      "Comets & Asteroids",
+      "Universe Origins"
     ]
   },
   {
-    category: "Engineering",
+    category: "Health & Medicine",
     subcategories: [
-      "Civil Engineering",
-      "Mechanical Engineering",
-      "Electrical Engineering",
-      "Chemical Engineering",
-      "Aerospace Engineering",
-      "Biomedical Engineering"
+      "Human Body",
+      "Diseases & Disorders",
+      "Nutrition",
+      "Mental Health",
+      "Medical History",
+      "Healthcare Systems",
+      "Vaccines & Immunology",
+      "First Aid",
+      "Medical Technology",
+      "Public Health",
+      "Alternative Medicine",
+      "Anatomy & Physiology"
     ]
   },
   {
-    category: "Animals & Wildlife",
+    category: "Business & Finance",
     subcategories: [
-      "Mammals",
-      "Birds",
-      "Reptiles & Amphibians",
-      "Fish & Marine Life",
-      "Insects & Invertebrates",
-      "Endangered Species"
+      "Economics",
+      "Accounting",
+      "Marketing",
+      "Management",
+      "Personal Finance",
+      "Stock Market",
+      "Entrepreneurship",
+      "Startups",
+      "Banking Systems",
+      "E-commerce",
+      "Corporate Strategy",
+      "Business Ethics"
     ]
   },
   {
-    category: "Plants & Agriculture",
-    subcategories: ["Botany", "Crop Science", "Horticulture", "Forestry", "Farming Techniques", "Plant Diseases"]
-  },
-  {
-    category: "Education",
+    category: "Artificial Intelligence & Machine Learning",
     subcategories: [
-      "Educational Systems",
-      "Learning Theories",
-      "Teaching Methods",
-      "Educational Psychology",
-      "Academic Subjects",
-      "Study Skills"
-    ]
-  },
-  {
-    category: "Social Sciences",
-    subcategories: ["Psychology", "Sociology", "Anthropology", "Archaeology", "Cultural Studies", "Demographics"]
-  },
-  {
-    category: "Communication",
-    subcategories: [
-      "Mass Media",
-      "Journalism",
-      "Public Speaking",
-      "Writing Skills",
-      "Non-verbal Communication",
-      "Digital Communication"
-    ]
-  },
-  {
-    category: "Safety & First Aid",
-    subcategories: [
-      "Emergency Procedures",
-      "First Aid Techniques",
-      "Safety at Home",
-      "Workplace Safety",
-      "Natural Disaster Safety",
-      "Health Regulations"
-    ]
-  },
-  {
-    category: "Automotive",
-    subcategories: [
-      "Car Brands & Models",
-      "Car Maintenance",
-      "Driving Rules",
-      "Racing",
-      "Future of Automotive",
-      "History of Automobiles"
-    ]
-  },
-  {
-    category: "Aviation",
-    subcategories: [
-      "Aircraft Types",
-      "Aviation History",
-      "Airlines",
-      "Air Traffic Control",
-      "Flight Mechanics",
-      "Famous Pilots"
-    ]
-  },
-  {
-    category: "Maritime",
-    subcategories: ["Ships & Boats", "Navigation", "Oceanography", "Maritime History", "Ports & Harbors", "Marine Life"]
-  },
-  {
-    category: "Fashion & Design",
-    subcategories: ["Fashion History", "Designers", "Clothing Styles", "Textiles", "Accessories", "Fashion Industry"]
-  },
-  {
-    category: "Beauty & Personal Care",
-    subcategories: ["Skincare", "Haircare", "Makeup", "Personal Hygiene", "Wellness", "Beauty Industry"]
-  },
-  {
-    category: "Home & Garden",
-    subcategories: [
-      "Interior Design",
-      "Home Maintenance",
-      "Gardening Techniques",
-      "Pest Control",
-      "Home Appliances",
-      "DIY Projects"
-    ]
-  },
-  {
-    category: "Relationships & Family",
-    subcategories: [
-      "Family Dynamics",
-      "Friendship",
-      "Marriage",
-      "Parenting",
-      "Communication in Relationships",
-      "Conflict Resolution"
-    ]
-  },
-  {
-    category: "Self-Improvement",
-    subcategories: [
-      "Goal Setting",
-      "Time Management",
-      "Motivation",
-      "Confidence Building",
-      "Stress Management",
-      "Personal Development"
-    ]
-  },
-  {
-    category: "Cryptography & Codes",
-    subcategories: [
-      "Historical Codes",
-      "Encryption Methods",
-      "Code Breaking",
-      "Cryptographic Algorithms",
-      "Cybersecurity",
-      "Steganography"
-    ]
-  },
-  {
-    category: "Architecture",
-    subcategories: [
-      "Architectural Styles",
-      "Famous Buildings",
-      "Architects",
-      "Urban Planning",
-      "Building Materials",
-      "Sustainable Architecture"
-    ]
-  },
-  {
-    category: "Energy",
-    subcategories: [
-      "Fossil Fuels",
-      "Nuclear Energy",
-      "Renewable Energy Sources",
-      "Energy Conservation",
-      "Power Generation",
-      "Energy Policy"
-    ]
-  },
-  {
-    category: "Materials Science",
-    subcategories: ["Metals", "Ceramics", "Polymers", "Composites", "Material Properties", "Applications"]
-  },
-  {
-    category: "Robotics",
-    subcategories: [
-      "Robot Types",
-      "Robot Components",
+      "Neural Networks",
+      "Deep Learning",
+      "Natural Language Processing",
+      "Computer Vision",
+      "Reinforcement Learning",
+      "AI Ethics",
+      "Generative AI",
+      "AI Applications",
+      "Data Labeling",
       "AI in Robotics",
-      "Industrial Robots",
-      "Medical Robots",
-      "Future of Robotics"
+      "Machine Learning Algorithms",
+      "AI History"
     ]
   },
   {
-    category: "Virtual Reality & Augmented Reality",
-    subcategories: ["VR Technology", "AR Technology", "Applications", "Devices", "Development", "Future Trends"]
-  },
-  {
-    category: "3D Printing",
+    category: "Environment",
     subcategories: [
-      "3D Printing Technologies",
-      "Materials",
-      "Applications",
-      "Design for 3D Printing",
-      "Industry Impact",
-      "Future of 3D Printing"
+      "Climate Change",
+      "Conservation",
+      "Pollution",
+      "Renewable Energy",
+      "Ecosystems",
+      "Sustainability",
+      "Wildlife Protection",
+      "Environmental Policies",
+      "Recycling & Waste",
+      "Green Technology",
+      "Forests & Oceans",
+      "Biodiversity"
     ]
   },
   {
-    category: "Biotechnology",
+    category: "Psychology & Mind",
     subcategories: [
-      "Genetic Engineering",
-      "Biomedical Applications",
-      "Agricultural Biotechnology",
-      "Industrial Biotechnology",
-      "Bioinformatics",
-      "Ethical Issues"
+      "Cognitive Psychology",
+      "Behavioral Psychology",
+      "Personality Theories",
+      "Emotional Intelligence",
+      "Dreams & Consciousness",
+      "Psychological Disorders",
+      "Memory & Perception",
+      "Motivation & Learning",
+      "Social Psychology",
+      "Developmental Psychology",
+      "Positive Psychology",
+      "Neuropsychology"
     ]
   },
   {
-    category: "Nanotechnology",
+    category: "Future & Innovation",
     subcategories: [
-      "Nanomaterials",
-      "Applications",
-      "Nanomedicine",
-      "Nanoelectronics",
-      "Environmental Impact",
-      "Future Prospects"
-    ]
-  },
-  {
-    category: "Quantum Physics",
-    subcategories: [
-      "Quantum Mechanics",
-      "Quantum Computing",
-      "Quantum Theory",
-      "Particle Physics",
-      "Quantum Applications",
-      "Famous Experiments"
+      "Space Colonization",
+      "Quantum Internet",
+      "Transhumanism",
+      "AI Governance",
+      "Climate Engineering",
+      "Futuristic Architecture",
+      "Smart Cities",
+      "Robotic Automation",
+      "Neural Interfaces",
+      "Metaverse Economy",
+      "Longevity Science",
+      "Future Energy Sources"
     ]
   }
 ];
