@@ -28,5 +28,5 @@ export async function getAllHoroscopesForDate(date: Date) {
   });
 }
 
-export type HoroscopeData = Awaited<ReturnType<typeof getHoroscopeBySignAndDate>>;
+export type HoroscopeData = NonNullable<Awaited<ReturnType<typeof getHoroscopeBySignAndDate>>>;
 export type AllHoroscopesData = Awaited<ReturnType<typeof getAllHoroscopesForDate>>;
