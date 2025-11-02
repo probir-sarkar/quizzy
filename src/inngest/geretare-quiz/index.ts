@@ -9,12 +9,6 @@ import { NonRetriableError } from "inngest";
 
 type Difficulty = "easy" | "medium" | "hard";
 
-const difficultyModelMap: Record<Difficulty, string> = {
-  easy: "meta-llama/llama-4-scout-17b-16e-instruct",
-  medium: "meta-llama/llama-4-maverick-17b-128e-instruct",
-  hard: "openai/gpt-oss-120b"
-};
-
 function randomDifficulty(): Difficulty {
   const values: Difficulty[] = ["easy", "medium", "hard"];
   return values[Math.floor(Math.random() * values.length)];
@@ -64,7 +58,7 @@ export const generateQuizFn = inngest.createFunction(
     // STEP 1: Generate quiz JSON
     const { object: quizDoc } = await step.run("generate-quiz-json", async () =>
       generateObject({
-        model: groq(difficultyModelMap[difficulty]),
+        model: groq("openai/gpt-oss-120b"),
         schema: QuizDoc,
         system: `Strict JSON only. No markdown. No extra commentary.`,
         prompt: `
