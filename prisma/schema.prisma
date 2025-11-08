@@ -121,3 +121,58 @@ model Horoscope {
 
   @@unique([zodiacSign, date]) // ensure one horoscope per sign per day
 }
+
+// For Past Events
+
+enum EventCategory {
+  war
+  discovery
+  politics
+  science
+  art
+  sports
+  technology
+  medicine
+  exploration
+  literature
+  music
+  economy
+  religion
+  disaster
+  revolution
+  invention
+}
+
+model PastEvent {
+  id Int @id @default(autoincrement())
+
+  // Core date (signed year -> allow BCE like -44 = 44 BCE)
+  month Int // 1-12
+  day   Int // 1-31
+  year  Int // e.g., 1969, 1776, -44 for BCE
+
+  // Optional full event date for date-based queries
+  eventDate DateTime? // Combined date for easier querying, can handle BCE dates as needed
+
+  // Content
+  title       String
+  slug        String // generated from title+year for stable upsert
+  description String
+  category    EventCategory
+
+  // AI-friendly extras
+  tags       String[] @default([]) // free-form keywords
+  sourceUrls String[] @default([]) // citations for regeneration/debug
+  metadata   Json? // raw AI JSON, scores, etc.
+
+  // Ops
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([month, day, year, slug]) // idempotent upsert per date+slug
+  @@index([month, day])
+  @@index([category])
+  @@index([month, day, category])
+  @@index([eventDate])
+}

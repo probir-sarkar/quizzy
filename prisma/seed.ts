@@ -1,9 +1,7 @@
 import { PrismaClient } from "@/generated/prisma/client";
 import { kebabCase } from "es-toolkit";
 import { categories } from "./categories";
-
-const prisma = new PrismaClient();
-
+import prisma from "@/lib/prisma";
 type InputCategory = {
   category: string;
   subcategories: string[];
