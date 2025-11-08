@@ -3,7 +3,9 @@
     "allow": [
       "Bash(bun dev)",
       "Bash(bun run build)",
-      "Bash(bun add:*)"
+      "Bash(bun add:*)",
+      "Bash(bun run prisma:generate)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

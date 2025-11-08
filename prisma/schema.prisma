@@ -151,6 +151,9 @@ model PastEvent {
   day   Int // 1-31
   year  Int // e.g., 1969, 1776, -44 for BCE
 
+  // Optional full event date for date-based queries
+  eventDate DateTime? // Combined date for easier querying, can handle BCE dates as needed
+
   // Content
   title       String
   slug        String // generated from title+year for stable upsert
@@ -171,4 +174,5 @@ model PastEvent {
   @@index([month, day])
   @@index([category])
   @@index([month, day, category])
+  @@index([eventDate])
 }
