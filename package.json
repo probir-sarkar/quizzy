@@ -19,6 +19,7 @@
     "@prisma/adapter-pg": "^6.17.0",
     "@prisma/client": "^6.16.2",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
+    "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.3",
     "ai": "^5.0.56",
     "axios": "^1.12.2",

@@ -5,7 +5,8 @@
       "Bash(bun run build)",
       "Bash(bun add:*)",
       "Bash(bun run prisma:generate)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
