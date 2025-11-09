@@ -1,6 +1,6 @@
 "use client";
 
-import { Sparkles, Menu, X, Home, BookOpen, Star, Gamepad2, ChevronDown } from "lucide-react";
+import { Sparkles, Menu, X, Home, BookOpen, Star, ChevronDown, Calendar } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -17,8 +17,8 @@ const Navbar = () => {
   const navigationItems = [
     { href: "/", label: "Home", icon: Home },
     { href: "/category", label: "Quiz Categories", icon: BookOpen },
-    { href: "/horoscope", label: "Horoscope", icon: Star }
-    // { href: "/quiz", label: "Quizzes", icon: Gamepad2 },
+    { href: "/horoscope", label: "Horoscope", icon: Star },
+    { href: "/this-day-in-history", label: "This Day in History", icon: Calendar }
   ];
 
   const toggleMobileMenu = () => {
