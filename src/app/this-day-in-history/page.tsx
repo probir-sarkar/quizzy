@@ -140,15 +140,12 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
         ) : (
           <div className="space-y-4 sm:space-y-6">
             <div className="grid gap-4 sm:gap-6">
-              {events.map((event, index) => {
+              {events.map((event) => {
                 const categoryData = getCategoryData(event.category);
                 return (
                   <div
                     key={event.id}
-                    className="group relative bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200/50 dark:border-slate-700/50 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 ease-out animate-fadeInUp"
-                    style={{
-                      animationDelay: `${index * 50}ms`
-                    }}
+                    className="group relative bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200/50 dark:border-slate-700/50 overflow-hidden hover:shadow-xl transition-shadow duration-200"
                   >
                     {/* Accent Border */}
                     <div className={`absolute left-0 top-0 bottom-0 w-1 ${categoryData.bg}`} />
