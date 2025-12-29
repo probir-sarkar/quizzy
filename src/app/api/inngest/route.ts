@@ -10,5 +10,5 @@ import { generatePastEvent } from "@/inngest/past-events/generate-past-event";
 // Create an API that serves zero functions
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [helloWorld, generateQuizFn, socialMediaShare, generateHoroscopeFn, shareHoroscope,generatePastEvent]
+  functions: [generateQuizFn]
 });
