@@ -1,11 +1,12 @@
 import { inngest } from "../client";
-import { groq } from "@ai-sdk/groq";
+import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { generateObject } from "ai";
 import prisma from "@/lib/prisma";
 import { kebabCase } from "es-toolkit";
 import { QuizDoc } from "./schema";
 import { format } from "date-fns";
 import { NonRetriableError } from "inngest";
+import { model } from "@/lib/ai-models";
 
 type Difficulty = "easy" | "medium" | "hard";
 
@@ -60,23 +61,23 @@ export const generateQuizFn = inngest.createFunction(
       const existingQuizzes = await prisma.quiz.findMany({
         where: {
           categoryId: category.id,
-          subCategoryId: subCategory.id,
+          subCategoryId: subCategory.id
         },
         select: {
           title: true,
           quizPageTitle: true,
           description: true,
-          quizPageDescription: true,
+          quizPageDescription: true
         },
-        take: 10, // Get recent titles to avoid
+        take: 10 // Get recent titles to avoid
       });
 
       return {
-        existingTitles: existingQuizzes.map(quiz => ({
+        existingTitles: existingQuizzes.map((quiz) => ({
           title: quiz.title,
           quizPageTitle: quiz.quizPageTitle,
           description: quiz.description,
-          quizPageDescription: quiz.quizPageDescription,
+          quizPageDescription: quiz.quizPageDescription
         }))
       };
     });
@@ -84,7 +85,7 @@ export const generateQuizFn = inngest.createFunction(
     // STEP 1: Generate quiz JSON
     const { object: quizDoc } = await step.run("generate-quiz-json", async () =>
       generateObject({
-        model: groq("openai/gpt-oss-120b"),
+        model: model,
         schema: QuizDoc,
         system: `Strict JSON only. No markdown. No extra commentary.`,
         prompt: `
@@ -98,10 +99,16 @@ Additional context (for freshness): Today is ${today}.
 Nonce: ${nonce}
 
 EXISTING TITLES TO AVOID (prevent duplicates and confusion):
-${existingTitles.length > 0
-  ? existingTitles.map((t, i) =>
-      `${i + 1}. Title: "${t.title}" | Quiz Page Title: "${t.quizPageTitle}" | Description: "${t.description}"`).join('\n')
-  : "No existing titles in this category/subcategory"}
+${
+  existingTitles.length > 0
+    ? existingTitles
+        .map(
+          (t, i) =>
+            `${i + 1}. Title: "${t.title}" | Quiz Page Title: "${t.quizPageTitle}" | Description: "${t.description}"`
+        )
+        .join("\n")
+    : "No existing titles in this category/subcategory"
+}
 
 Hard rules:
 - Provide "quizPageTitle", "quizPageDescription", "tags".

@@ -1,12 +1,11 @@
 import { inngest } from "../client";
-import { google } from "@ai-sdk/google";
 import { generateObject } from "ai";
 import { addDays, format, startOfDay, differenceInCalendarDays, isValid } from "date-fns";
 import { UTCDate } from "@date-fns/utc";
 import { AllZodiacDailySchema } from "./schema";
 import prisma from "@/lib/prisma";
 import { ZodiacSign } from "@/generated/prisma/enums";
-import { zai } from "@/lib/ai-models";
+import { model } from "@/lib/ai-models";
 
 const DEFAULT_START_DATE = new UTCDate(2025, 0, 1);
 const MAX_GENERATION_DAYS = 730;
@@ -51,7 +50,7 @@ Return only the JSON object. Include nonce: ${nonce}
 `.trim();
 
     const generated = await step.run("generate-horoscope", async () =>
-      generateObject({ model: zai("glm-4.5-flash"), prompt, schema: AllZodiacDailySchema })
+      generateObject({ model: model, prompt, schema: AllZodiacDailySchema })
     );
     if (!generated.object) {
       return {
