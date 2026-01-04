@@ -4,6 +4,7 @@ import HeroSection from "@/components/home-page/hero-section";
 import QuizListing from "@/components/home-page/quiz-listing";
 import SearchSection from "@/components/home-page/search-section";
 import { getHomePageData } from "@/queries/home-page";
+import { getStats } from "@/queries/stats";
 import { unstable_cache } from "next/cache";
 
 export const dynamic = "force-dynamic";
@@ -12,17 +13,22 @@ const homePage = unstable_cache(
   async () => {
     return getHomePageData();
   },
-  ['home-page'],
+  ["home-page"],
   {
     revalidate: 3600
   }
 );
+
 export default async function Home() {
-  const data = await homePage();
+  const [data, stats] = await Promise.all([homePage(), getStats()]);
 
   return (
     <>
-      <HeroSection />
+      <HeroSection
+        totalQuizzes={stats.totalQuizzes}
+        totalCategories={stats.totalCategories}
+        totalSubCategories={stats.totalSubCategories}
+      />
       {/* <SearchSection /> */}
       <CategoryFilters />
       {data.map((cat) => (
