@@ -10,8 +10,6 @@
     "prisma:generate": "prisma generate"
   },
   "dependencies": {
-    "@ai-sdk/google": "^2.0.20",
-    "@ai-sdk/groq": "^2.0.22",
     "@ai-sdk/openai-compatible": "^1.0.19",
     "@aws-sdk/client-s3": "^3.922.0",
     "@date-fns/utc": "^2.1.1",

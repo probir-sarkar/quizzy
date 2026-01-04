@@ -1,10 +1,10 @@
 import { inngest } from "../client";
 import prisma from "@/lib/prisma";
-import { groq } from "@ai-sdk/groq";
 import { generateObject } from "ai";
 import { z } from "zod";
 import { kebabCase } from "es-toolkit";
 import { addDays } from "date-fns";
+import { model } from "@/lib/ai-models";
 
 const BASE_LEAP_YEAR = 2024; // keeps Feb 29 in cycle
 
@@ -71,7 +71,7 @@ export const generatePastEvent = inngest.createFunction(
     // 4️⃣ Generate event via Groq
     const { object } = await step.run("groq-generate", async () => {
       const { object } = await generateObject({
-        model: groq("openai/gpt-oss-120b"),
+        model: model,
         schema: EventSchema,
         prompt: `You are an expert historical data generator.
 
