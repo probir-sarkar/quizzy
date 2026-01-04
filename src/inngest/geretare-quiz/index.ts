@@ -55,6 +55,32 @@ export const generateQuizFn = inngest.createFunction(
       return { category: pickedCategory, subCategory: pickedSub };
     });
 
+    // STEP 0.5: Fetch existing titles to avoid duplicates
+    const { existingTitles } = await step.run("fetch-existing-titles", async () => {
+      const existingQuizzes = await prisma.quiz.findMany({
+        where: {
+          categoryId: category.id,
+          subCategoryId: subCategory.id,
+        },
+        select: {
+          title: true,
+          quizPageTitle: true,
+          description: true,
+          quizPageDescription: true,
+        },
+        take: 10, // Get recent titles to avoid
+      });
+
+      return {
+        existingTitles: existingQuizzes.map(quiz => ({
+          title: quiz.title,
+          quizPageTitle: quiz.quizPageTitle,
+          description: quiz.description,
+          quizPageDescription: quiz.quizPageDescription,
+        }))
+      };
+    });
+
     // STEP 1: Generate quiz JSON
     const { object: quizDoc } = await step.run("generate-quiz-json", async () =>
       generateObject({
@@ -71,6 +97,12 @@ Question count: ${count}
 Additional context (for freshness): Today is ${today}.
 Nonce: ${nonce}
 
+EXISTING TITLES TO AVOID (prevent duplicates and confusion):
+${existingTitles.length > 0
+  ? existingTitles.map((t, i) =>
+      `${i + 1}. Title: "${t.title}" | Quiz Page Title: "${t.quizPageTitle}" | Description: "${t.description}"`).join('\n')
+  : "No existing titles in this category/subcategory"}
+
 Hard rules:
 - Provide "quizPageTitle", "quizPageDescription", "tags".
 - "title"/"description" distinct from SEO fields.
@@ -84,6 +116,7 @@ Uniqueness rules:
 - Vary sentence length, verbs, and specificity across fields.
 - Avoid repeating key nouns between title/description/prompts.
 - Tags should be diverse, short, and non-redundant.
+- AVOID using similar titles or themes to the existing titles listed above.
 
 Return ONLY schema-valid JSON. No extra fields, no comments.
 `
