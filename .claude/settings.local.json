@@ -6,7 +6,9 @@
       "Bash(bun add:*)",
       "Bash(bun run prisma:generate)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(bunx tsc --noEmit)",
+      "Bash(bun build:*)"
     ],
     "deny": [],
     "ask": []
