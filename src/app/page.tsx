@@ -5,22 +5,17 @@ import QuizListing from "@/components/home-page/quiz-listing";
 import SearchSection from "@/components/home-page/search-section";
 import { getHomePageData } from "@/queries/home-page";
 import { getStats } from "@/queries/stats";
-import { unstable_cache } from "next/cache";
+import { cacheTag, cacheLife } from "next/cache";
 
-export const dynamic = "force-dynamic";
-
-const homePage = unstable_cache(
-  async () => {
-    return getHomePageData();
-  },
-  ["home-page"],
-  {
-    revalidate: 3600
-  }
-);
+async function getCachedHomePageData() {
+  "use cache";
+  cacheTag("home-page");
+  cacheLife("hours");
+  return getHomePageData();
+}
 
 export default async function Home() {
-  const [data, stats] = await Promise.all([homePage(), getStats()]);
+  const [data, stats] = await Promise.all([getCachedHomePageData(), getStats()]);
 
   return (
     <>
