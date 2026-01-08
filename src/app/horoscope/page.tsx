@@ -1,3 +1,4 @@
+
 import { getAllHoroscopesForDate } from "@/queries/horoscope";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,11 +10,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { UTCDate } from "@date-fns/utc";
+import { headers } from "next/headers"
+export const dynamic = "force-dynamic";
 
 async function getHoroscopesForDateCached(date: Date) {
-  "use cache";
-  cacheTag("horoscopes");
-  cacheLife("hours");
   return getAllHoroscopesForDate(date);
 }
 
@@ -113,6 +113,7 @@ type Props = {
 };
 
 export default async function HoroscopePage({ searchParams }: Props) {
+  
   // Parse the date from query params or use today
   const { date } = await searchParams;
   let selectedDate = new UTCDate();

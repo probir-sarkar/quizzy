@@ -3,9 +3,7 @@ import prisma from '@/lib/prisma'
 import { PastEvent, EventCategory } from '@/generated/prisma/client'
 
 export const getPastEventsByMonthDay = async (month: number, day: number): Promise<PastEvent[]> => {
-  "use cache";
-  cacheTag(`past-events-${month}-${day}`);
-  cacheLife("hours");
+
 
   try {
     const events = await prisma.pastEvent.findMany({
@@ -45,9 +43,7 @@ export const getPastEventsByMonthDay = async (month: number, day: number): Promi
 }
 
 export const getPastEventsByCategory = async (category: EventCategory): Promise<PastEvent[]> => {
-  "use cache";
-  cacheTag('past-events');
-  cacheLife("hours");
+
 
   try {
     const events = await prisma.pastEvent.findMany({

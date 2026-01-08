@@ -1,20 +1,17 @@
-import React from "react";
 import Link from "next/link";
 import { Sparkles, ChevronLeft } from "lucide-react";
 import prisma from "@/lib/prisma";
-import { cacheTag, cacheLife } from "next/cache";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "All Quiz Categories - Quizzy",
-  description: "Explore all quiz categories and test your knowledge across various topics. From science to pop culture, find quizzes that match your interests and challenge yourself.",
+  description:
+    "Explore all quiz categories and test your knowledge across various topics. From science to pop culture, find quizzes that match your interests and challenge yourself."
 };
 
 async function getCategories() {
-  "use cache";
-  cacheTag("category-page");
-  cacheLife("hours");
-
   return prisma.category.findMany({
     include: {
       subCategories: true,
