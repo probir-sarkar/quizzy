@@ -6,11 +6,9 @@ import SearchSection from "@/components/home-page/search-section";
 import { getHomePageData } from "@/queries/home-page";
 import { getStats } from "@/queries/stats";
 import { cacheTag, cacheLife } from "next/cache";
-
+export const dynamic = "force-dynamic";
 async function getCachedHomePageData() {
-  "use cache";
-  cacheTag("home-page");
-  cacheLife("hours");
+
   return getHomePageData();
 }
 
