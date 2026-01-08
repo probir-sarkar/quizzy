@@ -6,8 +6,6 @@ const nextConfig: NextConfig = {
   // cacheComponents: true
   experimental: {
     serverMinification: false,
-    turbopackMinify: false,
-    prerenderEarlyExit: false,
   }
 };
 
