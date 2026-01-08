@@ -2,13 +2,20 @@ import { getAllHoroscopesForDate } from "@/queries/horoscope";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { unstable_cache } from "next/cache";
+import { cacheTag, cacheLife } from "next/cache";
 import { format, parseISO, isValid, startOfMonth, addDays, subDays, parse } from "date-fns";
 import { ZodiacSign } from "@/generated/prisma/client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { UTCDate } from "@date-fns/utc";
+
+async function getHoroscopesForDateCached(date: Date) {
+  "use cache";
+  cacheTag("horoscopes");
+  cacheLife("hours");
+  return getAllHoroscopesForDate(date);
+}
 
 const zodiacSignInfo = {
   ARIES: {
@@ -100,16 +107,6 @@ const getElementColor = (element: string) => {
   }
 };
 
-const getHoroscopesForDateCached = unstable_cache(
-  async (date: Date) => {
-    return getAllHoroscopesForDate(date);
-  },
-  ["horoscopes-by-date"],
-  {
-    revalidate: 3600, // Cache for 1 hour
-    tags: ["horoscopes"]
-  }
-);
 type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -331,5 +328,3 @@ export default async function HoroscopePage({ searchParams }: Props) {
     </div>
   );
 }
-
-export const dynamic = "force-dynamic";

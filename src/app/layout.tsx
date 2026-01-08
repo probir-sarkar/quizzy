@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import { GoogleTagManager } from '@next/third-parties/google'
+import { Suspense } from 'react';
 
 
 // @ts-ignore
@@ -29,10 +30,12 @@ export default function RootLayout({
       <GoogleTagManager gtmId="G-KMP0FXVWFL" />
       <body className={` ${poppins.className} flex min-h-full flex-col antialiased`}>
         <NextTopLoader color="#c800de" showSpinner={false} />
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <Navbar />
-          <main>{children}</main>
-        </ThemeProvider>
+        <Suspense fallback={null}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <Navbar />
+            <main>{children}</main>
+          </ThemeProvider>
+        </Suspense>
       </body>
     </html>
   );

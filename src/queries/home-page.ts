@@ -1,6 +1,10 @@
 import prisma from "@/lib/prisma";
+import { cacheTag, cacheLife } from "next/cache";
 
 export async function getCategories() {
+  "use cache";
+  cacheTag("categories");
+  cacheLife("hours");
   return prisma.category.findMany({
     orderBy: {
       name: "asc"

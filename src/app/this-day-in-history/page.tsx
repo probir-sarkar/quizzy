@@ -261,5 +261,3 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
       </div>
   );
 }
-
-export const dynamic = "force-dynamic";
