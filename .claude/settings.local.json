@@ -9,7 +9,9 @@
       "Bash(git commit:*)",
       "Bash(bunx tsc --noEmit)",
       "Bash(bun build:*)",
-      "Bash(bun prisma generate:*)"
+      "Bash(bun prisma generate:*)",
+      "Bash(git revert:*)",
+      "Bash(git push)"
     ],
     "deny": [],
     "ask": []
