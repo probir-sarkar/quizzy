@@ -5,6 +5,7 @@ import { kebabCase } from "es-toolkit";
 import { format } from "date-fns";
 import { model } from "@/lib/ai-models";
 import { QuizDoc } from "./schema";
+import { Receiver } from "@upstash/qstash";
 
 type Difficulty = "easy" | "medium" | "hard";
 
@@ -17,74 +18,75 @@ function randomCount(): number {
   return 5 + Math.floor(Math.random() * 6); // random int 5–10
 }
 
-export const { POST } = serve(async (context) => {
-  const today = format(new Date(), "MMMM d, yyyy");
-  const nonce = `${today}-${Math.random().toString(36).slice(2)}`;
-  const difficulty = randomDifficulty();
-  const count = randomCount();
+export const { POST } = serve(
+  async (context) => {
+    const today = format(new Date(), "MMMM d, yyyy");
+    const nonce = `${today}-${Math.random().toString(36).slice(2)}`;
+    const difficulty = randomDifficulty();
+    const count = randomCount();
 
-  // STEP 0: Pick a random Category *that has subcategories*, then a random SubCategory
-  const { category, subCategory } = await context.run("pick-random-category-and-sub", async () => {
-    // Only consider categories that have at least one subcategory
-    const total = await prisma.category.count({
-      where: { subCategories: { some: {} } }
-    });
-    if (total === 0) {
-      throw new Error("No categories with subcategories found. Seed some data first.");
-    }
+    // STEP 0: Pick a random Category *that has subcategories*, then a random SubCategory
+    const { category, subCategory } = await context.run("pick-random-category-and-sub", async () => {
+      // Only consider categories that have at least one subcategory
+      const total = await prisma.category.count({
+        where: { subCategories: { some: {} } }
+      });
+      if (total === 0) {
+        throw new Error("No categories with subcategories found. Seed some data first.");
+      }
 
-    const skipCat = Math.floor(Math.random() * total);
+      const skipCat = Math.floor(Math.random() * total);
 
-    const pickedCategory = await prisma.category.findFirst({
-      where: { subCategories: { some: {} } },
-      skip: skipCat,
-      orderBy: { id: "asc" }, // deterministic base ordering
-      include: { subCategories: { select: { id: true, name: true, slug: true } } }
-    });
-    if (!pickedCategory || pickedCategory.subCategories.length === 0) {
-      throw new Error("Selected category has no subcategories (unexpected).");
-    }
+      const pickedCategory = await prisma.category.findFirst({
+        where: { subCategories: { some: {} } },
+        skip: skipCat,
+        orderBy: { id: "asc" }, // deterministic base ordering
+        include: { subCategories: { select: { id: true, name: true, slug: true } } }
+      });
+      if (!pickedCategory || pickedCategory.subCategories.length === 0) {
+        throw new Error("Selected category has no subcategories (unexpected).");
+      }
 
-    const subIdx = Math.floor(Math.random() * pickedCategory.subCategories.length);
-    const pickedSub = pickedCategory.subCategories[subIdx];
+      const subIdx = Math.floor(Math.random() * pickedCategory.subCategories.length);
+      const pickedSub = pickedCategory.subCategories[subIdx];
 
-    return { category: pickedCategory, subCategory: pickedSub };
-  });
-
-  // STEP 0.5: Fetch existing titles to avoid duplicates
-  const { existingTitles } = await context.run("fetch-existing-titles", async () => {
-    const existingQuizzes = await prisma.quiz.findMany({
-      where: {
-        categoryId: category.id,
-        subCategoryId: subCategory.id
-      },
-      select: {
-        title: true,
-        quizPageTitle: true,
-        description: true,
-        quizPageDescription: true
-      },
-      take: 10 // Get recent titles to avoid
+      return { category: pickedCategory, subCategory: pickedSub };
     });
 
-    return {
-      existingTitles: existingQuizzes.map((quiz) => ({
-        title: quiz.title,
-        quizPageTitle: quiz.quizPageTitle,
-        description: quiz.description,
-        quizPageDescription: quiz.quizPageDescription
-      }))
-    };
-  });
+    // STEP 0.5: Fetch existing titles to avoid duplicates
+    const { existingTitles } = await context.run("fetch-existing-titles", async () => {
+      const existingQuizzes = await prisma.quiz.findMany({
+        where: {
+          categoryId: category.id,
+          subCategoryId: subCategory.id
+        },
+        select: {
+          title: true,
+          quizPageTitle: true,
+          description: true,
+          quizPageDescription: true
+        },
+        take: 10 // Get recent titles to avoid
+      });
 
-  // STEP 1: Generate quiz JSON
-  const { quizDoc } = await context.run("generate-quiz-json", async () => {
-    const { output } = await generateText({
-      model: model as any,
-      output: Output.object({
-        schema: QuizDoc
-      }),
-      prompt: `
+      return {
+        existingTitles: existingQuizzes.map((quiz) => ({
+          title: quiz.title,
+          quizPageTitle: quiz.quizPageTitle,
+          description: quiz.description,
+          quizPageDescription: quiz.quizPageDescription
+        }))
+      };
+    });
+
+    // STEP 1: Generate quiz JSON
+    const { quizDoc } = await context.run("generate-quiz-json", async () => {
+      const { output } = await generateText({
+        model: model as any,
+        output: Output.object({
+          schema: QuizDoc
+        }),
+        prompt: `
 Create ONE complete, TEXT-ONLY, publish-ready quiz.
 Category: ${category.name}
 Subcategory: ${subCategory.name}
@@ -123,46 +125,53 @@ Uniqueness rules:
 
 Return ONLY schema-valid JSON. No extra fields, no comments.
 `
+      });
+      return { quizDoc: output };
     });
-    return { quizDoc: output };
-  });
 
-  // STEP 2: Save quiz in DB
-  const savedQuiz = await context.run("save-quiz-db", async () =>
-    prisma.quiz.create({
-      data: {
-        quizPageTitle: quizDoc.quizPageTitle,
-        quizPageDescription: quizDoc.quizPageDescription,
-        categoryId: category.id,
-        subCategoryId: subCategory.id,
-        tags: {
-          create: quizDoc.tags.map((name) => ({
-            tag: {
-              connectOrCreate: {
-                where: { name },
-                create: { name }
+    // STEP 2: Save quiz in DB
+    const savedQuiz = await context.run("save-quiz-db", async () =>
+      prisma.quiz.create({
+        data: {
+          quizPageTitle: quizDoc.quizPageTitle,
+          quizPageDescription: quizDoc.quizPageDescription,
+          categoryId: category.id,
+          subCategoryId: subCategory.id,
+          tags: {
+            create: quizDoc.tags.map((name) => ({
+              tag: {
+                connectOrCreate: {
+                  where: { name },
+                  create: { name }
+                }
               }
-            }
-          }))
+            }))
+          },
+
+          difficulty: quizDoc.difficulty,
+          title: quizDoc.title,
+          description: quizDoc.description,
+          slug: kebabCase(quizDoc.quizPageTitle),
+          isPublished: false,
+          questions: {
+            create: quizDoc.questions.map((q) => ({
+              text: q.prompt,
+              options: q.options,
+              correctIndex: q.correctIndex,
+              explanation: q.explanation ?? null
+            }))
+          }
         },
+        include: { questions: true }
+      })
+    );
 
-        difficulty: quizDoc.difficulty,
-        title: quizDoc.title,
-        description: quizDoc.description,
-        slug: kebabCase(quizDoc.quizPageTitle),
-        isPublished: false,
-        questions: {
-          create: quizDoc.questions.map((q) => ({
-            text: q.prompt,
-            options: q.options,
-            correctIndex: q.correctIndex,
-            explanation: q.explanation ?? null
-          }))
-        }
-      },
-      include: { questions: true }
+    return { quiz: savedQuiz };
+  },
+  {
+    receiver: new Receiver({
+      currentSigningKey: process.env.QSTASH_CURRENT_SIGNING_KEY!,
+      nextSigningKey: process.env.QSTASH_NEXT_SIGNING_KEY!
     })
-  );
-
-  return { quiz: savedQuiz };
-});
+  }
+);
