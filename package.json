@@ -10,7 +10,7 @@
     "prisma:generate": "prisma generate"
   },
   "dependencies": {
-    "@ai-sdk/openai-compatible": "^1.0.19",
+    "@ai-sdk/openai-compatible": "^2.0.4",
     "@aws-sdk/client-s3": "^3.922.0",
     "@date-fns/utc": "^2.1.1",
     "@next/third-parties": "^16.0.0",
