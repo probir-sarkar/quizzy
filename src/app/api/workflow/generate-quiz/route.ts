@@ -2,9 +2,9 @@ import { serve } from "@upstash/workflow/nextjs";
 import { generateText, Output } from "ai";
 import prisma from "@/lib/prisma";
 import { kebabCase } from "es-toolkit";
-import { QuizDoc } from "@/inngest/geretare-quiz/schema";
 import { format } from "date-fns";
 import { model } from "@/lib/ai-models";
+import { QuizDoc } from "./schema";
 
 type Difficulty = "easy" | "medium" | "hard";
 
