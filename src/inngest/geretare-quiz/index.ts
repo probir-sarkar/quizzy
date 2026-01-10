@@ -1,6 +1,6 @@
 import { inngest } from "../client";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import { generateObject } from "ai";
+import { generateText, Output } from "ai";
 import prisma from "@/lib/prisma";
 import { kebabCase } from "es-toolkit";
 import { QuizDoc } from "./schema";
@@ -83,10 +83,12 @@ export const generateQuizFn = inngest.createFunction(
     });
 
     // STEP 1: Generate quiz JSON
-    const { object: quizDoc } = await step.run("generate-quiz-json", async () =>
-      generateObject({
+    const { output: quizDoc } = await step.run("generate-quiz-json", async () =>
+      generateText({
         model: model,
-        schema: QuizDoc,
+        output: Output.object({
+          schema: QuizDoc
+        }),
         system: `Strict JSON only. No markdown. No extra commentary.`,
         prompt: `
 Create ONE complete, TEXT-ONLY, publish-ready quiz.
