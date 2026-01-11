@@ -83,8 +83,8 @@ export const generateQuizFn = inngest.createFunction(
     });
 
     // STEP 1: Generate quiz JSON
-    const { output: quizDoc } = await step.run("generate-quiz-json", async () =>
-      generateText({
+    const quizDoc = await step.run("generate-quiz-json", async () => {
+      const result = await generateText({
         model: model,
         output: Output.object({
           schema: QuizDoc
@@ -129,9 +129,9 @@ Uniqueness rules:
 
 Return ONLY schema-valid JSON. No extra fields, no comments.
 `
-      })
-    );
-
+      });
+      return result.output;
+    });
     // STEP 2: Save quiz in DB
     const savedQuiz = await step
       .run("save-quiz-db", async () =>
