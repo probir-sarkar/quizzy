@@ -1,4 +1,4 @@
-import { PrismaClient } from "@/generated/prisma/client";
+import { PrismaClient } from "@quizzy/prisma/client";
 import { kebabCase } from "es-toolkit";
 import { categories } from "./categories";
 import prisma from "@/lib/prisma";

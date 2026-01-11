@@ -4,7 +4,7 @@ import { addDays, format, startOfDay, differenceInCalendarDays, isValid } from "
 import { UTCDate } from "@date-fns/utc";
 import { AllZodiacDailySchema } from "./schema";
 import prisma from "@/lib/prisma";
-import { ZodiacSign } from "@/generated/prisma/enums";
+import { ZodiacSign } from "@quizzy/prisma/enums";
 import { model } from "@/lib/ai-models";
 
 const DEFAULT_START_DATE = new UTCDate(2025, 0, 1);

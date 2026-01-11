@@ -1,0 +1,22 @@
+{
+  "name": "@quizzy/prisma",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./*": "./generated/*.ts"
+  },
+  "scripts": {
+    "generate": "prisma generate",
+    "migrate": "prisma migrate",
+    "seed": "tsx seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.2.0",
+    "@prisma/adapter-pg": "^6.17.0"
+  },
+  "devDependencies": {
+    "prisma": "^7.2.0",
+    "tsx": "^4.21.0"
+  }
+}
