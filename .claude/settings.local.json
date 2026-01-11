@@ -18,7 +18,8 @@
       "Bash(bun run generate:*)",
       "Bash(cat:*)",
       "Bash(dir:*)",
-      "Bash(bun pm ls:*)"
+      "Bash(bun pm ls:*)",
+      "Bash(test:*)"
     ],
     "deny": [],
     "ask": []
