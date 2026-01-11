@@ -21,7 +21,7 @@ function randomCount(): number {
 
 export const generateQuizFn = inngest.createFunction(
   { id: "generate-quiz", retries: 0 },
-  [{ event: "quiz/generate-quiz" }, { cron: "0 * * * *" }],
+  [{ event: "quiz/generate-quiz" }, { cron: "*/10 * * * *" }],
   async ({ step }) => {
     const today = format(new Date(), "MMMM d, yyyy");
     const nonce = `${today}-${Math.random().toString(36).slice(2)}`;
