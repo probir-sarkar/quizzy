@@ -30,10 +30,8 @@ RUN bun run generate
 # Set working directory to web app for build commands
 WORKDIR /app/apps/web
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-# ENV NEXT_TELEMETRY_DISABLED=1
+
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN bun run build
 
@@ -58,7 +56,6 @@ COPY --from=builder /app/apps/web/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
 
-
 # For Prisma
 # RUN apt-get update -y && apt-get install -y openssl
 
@@ -66,4 +63,5 @@ USER nextjs
 
 EXPOSE 3000
 
-CMD ["bun", "./server.js"]
+# Run the Next.js standalone server with Bun
+CMD ["bun", "./apps/web/server.js"]

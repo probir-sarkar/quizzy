@@ -12,3 +12,5 @@ apps/web/node_modules
 apps/web/.next
 packages/prisma/generated
 packages/prisma/node_modules
+.vscode/
+*.log
