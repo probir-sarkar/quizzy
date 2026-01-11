@@ -51,13 +51,16 @@ RUN addgroup --system --gid 1001 nodejs && \
 
 COPY --from=builder /app/apps/web/public ./public
 
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
+# 1. Copy the standalone folder to the root
+# This creates /app/apps/web/server.js and /app/node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
 
-# For Prisma
-# RUN apt-get update -y && apt-get install -y openssl
+# 2. FIX: Copy static files to the correct nested location
+# Next.js expects these relative to the "apps/web" folder now
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+
+# 3. FIX: Copy public files to the correct nested location
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
 USER nextjs
 
