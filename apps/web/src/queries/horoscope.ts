@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { ZodiacSign } from "@/generated/prisma/client";
+import { ZodiacSign } from "@quizzy/prisma/client";
 import { endOfDay, startOfDay } from "date-fns";
 import { UTCDate } from "@date-fns/utc";
 

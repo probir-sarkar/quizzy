@@ -2,10 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Monorepo Structure
+
+This is a **Bun workspace monorepo** with the following structure:
+- **Root**: Contains workspace configuration and shared tooling
+- **apps/web**: Main Next.js web application
+
 ## Development Commands
 
 ```bash
-# Development
+# Development (run from root)
 bun dev              # Start development server with Turbopack
 bun run prisma:generate  # Generate Prisma client after schema changes
 
@@ -15,6 +21,10 @@ bun start            # Start production server
 
 # Code Quality
 bun lint             # Run ESLint
+
+# Working in apps/web directly
+cd apps/web
+bun dev              # Start dev server from web app directory
 ```
 
 ## Architecture Overview
@@ -63,61 +73,71 @@ Quizzy is an AI-powered quiz platform built with Next.js 15, React 19, and TypeS
 ### Directory Structure
 
 ```
-src/
-├── app/                    # Next.js App Router pages
-│   ├── api/inngest/       # Inngest webhook endpoint
-│   ├── category/          # Category listing and detail pages
-│   ├── quiz/[slug]/       # Individual quiz pages
-│   └── horoscope/         # Daily horoscope display
-│       ├── page.tsx       # Main horoscope page with date navigation
-│       ├── layout.tsx     # Horoscope page layout with metadata
-│       └── opengraph-image.tsx # Social media image generation
-├── components/
-│   ├── ui/                # Shadcn/ui base components
-│   ├── common/            # Shared components (navbar, share buttons)
-│   ├── home-page/         # Homepage-specific components
-│   ├── category/          # Category page components
-│   └── quiz-page/         # Quiz taking components
-├── lib/
-│   ├── prisma.ts          # Database client with connection pooling
-│   ├── ai-models.ts       # AI provider configurations
-│   ├── constants.ts       # Application constants
-│   └── utils.ts           # Utility functions
-├── queries/               # Database query functions with caching
-│   └── horoscope.ts       # Horoscope database queries with caching
-├── inngest/              # Background job functions
-│   ├── horoscope/        # Daily horoscope generation
-│   │   ├── index.ts      # Main horoscope generation function
-│   │   └── schema.ts     # Zod schemas for horoscope validation
-│   ├── geretare-quiz/    # Automated quiz generation
-│   └── social-media-share/ # Telegram posting
-└── generated/prisma/     # Auto-generated Prisma client (don't edit manually)
+apps/web/
+├── src/
+│   ├── app/                    # Next.js App Router pages
+│   │   ├── api/inngest/       # Inngest webhook endpoint
+│   │   ├── category/          # Category listing and detail pages
+│   │   ├── quiz/[slug]/       # Individual quiz pages
+│   │   └── horoscope/         # Daily horoscope display
+│   │       ├── page.tsx       # Main horoscope page with date navigation
+│   │       ├── layout.tsx     # Horoscope page layout with metadata
+│   │       └── opengraph-image.tsx # Social media image generation
+│   ├── components/
+│   │   ├── ui/                # Shadcn/ui base components
+│   │   ├── common/            # Shared components (navbar, share buttons)
+│   │   ├── home-page/         # Homepage-specific components
+│   │   ├── category/          # Category page components
+│   │   └── quiz-page/         # Quiz taking components
+│   ├── lib/
+│   │   ├── prisma.ts          # Database client with connection pooling
+│   │   ├── ai-models.ts       # AI provider configurations
+│   │   ├── constants.ts       # Application constants
+│   │   └── utils.ts           # Utility functions
+│   ├── queries/               # Database query functions with caching
+│   │   └── horoscope.ts       # Horoscope database queries with caching
+│   ├── inngest/              # Background job functions
+│   │   ├── horoscope/        # Daily horoscope generation
+│   │   │   ├── index.ts      # Main horoscope generation function
+│   │   │   └── schema.ts     # Zod schemas for horoscope validation
+│   │   ├── geretare-quiz/    # Automated quiz generation
+│   │   └── social-media-share/ # Telegram posting
+│   └── generated/prisma/     # Auto-generated Prisma client (don't edit manually)
+├── prisma/
+│   ├── schema.prisma         # Database schema
+│   ├── migrations/           # Database migrations
+│   └── seed.ts              # Database seeding script
+├── public/
+│   └── zodiac/               # Zodiac sign SVG assets
+│       ├── aries.svg         # Aries symbol
+│       ├── taurus.svg        # Taurus symbol
+│       ├── gemini.svg        # Gemini symbol
+│       ├── cancer.svg        # Cancer symbol
+│       ├── leo.svg           # Leo symbol
+│       ├── virgo.svg         # Virgo symbol
+│       ├── libra.svg         # Libra symbol
+│       ├── scorpio.svg       # Scorpio symbol
+│       ├── sagittarius.svg   # Sagittarius symbol
+│       ├── capricorn.svg     # Capricorn symbol
+│       ├── aquarius.svg      # Aquarius symbol
+│       └── pisces.svg        # Pisces symbol
+├── package.json              # Web app dependencies
+├── tsconfig.json             # TypeScript configuration
+├── next.config.ts            # Next.js configuration
+└── ...other config files
 
-public/
-└── zodiac/               # Zodiac sign SVG assets
-    ├── aries.svg         # Aries symbol
-    ├── taurus.svg        # Taurus symbol
-    ├── gemini.svg        # Gemini symbol
-    ├── cancer.svg        # Cancer symbol
-    ├── leo.svg           # Leo symbol
-    ├── virgo.svg         # Virgo symbol
-    ├── libra.svg         # Libra symbol
-    ├── scorpio.svg       # Scorpio symbol
-    ├── sagittarius.svg   # Sagittarius symbol
-    ├── capricorn.svg     # Capricorn symbol
-    ├── aquarius.svg      # Aquarius symbol
-    └── pisces.svg        # Pisces symbol
+package.json                   # Root workspace configuration
 ```
 
 ### Important Implementation Details
 
 **Database Client:**
-- Custom Prisma client location: `src/generated/prisma/`
+- Custom Prisma client location: `apps/web/src/generated/prisma/`
 - Connection pooling with PostgreSQL adapter
 - Shadow database for migrations
 
 **AI Model Configuration:**
-- Multiple AI providers configured in `lib/ai-models.ts`
+- Multiple AI providers configured in `apps/web/src/lib/ai-models.ts`
 - Model selection based on difficulty level for quiz generation
 - Z.AI's GLM-4.5-flash model for horoscope generation
 - Structured generation with Zod schema validation
@@ -174,20 +194,20 @@ Key environment variables for development:
 4. Add corresponding page routes
 
 **When modifying AI generation:**
-1. Update schemas in `lib/ai-models.ts` or `src/inngest/horoscope/schema.ts` for horoscopes
-2. Modify Inngest functions in `src/inngest/`
+1. Update schemas in `apps/web/src/lib/ai-models.ts` or `apps/web/src/inngest/horoscope/schema.ts` for horoscopes
+2. Modify Inngest functions in `apps/web/src/inngest/`
 3. Test with different AI providers
 4. Validate structured output formats
 
 **When modifying horoscope functionality:**
-1. Update horoscope schemas in `src/inngest/horoscope/schema.ts`
-2. Modify generation logic in `src/inngest/horoscope/index.ts`
-3. Update database queries in `src/queries/horoscope.ts`
+1. Update horoscope schemas in `apps/web/src/inngest/horoscope/schema.ts`
+2. Modify generation logic in `apps/web/src/inngest/horoscope/index.ts`
+3. Update database queries in `apps/web/src/queries/horoscope.ts`
 4. Refresh zodiac sign information in the main page component
 5. Test date navigation and caching behavior
 
 **When modifying quiz components:**
-1. Main quiz component located at `src/components/quiz-page/question-list.tsx`
+1. Main quiz component located at `apps/web/src/components/quiz-page/question-list.tsx`
 2. Color-coded feedback system: use green-*/red-* color variants for answer states
 3. Keep animations fast: use duration-200 for transitions and minimal delays
 4. Maintain mobile-first responsive design with `sm:` breakpoints

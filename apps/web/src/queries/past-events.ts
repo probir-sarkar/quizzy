@@ -1,6 +1,6 @@
 import { cacheLife, cacheTag } from 'next/cache'
 import prisma from '@/lib/prisma'
-import { PastEvent, EventCategory } from '@/generated/prisma/client'
+import { PastEvent, EventCategory } from '@quizzy/prisma/client'
 
 export const getPastEventsByMonthDay = async (month: number, day: number): Promise<PastEvent[]> => {
 

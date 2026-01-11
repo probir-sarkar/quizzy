@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cacheTag, cacheLife } from "next/cache";
 import { format, parseISO, isValid, startOfMonth, addDays, subDays, parse } from "date-fns";
-import { ZodiacSign } from "@/generated/prisma/client";
+import { ZodiacSign } from "@quizzy/prisma/client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

@@ -11,7 +11,14 @@
       "Bash(bun build:*)",
       "Bash(bun prisma generate:*)",
       "Bash(git revert:*)",
-      "Bash(git push)"
+      "Bash(git push)",
+      "Bash(mkdir:*)",
+      "Bash(git mv:*)",
+      "Bash(bun install)",
+      "Bash(bun run generate:*)",
+      "Bash(cat:*)",
+      "Bash(dir:*)",
+      "Bash(bun pm ls:*)"
     ],
     "deny": [],
     "ask": []
