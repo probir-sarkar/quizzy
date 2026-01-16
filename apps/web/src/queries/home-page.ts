@@ -1,6 +1,9 @@
 import prisma from "@/lib/prisma";
+import { cacheLife } from "next/cache";
 
 export async function getCategories() {
+  "use cache";
+  cacheLife("days");
   return prisma.category.findMany({
     orderBy: {
       name: "asc"
@@ -8,6 +11,8 @@ export async function getCategories() {
   });
 }
 export async function getHomePageData() {
+  "use cache";
+  cacheLife("hours");
   return prisma.category.findMany({
     where: {
       quizzes: {

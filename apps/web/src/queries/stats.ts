@@ -2,7 +2,8 @@ import prisma from "@/lib/prisma";
 import { cacheLife, cacheTag } from "next/cache";
 
 export async function getStats() {
-
+  "use cache";
+  cacheLife("hours");
   const [totalQuizzes, totalCategories, totalSubCategories] = await Promise.all([
     prisma.quiz.count(),
     prisma.category.count(),

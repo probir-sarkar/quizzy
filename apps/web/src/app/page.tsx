@@ -8,13 +8,9 @@ import { getStats } from "@/queries/stats";
 import { cacheTag, cacheLife } from "next/cache";
 import { connection } from "next/server";
 
-async function getCachedHomePageData() {
-  return getHomePageData();
-}
-
 export default async function Home() {
   await connection();
-  const [data, stats] = await Promise.all([getCachedHomePageData(), getStats()]);
+  const [data, stats] = await Promise.all([getHomePageData(), getStats()]);
 
   return (
     <>
