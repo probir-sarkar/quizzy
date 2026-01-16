@@ -6,13 +6,14 @@ import SearchSection from "@/components/home-page/search-section";
 import { getHomePageData } from "@/queries/home-page";
 import { getStats } from "@/queries/stats";
 import { cacheTag, cacheLife } from "next/cache";
-export const dynamic = "force-dynamic";
-async function getCachedHomePageData() {
+import { connection } from "next/server";
 
+async function getCachedHomePageData() {
   return getHomePageData();
 }
 
 export default async function Home() {
+  await connection();
   const [data, stats] = await Promise.all([getCachedHomePageData(), getStats()]);
 
   return (

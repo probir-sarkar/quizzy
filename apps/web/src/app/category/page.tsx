@@ -3,7 +3,9 @@ import { Sparkles, ChevronLeft } from "lucide-react";
 import prisma from "@/lib/prisma";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-export const dynamic = "force-dynamic";
+import { Suspense } from "react";
+import { connection } from "next/server";
+
 
 export const metadata: Metadata = {
   title: "All Quiz Categories - Quizzy",
@@ -20,7 +22,8 @@ async function getCategories() {
   });
 }
 
-export default async function CategoriesPage() {
+async function Categories() {
+  await connection();
   const categories = await getCategories();
 
   return (
@@ -109,5 +112,13 @@ export default async function CategoriesPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+export default function CategoriesPage() {
+  return (
+    <Suspense fallback={<p>Loading..</p>}>
+      <Categories />
+    </Suspense>
   );
 }

@@ -11,7 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { UTCDate } from "@date-fns/utc";
 import { headers } from "next/headers"
-export const dynamic = "force-dynamic";
+
 
 async function getHoroscopesForDateCached(date: Date) {
   return getAllHoroscopesForDate(date);
