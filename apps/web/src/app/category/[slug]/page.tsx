@@ -2,6 +2,7 @@ import CategoryHero from "@/components/category/CategoryHero";
 import SubCategoryFilters from "@/components/category/sub-category-filter";
 import { QuizCard } from "@/components/home-page/quiz-listing";
 import { getQuizzesByCategory } from "@/queries/categories.query";
+import { cacheLife } from "next/cache";
 import { notFound } from "next/navigation";
 type Props = {
   params: Promise<{ slug: string }>;
@@ -9,6 +10,8 @@ type Props = {
 };
 
 export default async function CategoryPage({ params, searchParams }: Props) {
+  "use cache";
+  cacheLife("max");
   const { slug } = await params;
   const { page = 1, subcategory = null } = await searchParams;
 
@@ -18,7 +21,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     page: Number(page),
     subCategorySlug: subcategory
   });
-  if (!quizzes ) return notFound();
+  if (!quizzes) return notFound();
   const quizzesList = quizzes.items;
   const subcategoris = quizzes.category?.subCategories || [];
   return (

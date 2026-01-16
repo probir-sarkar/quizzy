@@ -2,10 +2,8 @@ import Link from "next/link";
 import { Sparkles, ChevronLeft } from "lucide-react";
 import prisma from "@/lib/prisma";
 import type { Metadata } from "next";
-import { headers } from "next/headers";
-import { Suspense } from "react";
 import { connection } from "next/server";
-
+import { cacheLife } from "next/cache";
 
 export const metadata: Metadata = {
   title: "All Quiz Categories - Quizzy",
@@ -14,6 +12,8 @@ export const metadata: Metadata = {
 };
 
 async function getCategories() {
+  "use cache";
+  cacheLife("hours");
   return prisma.category.findMany({
     include: {
       subCategories: true,
@@ -22,7 +22,7 @@ async function getCategories() {
   });
 }
 
-async function Categories() {
+export default async function CategoriesPage() {
   await connection();
   const categories = await getCategories();
 
@@ -112,13 +112,5 @@ async function Categories() {
         </div>
       </section>
     </main>
-  );
-}
-
-export default function CategoriesPage() {
-  return (
-    <Suspense fallback={<p>Loading..</p>}>
-      <Categories />
-    </Suspense>
   );
 }
