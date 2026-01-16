@@ -10,8 +10,6 @@ type Props = {
 };
 
 export default async function CategoryPage({ params, searchParams }: Props) {
-  "use cache";
-  cacheLife("max");
   const { slug } = await params;
   const { page = 1, subcategory = null } = await searchParams;
 
