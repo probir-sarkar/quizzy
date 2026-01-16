@@ -2,7 +2,7 @@
 import type { MetadataRoute } from "next";
 import prisma from "@/lib/prisma";
 import { BASE_URL } from "@/lib/constants";
-export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const categories = await prisma.category.findMany({
     orderBy: { id: "asc" },
