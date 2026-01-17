@@ -1,7 +1,6 @@
 # -----------------------------------------------------------------------------
-# This Dockerfile is configured for a Bun monorepo structure
-# The web application is located in apps/web
-# Prisma package is located in packages/prisma
+# This Dockerfile.bun is specifically configured for projects using Bun
+# For npm/pnpm or yarn, refer to the Dockerfile instead
 # -----------------------------------------------------------------------------
 
 # Use Bun's official image
@@ -9,11 +8,9 @@ FROM oven/bun:1-alpine AS base
 
 WORKDIR /app
 
-# Install dependencies with bun (monorepo workspaces)
+# Install dependencies with bun
 FROM base AS deps
 COPY package.json bun.lock* ./
-COPY apps/web/package.json ./apps/web/
-COPY packages/prisma/package.json ./packages/prisma/
 RUN bun install --no-save --frozen-lockfile
 
 
@@ -23,20 +20,19 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Prisma Generate - run from the prisma package directory
-WORKDIR /app/packages/prisma
-RUN bun run generate
+# Prisma Generate
+# RUN apt-get update -y && apt-get install -y openssl
+RUN bun run prisma generate
 
-# Set working directory to web app for build commands
-WORKDIR /app/apps/web
-
-
-ENV NEXT_TELEMETRY_DISABLED=1
+# Next.js collects completely anonymous telemetry data about general usage.
+# Learn more here: https://nextjs.org/telemetry
+# Uncomment the following line in case you want to disable telemetry during the build.
+# ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN bun run build
 
 # Production image, copy all the files and run next
-FROM node:lts-alpine AS runner
+FROM base AS runner
 WORKDIR /app
 
 # Uncomment the following line in case you want to disable telemetry during runtime.
@@ -49,22 +45,19 @@ ENV NODE_ENV=production \
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/apps/web/public ./public
+COPY --from=builder /app/public ./public
 
-# 1. Copy the standalone folder to the root
-# This creates /app/apps/web/server.js and /app/node_modules
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# 2. FIX: Copy static files to the correct nested location
-# Next.js expects these relative to the "apps/web" folder now
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 
-# 3. FIX: Copy public files to the correct nested location
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+# For Prisma
+# RUN apt-get update -y && apt-get install -y openssl
 
 USER nextjs
 
 EXPOSE 3000
 
-# Run the Next.js standalone server with Bun
-CMD ["node", "./apps/web/server.js"]
+CMD ["bun", "./server.js"]

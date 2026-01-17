@@ -4,7 +4,7 @@ import { Sparkles, ChevronLeft } from "lucide-react";
 import { QuizPageType } from "@/queries/home-page";
 import { useCallback } from "react";
 import Link from "next/link";
-import { QuizDifficulty } from "@quizzy/prisma/enums";
+import { QuizDifficulty } from "@/generated/prisma/enums";
 
 export default function QuizHero({ quiz }: { quiz: QuizPageType }) {
   if (!quiz) return null;
