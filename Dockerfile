@@ -36,7 +36,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN bun run build
 
 # Production image, copy all the files and run next
-FROM node:lts-alpine3.23 AS runner
+FROM node:lts-alpine AS runner
 WORKDIR /app
 
 # Uncomment the following line in case you want to disable telemetry during runtime.
