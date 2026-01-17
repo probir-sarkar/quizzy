@@ -51,16 +51,14 @@ COPY --from=builder /app/apps/web/public ./public
 
 # 1. Copy the standalone folder to the root
 # This creates /app/apps/web/server.js and /app/node_modules
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder /app/apps/web/.next/standalone ./
 
 # 2. FIX: Copy static files to the correct nested location
 # Next.js expects these relative to the "apps/web" folder now
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
 
 # 3. FIX: Copy public files to the correct nested location
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
-
-USER nextjs
+COPY --from=builder /app/apps/web/public ./apps/web/public
 
 EXPOSE 3000
 
