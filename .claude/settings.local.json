@@ -19,7 +19,9 @@
       "Bash(cat:*)",
       "Bash(dir:*)",
       "Bash(bun pm ls:*)",
-      "Bash(test:*)"
+      "Bash(test:*)",
+      "Bash(tree:*)",
+      "Bash(npx shadcn@latest:*)"
     ],
     "deny": [],
     "ask": []
