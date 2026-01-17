@@ -166,3 +166,6 @@ html {
   -webkit-line-clamp: unset;
 }
 
+main {
+  scroll-margin-top: 60px; /* height of your navbar */
+}
