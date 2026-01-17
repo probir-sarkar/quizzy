@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 
 import AdminSidebar from "@/components/admin/sidebar";
 import AdminHeader from "@/components/admin/header";
@@ -18,15 +19,17 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
-      <AdminSidebar />
-      <div className="flex-1 flex flex-col">
-        <AdminHeader />
-        <main className="flex-1 p-6 overflow-auto">
-          <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
-        </main>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
+        <AdminSidebar />
+        <div className="flex-1 flex flex-col">
+          <AdminHeader />
+          <main className="flex-1 p-6 overflow-auto">
+            <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+          </main>
+        </div>
+        <Toaster richColors position="top-right" />
       </div>
-      <Toaster richColors position="top-right" />
-    </div>
+    </ThemeProvider>
   );
 }
