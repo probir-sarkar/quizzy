@@ -1,5 +1,5 @@
 // lib/queries/categories.ts
-import { QuizWhereInput } from "@quizzy/prisma/models";
+import { QuizWhereInput } from "@/generated/prisma/models";
 import prisma from "@/lib/prisma";
 
 export type GetQuizzesByCategoryOpts = {
