@@ -36,7 +36,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN bun run build
 
 # Production image, copy all the files and run next
-FROM chainguard/node:latest AS runner
+FROM base AS runner
 WORKDIR /app
 
 # Uncomment the following line in case you want to disable telemetry during runtime.
@@ -46,21 +46,25 @@ ENV NODE_ENV=production \
     PORT=3000 \
     HOSTNAME="0.0.0.0"
 
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/apps/web/public ./public
 
 # 1. Copy the standalone folder to the root
 # This creates /app/apps/web/server.js and /app/node_modules
-COPY --from=builder /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 
 # 2. FIX: Copy static files to the correct nested location
 # Next.js expects these relative to the "apps/web" folder now
-COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 
 # 3. FIX: Copy public files to the correct nested location
-COPY --from=builder /app/apps/web/public ./apps/web/public
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+
+USER nextjs
 
 EXPOSE 3000
 
 # Run the Next.js standalone server with Bun
-CMD ["node", "./apps/web/server.js"]
+CMD ["bun", "./apps/web/server.js"]
