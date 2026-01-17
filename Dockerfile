@@ -36,7 +36,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN bun run build
 
 # Production image, copy all the files and run next
-FROM base AS runner
+FROM node:lts-alpine3.23 AS runner
 WORKDIR /app
 
 # Uncomment the following line in case you want to disable telemetry during runtime.
@@ -67,4 +67,4 @@ USER nextjs
 EXPOSE 3000
 
 # Run the Next.js standalone server with Bun
-CMD ["bun", "./apps/web/server.js"]
+CMD ["node", "./apps/web/server.js"]
