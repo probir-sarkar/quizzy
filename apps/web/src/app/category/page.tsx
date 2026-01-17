@@ -1,9 +1,7 @@
 import Link from "next/link";
 import { Sparkles, ChevronLeft } from "lucide-react";
-import prisma from "@/lib/prisma";
 import type { Metadata } from "next";
-import { connection } from "next/server";
-import { cacheLife } from "next/cache";
+import { Category } from "@/queries/categories.query";
 
 export const metadata: Metadata = {
   title: "All Quiz Categories - Quizzy",
@@ -11,18 +9,9 @@ export const metadata: Metadata = {
     "Explore all quiz categories and test your knowledge across various topics. From science to pop culture, find quizzes that match your interests and challenge yourself."
 };
 
-async function getCategories() {
-  return prisma.category.findMany({
-    include: {
-      subCategories: true,
-      _count: { select: { quizzes: true, subCategories: true } }
-    }
-  });
-}
-
 export default async function CategoriesPage() {
-  await connection();
-  const categories = await getCategories();
+  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/categories`);
+  const categories: Category[] = await res.json();
 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-950">
