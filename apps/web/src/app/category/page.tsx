@@ -12,8 +12,6 @@ export const metadata: Metadata = {
 };
 
 async function getCategories() {
-  "use cache";
-  cacheLife("hours");
   return prisma.category.findMany({
     include: {
       subCategories: true,
