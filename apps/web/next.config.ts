@@ -4,6 +4,7 @@ import path from "path";
 const nextConfig: NextConfig = {
   /* config options here */
   output: "standalone",
+  cacheComponents: true,
 };
 
 export default nextConfig;
