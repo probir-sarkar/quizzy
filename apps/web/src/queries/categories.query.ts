@@ -84,3 +84,14 @@ export async function getQuizzesByCategory({
 }
 
 export type QuizByCategory = Awaited<ReturnType<typeof getQuizzesByCategory>>["items"][number];
+
+export async function getCategories() {
+  return prisma.category.findMany({
+    include: {
+      subCategories: true,
+      _count: { select: { quizzes: true, subCategories: true } }
+    }
+  });
+}
+
+export type Category = Awaited<ReturnType<typeof getCategories>>[number];
