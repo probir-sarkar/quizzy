@@ -1,17 +1,21 @@
-import { Elysia } from "elysia";
 import { getCategories } from "@/queries/categories.query";
 import { getHomePageData } from "@/queries/home-page";
 import { getStats } from "@/queries/stats";
+import { Hono } from "hono";
+import { handle } from "hono/vercel";
 
-export const app = new Elysia({ prefix: "/api" })
-  .get("/categories", async () => {
-    return await getCategories();
+const app = new Hono().basePath("/api");
+
+app
+  .get("/categories", async (c) => {
+    const categories = await getCategories();
+    return c.json(categories);
   })
-  .get("/health", () => "OK")
-  .get("/home", async () => {
+  .get("/home", async (c) => {
     const [data, stats] = await Promise.all([getHomePageData(), getStats()]);
-    return { data, stats };
+
+    return c.json({ data, stats });
   });
 
-export const GET = app.fetch;
-export const POST = app.fetch;
+export const GET = handle(app);
+export const POST = handle(app);
