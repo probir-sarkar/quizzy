@@ -36,7 +36,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN bun run build
 
 # Production image, copy all the files and run next
-FROM base AS runner
+FROM chainguard/node:latest AS runner
 WORKDIR /app
 
 # Uncomment the following line in case you want to disable telemetry during runtime.
@@ -46,8 +46,6 @@ ENV NODE_ENV=production \
     PORT=3000 \
     HOSTNAME="0.0.0.0"
 
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/apps/web/public ./public
 
@@ -67,4 +65,4 @@ USER nextjs
 EXPOSE 3000
 
 # Run the Next.js standalone server with Bun
-CMD ["bun", "./apps/web/server.js"]
+CMD ["node", "./apps/web/server.js"]
