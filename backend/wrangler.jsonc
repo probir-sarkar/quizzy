@@ -4,9 +4,8 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-01-24",
   "compatibility_flags": ["nodejs_compat"],
-  "vars": {
-    "DATABASE_URL": "postgres://postgres:hFG9oxnnC40ZbbgVOueA83w9NPlJ0vbjwSo8du8r2vVrmjnXCcmU6sRqkDSo2UZr@144.24.128.187:5434/quizzy"
-  },
+  // Environment variables should be set via .dev.vars (local) or Wrangler secrets (production)
+  // Run: wrangler secret put DATABASE_URL
   "workflows": [
     {
       "name": "generate-quiz",
