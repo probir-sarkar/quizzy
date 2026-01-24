@@ -1,0 +1,46 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "backend",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-01-24",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "DATABASE_URL": "postgres://postgres:hFG9oxnnC40ZbbgVOueA83w9NPlJ0vbjwSo8du8r2vVrmjnXCcmU6sRqkDSo2UZr@144.24.128.187:5434/quizzy"
+  },
+  "workflows": [
+    {
+      "name": "my-workflow",
+      "binding": "MY_WORKFLOW",
+      "class_name": "MyWorkflow"
+    }
+  ]
+  // "vars": {
+  //   "MY_VAR": "my-variable"
+  // },
+  // "kv_namespaces": [
+  //   {
+  //     "binding": "MY_KV_NAMESPACE",
+  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  //   }
+  // ],
+  // "r2_buckets": [
+  //   {
+  //     "binding": "MY_BUCKET",
+  //     "bucket_name": "my-bucket"
+  //   }
+  // ],
+  // "d1_databases": [
+  //   {
+  //     "binding": "MY_DB",
+  //     "database_name": "my-database",
+  //     "database_id": ""
+  //   }
+  // ],
+  // "ai": {
+  //   "binding": "AI"
+  // },
+  // "observability": {
+  //   "enabled": true,
+  //   "head_sampling_rate": 1
+  // }
+}

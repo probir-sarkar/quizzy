@@ -1,0 +1,18 @@
+{
+  "name": "backend",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+  },
+  "dependencies": {
+    "@prisma/adapter-neon": "^7.3.0",
+    "@prisma/adapter-ppg": "^7.3.0",
+    "@prisma/client": "^7.3.0",
+    "hono": "^4.11.5"
+  },
+  "devDependencies": {
+    "wrangler": "^4.4.0"
+  }
+}
