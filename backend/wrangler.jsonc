@@ -12,7 +12,11 @@
       "binding": "GENERATE_QUIZ",
       "class_name": "GenerateQuizWorkflow"
     }
-  ]
+  ],
+  "keep_vars": true,
+  "triggers": {
+    "crons": ["*/10 * * * *"]
+  }
   // "vars": {
   //   "MY_VAR": "my-variable"
   // },
