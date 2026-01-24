@@ -9,9 +9,9 @@
   },
   "workflows": [
     {
-      "name": "my-workflow",
-      "binding": "MY_WORKFLOW",
-      "class_name": "MyWorkflow"
+      "name": "generate-quiz",
+      "binding": "GENERATE_QUIZ",
+      "class_name": "GenerateQuizWorkflow"
     }
   ]
   // "vars": {
