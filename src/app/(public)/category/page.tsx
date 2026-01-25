@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Sparkles, ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
-import { Category } from "@/queries/categories.query";
+import { Category, getCategories } from "@/queries/categories.query";
+import { connection } from "next/server";
 
 export const metadata: Metadata = {
   title: "All Quiz Categories - Quizzy",
@@ -10,14 +11,15 @@ export const metadata: Metadata = {
 };
 
 export default async function CategoriesPage() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/categories`);
-  const categories: Category[] = await res.json();
+  await connection();
+
+  const categories = await getCategories();
 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-700 dark:via-purple-700 dark:to-pink-700 text-white overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20 dark:from-black/30 dark:to-black/40" />
+      <section className="relative bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-700 dark:via-purple-700 dark:to-pink-700 text-white overflow-hidden">
+        <div className="absolute inset-0 bg-linear-to-b from-black/10 via-transparent to-black/20 dark:from-black/30 dark:to-black/40" />
         <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-white/10 dark:bg-white/5 blur-3xl" />
         <div className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-white/5 dark:bg-white/3 blur-3xl" />
 

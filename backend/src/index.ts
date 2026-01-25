@@ -19,19 +19,10 @@ app.get("/categories", async (c) => {
   return c.json(categories);
 });
 
-// Trigger quiz generation workflow
-app.get("/trigger", async (c) => {
-  return c.json(await c.env.GENERATE_QUIZ.create());
-});
-
 export default {
   fetch: app.fetch,
   async scheduled(controller: ScheduledController, env: Cloudflare.Env, ctx: ExecutionContext) {
     // trigger workflow every 10 minutes
-    ctx.waitUntil(
-      env.GENERATE_QUIZ.create({
-        id: "generate-quiz-cron"
-      })
-    );
+    await env.GENERATE_QUIZ.create()
   }
 };

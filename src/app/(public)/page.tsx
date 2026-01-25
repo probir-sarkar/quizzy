@@ -5,11 +5,11 @@ import QuizListing from "@/components/home-page/quiz-listing";
 
 import { getHomePageData, HomePageData } from "@/queries/home-page";
 import { getStats, Stats } from "@/queries/stats";
+import { cacheLife } from "next/cache";
 import { connection } from "next/server";
 
 export default async function Home() {
   await connection();
-
   const [data, stats] = await Promise.all([getHomePageData(), getStats()]);
 
   return (
