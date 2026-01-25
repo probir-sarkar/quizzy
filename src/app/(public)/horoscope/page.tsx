@@ -2,14 +2,12 @@ import { getAllHoroscopesForDate } from "@/queries/horoscope";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { cacheTag, cacheLife } from "next/cache";
 import { format, parseISO, isValid, startOfMonth, addDays, subDays, parse } from "date-fns";
 import { ZodiacSign } from "@/generated/prisma/client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { UTCDate } from "@date-fns/utc";
-import { headers } from "next/headers";
 
 async function getHoroscopesForDateCached(date: Date) {
   return getAllHoroscopesForDate(date);

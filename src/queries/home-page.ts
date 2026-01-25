@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { cacheLife } from "next/cache";
 
 export async function getCategories() {
   return prisma.category.findMany({

@@ -2,7 +2,6 @@ import CategoryHero from "@/components/category/CategoryHero";
 import SubCategoryFilters from "@/components/category/sub-category-filter";
 import { QuizCard } from "@/components/home-page/quiz-listing";
 import { getQuizzesByCategory } from "@/queries/categories.query";
-import { cacheLife } from "next/cache";
 import { notFound } from "next/navigation";
 type Props = {
   params: Promise<{ slug: string }>;
