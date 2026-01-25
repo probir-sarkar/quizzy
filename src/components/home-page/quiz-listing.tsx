@@ -58,7 +58,7 @@ export function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay
   const shineColors = resolvedTheme === "dark" ? darkShineColors : lightShineColors;
 
   return (
-    <Link prefetch href={`/quiz/${quiz.slug}`} className="w-full h-full">
+    <Link  href={`/quiz/${quiz.slug}`} className="w-full h-full">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
