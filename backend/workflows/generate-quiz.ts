@@ -35,12 +35,7 @@ export class GenerateQuizWorkflow extends WorkflowEntrypoint<Env, Params> {
     const count = randomCount();
     const { category, subCategory } = await step.do(
       "pick-random-category-and-sub",
-      {
-        retries: {
-          limit: 2,
-          delay: "1 minutes"
-        }
-      },
+
       async () => {
         // Only consider categories that have at least one subcategory
         const total = await prisma.category.count({
@@ -71,26 +66,21 @@ export class GenerateQuizWorkflow extends WorkflowEntrypoint<Env, Params> {
 
     const { existingTitles } = await step.do(
       "fetch-existing-titles",
-      {
-        retries: {
-          limit: 2,
-          delay: "1 minutes"
-        }
-      },
+
       async () => {
-      const existingQuizzes = await prisma.quiz.findMany({
-        where: {
-          categoryId: category.id,
-          subCategoryId: subCategory.id
-        },
-        select: {
-          title: true,
-          quizPageTitle: true,
-          description: true,
-          quizPageDescription: true
-        },
-        take: 10 // Get recent titles to avoid
-      });
+        const existingQuizzes = await prisma.quiz.findMany({
+          where: {
+            categoryId: category.id,
+            subCategoryId: subCategory.id
+          },
+          select: {
+            title: true,
+            quizPageTitle: true,
+            description: true,
+            quizPageDescription: true
+          },
+          take: 10 // Get recent titles to avoid
+        });
 
         return {
           existingTitles: existingQuizzes.map((quiz) => ({
@@ -105,20 +95,15 @@ export class GenerateQuizWorkflow extends WorkflowEntrypoint<Env, Params> {
 
     const quizDoc = await step.do(
       "generate-quiz-json",
-      {
-        retries: {
-          limit: 2,
-          delay: "1 minutes"
-        }
-      },
+
       async () => {
-      const result = await generateText({
-        model: model,
-        output: Output.object({
-          schema: QuizDoc
-        }),
-        system: `Strict JSON only. No markdown. No extra commentary.`,
-        prompt: `
+        const result = await generateText({
+          model: model,
+          output: Output.object({
+            schema: QuizDoc
+          }),
+          system: `Strict JSON only. No markdown. No extra commentary.`,
+          prompt: `
 Create ONE complete, TEXT-ONLY, publish-ready quiz.
 Category: ${category.name}
 Subcategory: ${subCategory.name}
@@ -157,52 +142,48 @@ Uniqueness rules:
 
 Return ONLY schema-valid JSON. No extra fields, no comments.
 `
-      });
-      return result.output;
-    });
+        });
+        return result.output;
+      }
+    );
     // STEP 2: Save quiz in DB
     const savedQuiz = await step.do(
       "save-quiz-db",
-      {
-        retries: {
-          limit: 2,
-          delay: "1 minutes"
-        }
-      },
-      async () =>
-      prisma.quiz.create({
-        data: {
-          quizPageTitle: quizDoc.quizPageTitle,
-          quizPageDescription: quizDoc.quizPageDescription,
-          categoryId: category.id,
-          subCategoryId: subCategory.id,
-          tags: {
-            create: quizDoc.tags.map((name) => ({
-              tag: {
-                connectOrCreate: {
-                  where: { name },
-                  create: { name }
-                }
-              }
-            }))
-          },
 
-          difficulty: quizDoc.difficulty,
-          title: quizDoc.title,
-          description: quizDoc.description,
-          slug: kebabCase(quizDoc.quizPageTitle),
-          isPublished: false,
-          questions: {
-            create: quizDoc.questions.map((q) => ({
-              text: q.prompt,
-              options: q.options,
-              correctIndex: q.correctIndex,
-              explanation: q.explanation ?? null
-            }))
-          }
-        },
-        include: { questions: true }
-      })
+      async () =>
+        prisma.quiz.create({
+          data: {
+            quizPageTitle: quizDoc.quizPageTitle,
+            quizPageDescription: quizDoc.quizPageDescription,
+            categoryId: category.id,
+            subCategoryId: subCategory.id,
+            tags: {
+              create: quizDoc.tags.map((name) => ({
+                tag: {
+                  connectOrCreate: {
+                    where: { name },
+                    create: { name }
+                  }
+                }
+              }))
+            },
+
+            difficulty: quizDoc.difficulty,
+            title: quizDoc.title,
+            description: quizDoc.description,
+            slug: kebabCase(quizDoc.quizPageTitle),
+            isPublished: false,
+            questions: {
+              create: quizDoc.questions.map((q) => ({
+                text: q.prompt,
+                options: q.options,
+                correctIndex: q.correctIndex,
+                explanation: q.explanation ?? null
+              }))
+            }
+          },
+          include: { questions: true }
+        })
     );
   }
 }
