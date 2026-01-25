@@ -23,7 +23,6 @@
         "date-fns": "^4.1.0",
         "embla-carousel-react": "^8.6.0",
         "es-toolkit": "^1.39.10",
-        "framer-motion": "^12.23.24",
         "lucide-react": "^0.545.0",
         "motion": "^12.23.22",
         "next": "^16.1.2",
