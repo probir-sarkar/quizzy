@@ -3,12 +3,14 @@ import CategoryFilters from "@/components/home-page/category-filter";
 import HeroSection from "@/components/home-page/hero-section";
 import QuizListing from "@/components/home-page/quiz-listing";
 
-import { HomePageData } from "@/queries/home-page";
-import { Stats } from "@/queries/stats";
+import { getHomePageData, HomePageData } from "@/queries/home-page";
+import { getStats, Stats } from "@/queries/stats";
+import { connection } from "next/server";
 
 export default async function Home() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/home`);
-  const { data, stats }: { data: HomePageData; stats: Stats } = await res.json();
+  await connection();
+
+  const [data, stats] = await Promise.all([getHomePageData(), getStats()]);
 
   return (
     <>
