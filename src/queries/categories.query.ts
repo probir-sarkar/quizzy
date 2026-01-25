@@ -1,6 +1,7 @@
 // lib/queries/categories.ts
 import { QuizWhereInput } from "@/generated/prisma/models";
 import prisma from "@/lib/prisma";
+import { cacheLife } from "next/cache";
 
 export type GetQuizzesByCategoryOpts = {
   categorySlug: string;
@@ -86,6 +87,8 @@ export async function getQuizzesByCategory({
 export type QuizByCategory = Awaited<ReturnType<typeof getQuizzesByCategory>>["items"][number];
 
 export async function getCategories() {
+  "use cache";
+  cacheLife("hours");
   return prisma.category.findMany({
     include: {
       subCategories: true,
