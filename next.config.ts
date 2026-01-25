@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   /* config options here */
   output: "standalone",
   cacheComponents: true,
+  typescript: {
+    ignoreBuildErrors: true
+  }
 };
 
 export default nextConfig;

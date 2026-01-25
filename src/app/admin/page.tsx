@@ -10,8 +10,10 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { connection } from "next/server";
 
 export default async function AdminDashboardPage() {
+  await connection();
   const analytics = await getDashboardAnalytics();
 
   const statsCards = [
