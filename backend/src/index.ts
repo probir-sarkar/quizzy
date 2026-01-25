@@ -23,6 +23,6 @@ export default {
   fetch: app.fetch,
   async scheduled(controller: ScheduledController, env: Cloudflare.Env, ctx: ExecutionContext) {
     // trigger workflow every 10 minutes
-    ctx.waitUntil(env.GENERATE_QUIZ.create());
+    await env.GENERATE_QUIZ.create()
   }
 };

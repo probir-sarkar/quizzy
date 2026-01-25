@@ -38,7 +38,7 @@ export class GenerateQuizWorkflow extends WorkflowEntrypoint<Env, Params> {
       {
         retries: {
           limit: 2,
-          delay: "10 minutes"
+          delay: "1 minutes"
         }
       },
       async () => {
@@ -74,7 +74,7 @@ export class GenerateQuizWorkflow extends WorkflowEntrypoint<Env, Params> {
       {
         retries: {
           limit: 2,
-          delay: "10 minutes"
+          delay: "1 minutes"
         }
       },
       async () => {
@@ -108,7 +108,7 @@ export class GenerateQuizWorkflow extends WorkflowEntrypoint<Env, Params> {
       {
         retries: {
           limit: 2,
-          delay: "10 minutes"
+          delay: "1 minutes"
         }
       },
       async () => {
@@ -166,7 +166,7 @@ Return ONLY schema-valid JSON. No extra fields, no comments.
       {
         retries: {
           limit: 2,
-          delay: "10 minutes"
+          delay: "1 minutes"
         }
       },
       async () =>
