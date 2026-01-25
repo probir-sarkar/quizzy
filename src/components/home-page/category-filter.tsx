@@ -20,7 +20,7 @@ export default async function CategoryFilters() {
   return (
     <div className="px-4 mt-6 container mx-auto">
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-        <Link href="/category" prefetch scroll={false}>
+        <Link href="/category"  scroll={false}>
           <Badge className={badgeStyles}>All</Badge>
         </Link>
 
