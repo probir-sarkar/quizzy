@@ -33,34 +33,51 @@ export class GenerateQuizWorkflow extends WorkflowEntrypoint<Env, Params> {
     const nonce = `${today}-${Math.random().toString(36).slice(2)}`;
     const difficulty = randomDifficulty();
     const count = randomCount();
-    const { category, subCategory } = await step.do("pick-random-category-and-sub", async () => {
-      // Only consider categories that have at least one subcategory
-      const total = await prisma.category.count({
-        where: { subCategories: { some: {} } }
-      });
-      if (total === 0) {
-        throw new Error("No categories with subcategories found. Seed some data first.");
+    const { category, subCategory } = await step.do(
+      "pick-random-category-and-sub",
+      {
+        retries: {
+          limit: 2,
+          delay: "10 minutes"
+        }
+      },
+      async () => {
+        // Only consider categories that have at least one subcategory
+        const total = await prisma.category.count({
+          where: { subCategories: { some: {} } }
+        });
+        if (total === 0) {
+          throw new Error("No categories with subcategories found. Seed some data first.");
+        }
+
+        const skipCat = Math.floor(Math.random() * total);
+
+        const pickedCategory = await prisma.category.findFirst({
+          where: { subCategories: { some: {} } },
+          skip: skipCat,
+          orderBy: { id: "asc" }, // deterministic base ordering
+          include: { subCategories: { select: { id: true, name: true, slug: true } } }
+        });
+        if (!pickedCategory || pickedCategory.subCategories.length === 0) {
+          throw new Error("Selected category has no subcategories (unexpected).");
+        }
+
+        const subIdx = Math.floor(Math.random() * pickedCategory.subCategories.length);
+        const pickedSub = pickedCategory.subCategories[subIdx];
+
+        return { category: pickedCategory, subCategory: pickedSub };
       }
+    );
 
-      const skipCat = Math.floor(Math.random() * total);
-
-      const pickedCategory = await prisma.category.findFirst({
-        where: { subCategories: { some: {} } },
-        skip: skipCat,
-        orderBy: { id: "asc" }, // deterministic base ordering
-        include: { subCategories: { select: { id: true, name: true, slug: true } } }
-      });
-      if (!pickedCategory || pickedCategory.subCategories.length === 0) {
-        throw new Error("Selected category has no subcategories (unexpected).");
-      }
-
-      const subIdx = Math.floor(Math.random() * pickedCategory.subCategories.length);
-      const pickedSub = pickedCategory.subCategories[subIdx];
-
-      return { category: pickedCategory, subCategory: pickedSub };
-    });
-
-    const { existingTitles } = await step.do("fetch-existing-titles", async () => {
+    const { existingTitles } = await step.do(
+      "fetch-existing-titles",
+      {
+        retries: {
+          limit: 2,
+          delay: "10 minutes"
+        }
+      },
+      async () => {
       const existingQuizzes = await prisma.quiz.findMany({
         where: {
           categoryId: category.id,
@@ -75,17 +92,26 @@ export class GenerateQuizWorkflow extends WorkflowEntrypoint<Env, Params> {
         take: 10 // Get recent titles to avoid
       });
 
-      return {
-        existingTitles: existingQuizzes.map((quiz) => ({
-          title: quiz.title,
-          quizPageTitle: quiz.quizPageTitle,
-          description: quiz.description,
-          quizPageDescription: quiz.quizPageDescription
-        }))
-      };
-    });
+        return {
+          existingTitles: existingQuizzes.map((quiz) => ({
+            title: quiz.title,
+            quizPageTitle: quiz.quizPageTitle,
+            description: quiz.description,
+            quizPageDescription: quiz.quizPageDescription
+          }))
+        };
+      }
+    );
 
-    const quizDoc = await step.do("generate-quiz-json", async () => {
+    const quizDoc = await step.do(
+      "generate-quiz-json",
+      {
+        retries: {
+          limit: 2,
+          delay: "10 minutes"
+        }
+      },
+      async () => {
       const result = await generateText({
         model: model,
         output: Output.object({
@@ -135,7 +161,15 @@ Return ONLY schema-valid JSON. No extra fields, no comments.
       return result.output;
     });
     // STEP 2: Save quiz in DB
-    const savedQuiz = await step.do("save-quiz-db", async () =>
+    const savedQuiz = await step.do(
+      "save-quiz-db",
+      {
+        retries: {
+          limit: 2,
+          delay: "10 minutes"
+        }
+      },
+      async () =>
       prisma.quiz.create({
         data: {
           quizPageTitle: quizDoc.quizPageTitle,
