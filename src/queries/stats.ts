@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { cacheLife, cacheTag } from "next/cache";
 
 export async function getStats() {
   const [totalQuizzes, totalCategories, totalSubCategories] = await Promise.all([

@@ -24,7 +24,8 @@
       "Bash(npx shadcn@latest:*)",
       "Bash(ls:*)",
       "Bash(bun run lint)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(bunx eslint:*)"
     ],
     "deny": [],
     "ask": []

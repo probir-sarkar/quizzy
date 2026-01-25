@@ -1,4 +1,3 @@
-import { cacheLife, cacheTag } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { PastEvent, EventCategory } from '@/generated/prisma/client'
 
