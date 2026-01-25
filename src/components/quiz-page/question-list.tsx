@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { QuestionType } from "@/queries/home-page";
 import { useEffect } from "react";
 import { useQuizStore } from "@/stores/quiz-store";
