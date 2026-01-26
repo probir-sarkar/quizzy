@@ -2,6 +2,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Suspense } from "react";
 
 import Navbar from "@/components/common/navbar";
+import Footer from "@/components/common/footer";
 
 export default function PublicLayout({
   children
@@ -10,8 +11,11 @@ export default function PublicLayout({
 }>) {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-      <Navbar />
-      <main>{children}</main>
+      <div className="flex min-h-screen flex-col">
+        <Navbar />
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </div>
     </ThemeProvider>
   );
 }

@@ -23,7 +23,7 @@ export default async function CategoriesPage() {
         <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-white/10 dark:bg-white/5 blur-3xl" />
         <div className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-white/5 dark:bg-white/3 blur-3xl" />
 
-        <div className="relative container mx-auto px-6 py-20">
+        <div className="relative container mx-auto px-6 pt-32 pb-20">
           <div className="mb-6">
             <Link
               href="/"

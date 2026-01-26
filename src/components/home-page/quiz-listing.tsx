@@ -58,55 +58,45 @@ export function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay
   const shineColors = resolvedTheme === "dark" ? darkShineColors : lightShineColors;
 
   return (
-    <Link href={`/quiz/${quiz.slug}`} className="w-full h-full">
+    <Link href={`/quiz/${quiz.slug}`} className="w-full h-full block">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay }}
-        whileHover={{ scale: 1.02, y: -4 }}
-        whileTap={{ scale: 0.98 }}
+        transition={{ delay, duration: 0.5 }}
+        whileHover={{ y: -8, transition: { duration: 0.2 } }}
         className="w-full h-full"
       >
-        <Card className="relative w-full h-full overflow-hidden cursor-pointer border bg-white dark:bg-gray-900 rounded-2xl shadow-lg pt-0">
-          {/* Animated border overlay */}
-          {/* <ShineBorder shineColor={shineColors} borderWidth={2} duration={14} /> */}
+        <Card className="group relative w-full h-full overflow-hidden cursor-pointer border-0 bg-white dark:bg-gray-900 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300">
+          <ShineBorder
+            shineColor={shineColors}
+            borderWidth={1.5}
+            duration={10}
+            className="opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          />
 
           {/* Top gradient banner */}
-          <CardHeader className={`aspect-3/1 bg-linear-to-br ${getGradient(index)} relative overflow-hidden`}>
-            <div className="absolute inset-0 bg-black/10" />
-            <div className="absolute top-3 right-3">
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                className="p-2 rounded-full bg-white/20 backdrop-blur-sm"
-                onClick={(e) => e.stopPropagation()}
-                aria-label="Bookmark quiz"
-              >
-                <Bookmark className="w-4 h-4 text-white" />
-              </motion.button>
+          <CardHeader className={`aspect-video bg-linear-to-br ${getGradient(index)} relative overflow-hidden p-0`}>
+            <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors duration-300" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent p-6 flex items-end">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-white/90 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
+                {quiz.category?.name}
+              </span>
             </div>
           </CardHeader>
 
-          <CardContent className="">
-            <div className="flex items-center gap-2">
-              <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 line-clamp-1">
-                {quiz.category?.name}
-              </span>
+          <CardContent className="p-6">
+            <div className="flex items-center gap-2 mb-3">
               <DifficultyBadge difficulty={quiz.difficulty} />
-            </div>
-
-            <h3 className="font-bold text-lg mb-1 text-gray-900 dark:text-white">{quiz.title}</h3>
-            <p className="text-sm mb-3 text-gray-600 dark:text-gray-400 line-clamp-3">{quiz.description}</p>
-
-            <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-              <span className="flex items-center gap-1">
-                <Target className="w-4 h-4" />
-                {quiz._count.questions} Questions
-              </span>
-              <span className="flex items-center gap-1">
-                <TrendingUp className="w-4 h-4" />
-                {/* {quiz.plays} */}
+              <span className="text-[10px] text-slate-400 font-medium uppercase tracking-tighter flex items-center gap-1">
+                <Target className="w-3 h-3" />
+                {quiz._count.questions} Qs
               </span>
             </div>
+
+            <h3 className="font-bold text-xl mb-2 text-gray-900 dark:text-white group-hover:text-violet-500 dark:group-hover:text-violet-400 transition-colors line-clamp-2">
+              {quiz.title}
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-0">{quiz.description}</p>
           </CardContent>
         </Card>
       </motion.div>

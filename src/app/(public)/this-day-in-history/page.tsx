@@ -1,44 +1,146 @@
-
 import { getPastEventsByMonthDay } from "@/queries/past-events";
 import { DatePickerClient } from "@/components/this-day-in-history/date-picker-client";
-import { Calendar, Sparkles, ExternalLink, Globe, Clock, Hash, History, Star, ChevronRight, CalendarDays, BookOpen } from "lucide-react";
+import {
+  Calendar,
+  Sparkles,
+  ExternalLink,
+  Globe,
+  Clock,
+  Hash,
+  History,
+  Star,
+  ChevronRight,
+  CalendarDays,
+  BookOpen
+} from "lucide-react";
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 };
 
 const monthNames = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
 ];
 
 const getCategoryData = (category: string) => {
   const categoryData = {
-    war: { color: 'text-red-600 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-900/20', icon: '⚔️', label: 'War & Conflict' },
-    discovery: { color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/20', icon: '🔍', label: 'Discovery' },
-    politics: { color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20', icon: '🏛️', label: 'Politics' },
-    science: { color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-50 dark:bg-purple-900/20', icon: '🔬', label: 'Science' },
-    art: { color: 'text-pink-600 dark:text-pink-400', bg: 'bg-pink-50 dark:bg-pink-900/20', icon: '🎨', label: 'Art & Culture' },
-    sports: { color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20', icon: '⚽', label: 'Sports' },
-    technology: { color: 'text-cyan-600 dark:text-cyan-400', bg: 'bg-cyan-50 dark:bg-cyan-900/20', icon: '💻', label: 'Technology' },
-    medicine: { color: 'text-green-600 dark:text-green-400', bg: 'bg-green-50 dark:bg-green-900/20', icon: '🏥', label: 'Medicine' },
-    exploration: { color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-50 dark:bg-indigo-900/20', icon: '🗺️', label: 'Exploration' },
-    literature: { color: 'text-yellow-600 dark:text-yellow-400', bg: 'bg-yellow-50 dark:bg-yellow-900/20', icon: '📚', label: 'Literature' },
-    music: { color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-900/20', icon: '🎵', label: 'Music' },
-    economy: { color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/20', icon: '💰', label: 'Economy' },
-    religion: { color: 'text-slate-600 dark:text-slate-400', bg: 'bg-slate-50 dark:bg-slate-900/20', icon: '⛪', label: 'Religion' },
-    disaster: { color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-50 dark:bg-rose-900/20', icon: '🌪️', label: 'Disaster' },
-    revolution: { color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-900/20', icon: '✊', label: 'Revolution' },
-    invention: { color: 'text-teal-600 dark:text-teal-400', bg: 'bg-teal-50 dark:bg-teal-900/20', icon: '💡', label: 'Invention' }
+    war: {
+      color: "text-red-600 dark:text-red-400",
+      bg: "bg-red-50 dark:bg-red-900/20",
+      icon: "⚔️",
+      label: "War & Conflict"
+    },
+    discovery: {
+      color: "text-emerald-600 dark:text-emerald-400",
+      bg: "bg-emerald-50 dark:bg-emerald-900/20",
+      icon: "🔍",
+      label: "Discovery"
+    },
+    politics: {
+      color: "text-blue-600 dark:text-blue-400",
+      bg: "bg-blue-50 dark:bg-blue-900/20",
+      icon: "🏛️",
+      label: "Politics"
+    },
+    science: {
+      color: "text-purple-600 dark:text-purple-400",
+      bg: "bg-purple-50 dark:bg-purple-900/20",
+      icon: "🔬",
+      label: "Science"
+    },
+    art: {
+      color: "text-pink-600 dark:text-pink-400",
+      bg: "bg-pink-50 dark:bg-pink-900/20",
+      icon: "🎨",
+      label: "Art & Culture"
+    },
+    sports: {
+      color: "text-orange-600 dark:text-orange-400",
+      bg: "bg-orange-50 dark:bg-orange-900/20",
+      icon: "⚽",
+      label: "Sports"
+    },
+    technology: {
+      color: "text-cyan-600 dark:text-cyan-400",
+      bg: "bg-cyan-50 dark:bg-cyan-900/20",
+      icon: "💻",
+      label: "Technology"
+    },
+    medicine: {
+      color: "text-green-600 dark:text-green-400",
+      bg: "bg-green-50 dark:bg-green-900/20",
+      icon: "🏥",
+      label: "Medicine"
+    },
+    exploration: {
+      color: "text-indigo-600 dark:text-indigo-400",
+      bg: "bg-indigo-50 dark:bg-indigo-900/20",
+      icon: "🗺️",
+      label: "Exploration"
+    },
+    literature: {
+      color: "text-yellow-600 dark:text-yellow-400",
+      bg: "bg-yellow-50 dark:bg-yellow-900/20",
+      icon: "📚",
+      label: "Literature"
+    },
+    music: {
+      color: "text-violet-600 dark:text-violet-400",
+      bg: "bg-violet-50 dark:bg-violet-900/20",
+      icon: "🎵",
+      label: "Music"
+    },
+    economy: {
+      color: "text-amber-600 dark:text-amber-400",
+      bg: "bg-amber-50 dark:bg-amber-900/20",
+      icon: "💰",
+      label: "Economy"
+    },
+    religion: {
+      color: "text-slate-600 dark:text-slate-400",
+      bg: "bg-slate-50 dark:bg-slate-900/20",
+      icon: "⛪",
+      label: "Religion"
+    },
+    disaster: {
+      color: "text-rose-600 dark:text-rose-400",
+      bg: "bg-rose-50 dark:bg-rose-900/20",
+      icon: "🌪️",
+      label: "Disaster"
+    },
+    revolution: {
+      color: "text-orange-600 dark:text-orange-400",
+      bg: "bg-orange-50 dark:bg-orange-900/20",
+      icon: "✊",
+      label: "Revolution"
+    },
+    invention: {
+      color: "text-teal-600 dark:text-teal-400",
+      bg: "bg-teal-50 dark:bg-teal-900/20",
+      icon: "💡",
+      label: "Invention"
+    }
   };
-  return categoryData[category as keyof typeof categoryData] || {
-    color: 'text-slate-600 dark:text-slate-400',
-    bg: 'bg-slate-50 dark:bg-slate-900/20',
-    icon: '📌',
-    label: category
-  };
+  return (
+    categoryData[category as keyof typeof categoryData] || {
+      color: "text-slate-600 dark:text-slate-400",
+      bg: "bg-slate-50 dark:bg-slate-900/20",
+      icon: "📌",
+      label: category
+    }
+  );
 };
-
 
 export default async function ThisDayInHistoryPage({ searchParams }: Props) {
   const { month, day } = await searchParams;
@@ -63,7 +165,7 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-blue-900/20 dark:to-indigo-900/20">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 pt-32 pb-8 sm:pb-12">
         {/* Enhanced Header */}
         <div className="text-center mb-6 sm:mb-8">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-600 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-4 sm:mb-6 shadow-lg">
@@ -94,7 +196,9 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
           {events.length > 0 && (
             <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm">
               <BookOpen className="w-4 h-4 text-emerald-500" />
-              <span className="text-sm font-medium text-slate-900 dark:text-white">{new Set(events.map(e => e.category)).size} categories</span>
+              <span className="text-sm font-medium text-slate-900 dark:text-white">
+                {new Set(events.map((e) => e.category)).size} categories
+              </span>
             </div>
           )}
         </div>
@@ -103,9 +207,7 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
         <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700/50 p-4 sm:p-6 mb-4 sm:mb-6">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="text-center lg:text-left">
-              <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-1">
-                📅 {formattedDate}
-              </h2>
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-1">📅 {formattedDate}</h2>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
                 Navigate through historical events
               </p>
@@ -131,11 +233,10 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
                 <CalendarDays className="w-6 h-6 sm:w-8 sm:h-8 text-slate-400" />
               </div>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200 mb-3">
-              No Events Found
-            </h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200 mb-3">No Events Found</h2>
             <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
-              No historical events are recorded for {formattedDate}. Try exploring a different date to discover fascinating moments from history!
+              No historical events are recorded for {formattedDate}. Try exploring a different date to discover
+              fascinating moments from history!
             </p>
           </div>
         ) : (
@@ -171,13 +272,17 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
                                 {event.sourceUrls && event.sourceUrls.length > 0 && (
                                   <div className="flex items-center gap-1">
                                     <Globe className="w-3 h-3 sm:w-4 sm:h-4" />
-                                    <span>{event.sourceUrls.length} source{event.sourceUrls.length === 1 ? '' : 's'}</span>
+                                    <span>
+                                      {event.sourceUrls.length} source{event.sourceUrls.length === 1 ? "" : "s"}
+                                    </span>
                                   </div>
                                 )}
                               </div>
                             </div>
 
-                            <div className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full ${categoryData.bg} ${categoryData.color} text-xs font-semibold whitespace-nowrap shadow-md border border-white/30 dark:border-slate-600/50 backdrop-blur-sm self-start shrink-0`}>
+                            <div
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full ${categoryData.bg} ${categoryData.color} text-xs font-semibold whitespace-nowrap shadow-md border border-white/30 dark:border-slate-600/50 backdrop-blur-sm self-start shrink-0`}
+                            >
                               <span className="text-sm sm:text-base leading-none">{categoryData.icon}</span>
                               <span className="max-w-[80px] sm:max-w-[120px] truncate">{categoryData.label}</span>
                             </div>
@@ -203,8 +308,7 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
                             ))}
                             {event.tags.length > 6 && (
                               <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs rounded-full border border-slate-200 dark:border-slate-600">
-                                <Hash className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0" />
-                                +{event.tags.length - 6}
+                                <Hash className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0" />+{event.tags.length - 6}
                               </span>
                             )}
                           </div>
@@ -258,7 +362,6 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
           </div>
         )}
       </div>
-
-      </div>
+    </div>
   );
 }

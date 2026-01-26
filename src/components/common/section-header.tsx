@@ -1,24 +1,26 @@
-import { Link as LinkIcon } from "lucide-react";
+import { Link as LinkIcon, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 function SectionHeader({ id, title }: { id: string; title: string }) {
   return (
-    <header className="mb-4 flex items-center justify-between" aria-labelledby={`${id}-title`}>
-      <h2 id={`${id}-title`} className="text-xl font-medium tracking-tight text-neutral-700 dark:text-neutral-100">
-        {title}
-      </h2>
+    <header className="mb-8 flex items-end justify-between px-4 sm:px-0" aria-labelledby={`${id}-title`}>
+      <div className="space-y-1">
+        <h2 id={`${id}-title`} className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+          {title}
+        </h2>
+        <div className="h-1.5 w-12 rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-600" />
+      </div>
 
       <Link
         href={`/category/${id}`}
-        className="inline-flex items-center gap-1 rounded-full border px-2 py-1 text-xs
-                   text-neutral-600 dark:text-neutral-300
-                   border-neutral-200 dark:border-neutral-700
-                   hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+        className="group inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 text-xs font-bold uppercase tracking-widest
+                   text-slate-600 dark:text-slate-400
+                   bg-white/5 backdrop-blur-md
+                   hover:bg-violet-600 hover:text-white hover:border-violet-500 transition-all duration-300"
         aria-label={`Link to ${title}`}
-        title={id}
       >
-        <LinkIcon className="h-3.5 w-3.5" />
-        <span className="hidden sm:inline">View all</span>
+        <span>Explore All</span>
+        <ChevronRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
       </Link>
     </header>
   );

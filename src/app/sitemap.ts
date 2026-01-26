@@ -6,10 +6,11 @@ import { BASE_URL } from "@/lib/constants";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const categories = await prisma.category.findMany({
     orderBy: { id: "asc" },
-    select: { slug: true }
+    select: { slug: true, createdAt: true }
   });
 
   return categories.map((q) => ({
     url: `${BASE_URL}/category/${q.slug}`,
+    lastModified: q.createdAt
   }));
 }
