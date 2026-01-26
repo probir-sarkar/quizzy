@@ -22,9 +22,15 @@ function randomCount(): number {
 }
 
 export class GenerateQuizWorkflow extends WorkflowEntrypoint<Env, Params> {
-  async run(_event: WorkflowEvent<Params>, step: WorkflowStep) {
+  async run(event: WorkflowEvent<Params>, step: WorkflowStep) {
     const prisma = getPrisma();
     const model = getOpenAI();
+    const today = new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+    const nonce = `${today}-${Math.random().toString(36).slice(2)}`;
     const difficulty = randomDifficulty();
     const count = randomCount();
     const { category, subCategory } = await step.do(
@@ -89,62 +95,116 @@ export class GenerateQuizWorkflow extends WorkflowEntrypoint<Env, Params> {
 
     const quizDoc = await step.do(
       "generate-quiz-json",
+
       async () => {
         const result = await generateText({
-          model: model,
+          model,
+          temperature: 0.4,
           output: Output.object({ schema: QuizDoc }),
-          system: "JSON output only. No markdown.",
-          prompt: `Category: ${category.name} | Subcategory: ${subCategory.name} | Difficulty: ${difficulty} | Questions: ${count}
 
-Avoid these titles:
-${existingTitles.map((t) => `• ${t.quizPageTitle}`).join("\n") || "• None"}
+          system: `
+You are a JSON generator for a production system.
+You MUST output ONLY valid JSON matching the provided schema.
+DO NOT include explanations, reasoning, markdown, comments, or extra keys.
+If unsure, make a best valid guess and still return JSON.
+`,
 
-Requirements:
-• quizPageTitle: catchy, unique, ≤70 chars
-• quizPageDescription: meta style, 120-160 chars
-• title: on-page heading, different phrasing
-• description: brief 1-line summary, 20-50 chars
-• tags: 3-6 relevant keywords
-• questions: ${count} objective MCQs with 2-6 options, correctIndex 0-based
-• All plain text, no markdown
+          prompt: `
+TASK:
+Generate exactly ONE complete quiz object.
 
-Return valid JSON.`
+CONTEXT:
+Category: ${category.name}
+Subcategory: ${subCategory.name}
+Difficulty: ${difficulty}
+Question count: ${count}
+Date: ${today}
+Nonce: ${nonce}
+
+DUPLICATION AVOIDANCE:
+Do NOT reuse or closely resemble any of the following titles, descriptions, or themes:
+${
+  existingTitles.length
+    ? existingTitles.map((t, i) => `${i + 1}. "${t.title}" | "${t.quizPageTitle}" | "${t.description}"`).join("\n")
+    : "None"
+}
+
+STRICT RULES:
+- Output ONLY JSON, no surrounding text
+- Must match the schema exactly
+- No markdown, no bullet points, no emojis
+- No references to AI, model, or instructions
+- No meta language like "this quiz" or "in this quiz"
+- No placeholders or TODO text
+- No repeated sentences across fields
+- Keep all text natural, human, and publish-ready
+
+QUIZ RULES:
+- quizPageTitle: SEO-friendly, unique, ≤70 chars
+- quizPageDescription: 120–160 chars, varied tone
+- title: different phrasing from quizPageTitle
+- description: different phrasing from both titles
+- tags: 1–10 short, non-redundant keywords
+- questions: exactly ${count} items
+- each question:
+  - objective, factual, single correct answer
+  - 2–6 options
+  - correctIndex must match options
+  - no opinion-based wording
+  - optional explanation (1–2 sentences, plain text)
+
+STYLE RULES:
+- Vary sentence structure across fields
+- Avoid repeating the same nouns everywhere
+- Use precise, concrete wording
+- Sound like a professional educational product
+- Ensure topic clearly matches category + subcategory
+
+FINAL CHECK:
+Return ONLY schema-valid JSON.
+No extra fields. No comments. No explanations.
+`
         });
         return result.output;
       }
     );
-    await step.do("save-quiz-db", async () =>
-      prisma.quiz.create({
-        data: {
-          quizPageTitle: quizDoc.quizPageTitle,
-          quizPageDescription: quizDoc.quizPageDescription,
-          categoryId: category.id,
-          subCategoryId: subCategory.id,
-          tags: {
-            create: quizDoc.tags.map((name) => ({
-              tag: {
-                connectOrCreate: {
-                  where: { name },
-                  create: { name }
+    // STEP 2: Save quiz in DB
+    const savedQuiz = await step.do(
+      "save-quiz-db",
+
+      async () =>
+        prisma.quiz.create({
+          data: {
+            quizPageTitle: quizDoc.quizPageTitle,
+            quizPageDescription: quizDoc.quizPageDescription,
+            categoryId: category.id,
+            subCategoryId: subCategory.id,
+            tags: {
+              create: quizDoc.tags.map((name) => ({
+                tag: {
+                  connectOrCreate: {
+                    where: { name },
+                    create: { name }
+                  }
                 }
-              }
-            }))
-          },
-          difficulty: quizDoc.difficulty,
-          title: quizDoc.title,
-          description: quizDoc.description,
-          slug: kebabCase(quizDoc.quizPageTitle),
-          isPublished: false,
-          questions: {
-            create: quizDoc.questions.map((q) => ({
-              text: q.prompt,
-              options: q.options,
-              correctIndex: q.correctIndex,
-              explanation: q.explanation ?? null
-            }))
+              }))
+            },
+
+            difficulty: quizDoc.difficulty,
+            title: quizDoc.title,
+            description: quizDoc.description,
+            slug: kebabCase(quizDoc.quizPageTitle),
+            isPublished: false,
+            questions: {
+              create: quizDoc.questions.map((q) => ({
+                text: q.prompt,
+                options: q.options,
+                correctIndex: q.correctIndex,
+                explanation: q.explanation ?? null
+              }))
+            }
           }
-        }
-      })
+        })
     );
   }
 }

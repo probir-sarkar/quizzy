@@ -12,7 +12,7 @@
     }
   ],
   "triggers": {
-    "crons": ["*/1 * * * *"]
+    "crons": ["*/10 * * * *"]
   },
   "vars": {
     "OPENAI_BASE_URL": "https://openrouter.ai/api/v1",
