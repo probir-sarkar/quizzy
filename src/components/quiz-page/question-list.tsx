@@ -99,33 +99,25 @@ function QuestionCard({
 
   return (
     <motion.div
-      className="relative rounded-2xl border border-gray-200/70 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-sm p-4 sm:p-5 md:p-6"
+      className="relative rounded-[2rem] border border-white/10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] p-8 sm:p-10"
       initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      whileHover={{ boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.5 }}
     >
-      {/* number chip */}
-      <motion.div
-        className="absolute -left-3 -top-3 select-none"
-        initial={{ scale: 0, rotate: -180 }}
-        animate={{ scale: 1, rotate: 0 }}
-        transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
-      >
-        <span className="inline-flex h-8 min-w-8 items-center justify-center rounded-full bg-gray-900 text-white dark:bg-gray-200 dark:text-gray-900 text-sm font-semibold shadow">
-          {index + 1}
-        </span>
-      </motion.div>
+      {/* Premium Number Chip */}
+      <div className="absolute -left-4 -top-4 flex items-center justify-center">
+        <div className="relative">
+          <div className="absolute inset-0 bg-violet-500 blur-lg opacity-40 animate-pulse" />
+          <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-white font-black text-lg shadow-xl border border-white/20 transform -rotate-6 group-hover:rotate-0 transition-transform">
+            {index + 1}
+          </div>
+        </div>
+      </div>
 
-      {/* question text */}
-      <motion.h2
-        className="mb-3 sm:mb-4 pr-2 text-sm sm:text-base md:text-lg font-semibold text-gray-900 dark:text-gray-100 leading-relaxed"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.15 }}
-      >
+      <h2 className="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white mb-8 pr-4 leading-tight tracking-tight">
         {q.text}
-      </motion.h2>
+      </h2>
 
       {/* options */}
       <fieldset className="space-y-2">
@@ -177,11 +169,11 @@ function QuestionCard({
                 ? "border-green-600 bg-green-600"
                 : "border-red-600 bg-red-600"
               : isCorrect
-              ? "border-green-500 bg-green-500"
-              : "border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-900"
+                ? "border-green-500 bg-green-500"
+                : "border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-900"
             : isPicked
-            ? "border-gray-900 bg-gray-900 dark:border-gray-100 dark:bg-gray-100"
-            : "border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-900";
+              ? "border-gray-900 bg-gray-900 dark:border-gray-100 dark:bg-gray-100"
+              : "border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-900";
 
           return (
             <motion.button

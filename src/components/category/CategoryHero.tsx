@@ -40,7 +40,7 @@ export default function CategoryHero({ category }: { category: CategoryPageType 
       <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-white/10 blur-3xl" />
       <div className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-white/5 blur-3xl" />
 
-      <div className="relative container mx-auto px-6 py-14">
+      <div className="relative container mx-auto px-6 pt-32 pb-14">
         {/* Home button in corner */}
         <div className="mb-8">
           <Link

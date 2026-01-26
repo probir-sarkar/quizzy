@@ -7,6 +7,8 @@ import prisma from "@/lib/prisma";
 import { QuizCard } from "@/components/home-page/quiz-listing";
 import ShareButtons from "@/components/common/ShareButtons";
 import TelegramCTA from "@/components/common/telegram-cta";
+import Breadcrumbs from "@/components/common/Breadcrumbs";
+import { Sparkles } from "lucide-react";
 type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -56,7 +58,14 @@ async function QuizPage({ params }: Props) {
 
   return (
     <section>
-      <QuizPageHero quiz={quiz} />
+      <QuizPageHero
+        quiz={quiz}
+        breadcrumbs={[
+          { label: "Categories", href: "/category" },
+          { label: quiz.category?.name || "General", href: `/category/${quiz.category?.slug}` },
+          { label: quiz.title, href: "#", active: true }
+        ]}
+      />
       <QuizQuestions questions={quiz.questions} />
 
       <div className="max-w-7xl mx-auto pl-7 pr-6">
@@ -64,12 +73,17 @@ async function QuizPage({ params }: Props) {
         <ShareButtons url={process.env.NEXT_PUBLIC_URL + "/quiz/" + slug} title={quiz.quizPageTitle} />
       </div>
       {moreQuizzes?.length > 0 && (
-        <div className="bg-purple-100 dark:bg-gray-900  py-8 px-6 shadow-sm mt-12 ">
-          <div className="max-w-7xl mx-auto  ">
-            <h2 className="text-2xl font-bold mb-6">Check These Out Too</h2>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-24 border-t border-white/5 bg-slate-900/30 py-20 px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center gap-3 mb-10">
+              <div className="p-2 rounded-xl bg-violet-600/10 border border-violet-600/20">
+                <Sparkles className="w-5 h-5 text-violet-500" />
+              </div>
+              <h2 className="text-3xl font-black text-white uppercase tracking-tight">Expand Your Mind</h2>
+            </div>
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {moreQuizzes.map((q, i) => (
-                <QuizCard key={q.id} delay={0.1} index={i} quiz={q} />
+                <QuizCard key={q.id} delay={0.1 * i} index={i} quiz={q} />
               ))}
             </div>
           </div>

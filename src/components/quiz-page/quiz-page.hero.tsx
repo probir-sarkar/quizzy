@@ -1,117 +1,149 @@
 "use client";
 
-import { Sparkles, ChevronLeft } from "lucide-react";
+import { Sparkles, Target, Layers, Trophy } from "lucide-react";
 import { QuizPageType } from "@/queries/home-page";
-import { useCallback } from "react";
-import Link from "next/link";
 import { QuizDifficulty } from "@/generated/prisma/enums";
+import { motion } from "motion/react";
 
-export default function QuizHero({ quiz }: { quiz: QuizPageType }) {
+import { BreadcrumbItem } from "../common/Breadcrumbs";
+import Breadcrumbs from "../common/Breadcrumbs";
+
+export default function QuizHero({ quiz, breadcrumbs }: { quiz: QuizPageType; breadcrumbs: BreadcrumbItem[] }) {
   if (!quiz) return null;
 
-  // Difficulty → gradient background
-  const gradient =
-    quiz.difficulty === QuizDifficulty.easy
-      ? "bg-gradient-to-r from-emerald-500 to-teal-600"
-      : quiz.difficulty === QuizDifficulty.medium
-      ? "bg-gradient-to-r from-amber-500 to-orange-600"
-      : quiz.difficulty === QuizDifficulty.hard
-      ? "bg-gradient-to-r from-rose-500 to-fuchsia-600"
-      : "bg-gradient-to-r from-indigo-500 to-purple-600";
+  const difficultyColors = {
+    [QuizDifficulty.easy]: "from-emerald-400 to-teal-500",
+    [QuizDifficulty.medium]: "from-amber-400 to-orange-500",
+    [QuizDifficulty.hard]: "from-rose-400 to-fuchsia-500"
+  };
 
-  // Difficulty → chip color
-  const difficultyStyle =
-    quiz.difficulty === QuizDifficulty.easy
-      ? "bg-emerald-100/20 text-emerald-100 border-emerald-200"
-      : quiz.difficulty === QuizDifficulty.medium
-      ? "bg-amber-100/20 text-amber-100 border-amber-200"
-      : quiz.difficulty === QuizDifficulty.hard
-      ? "bg-rose-100/20 text-rose-100 border-rose-200"
-      : "bg-indigo-100/20 text-indigo-100 border-indigo-200";
+  const difficultyTextColors = {
+    [QuizDifficulty.easy]: "text-emerald-400",
+    [QuizDifficulty.medium]: "text-amber-400",
+    [QuizDifficulty.hard]: "text-rose-400"
+  };
+
+  const bgColor = difficultyColors[quiz.difficulty as QuizDifficulty] || "from-violet-400 to-fuchsia-500";
+  const textColor = difficultyTextColors[quiz.difficulty as QuizDifficulty] || "text-violet-400";
 
   return (
-    <div className={`relative ${gradient} text-white overflow-hidden`}>
-      {/* Subtle contrast overlay for readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20" />
+    <div className="relative overflow-hidden bg-slate-950 pt-32 pb-12 md:pb-20">
+      {/* Background blobs */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div
+          className={`absolute -top-1/2 -right-1/4 w-[70%] h-[70%] rounded-full bg-gradient-to-br ${bgColor} opacity-20 blur-[120px] animate-pulse`}
+        />
+        <div
+          className={`absolute -bottom-1/2 -left-1/4 w-[70%] h-[70%] rounded-full bg-gradient-to-br ${bgColor} opacity-10 blur-[120px] animate-pulse [animation-delay:2s]`}
+        />
+      </div>
 
-      {/* Decorative blur blobs (very light) */}
-      <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-white/10 blur-3xl" />
-      <div className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-white/5 blur-3xl" />
-
-      <div className="relative max-w-7xl mx-auto px-6 py-14">
-        {/* Top bar: Back pill */}
-        <div className="mb-6">
-          <Link
-            href={ `/category/${quiz.category?.slug}` }
-            className="inline-flex items-center gap-2 rounded-full bg-white/20 hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 backdrop-blur-sm px-3 py-1.5 text-sm"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Back
-          </Link>
-        </div>
-
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-10">
-          {/* Left: Title + Info */}
-          <div className="flex-1">
-            <div className="flex items-center gap-4 mb-5">
-              <h1 className="text-3xl md:text-4xl font-bold leading-snug tracking-tight">{quiz.title}</h1>
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
+        <div className="flex flex-col lg:flex-row gap-12 items-center">
+          {/* Left Side */}
+          <div className="flex-1 text-center lg:text-left">
+            <div className="mb-6 flex justify-center lg:justify-start">
+              <Breadcrumbs items={breadcrumbs} />
             </div>
 
-            <p className="max-w-2xl text-white/85 text-base md:text-lg mb-6 leading-relaxed">
-              {quiz.description ?? "Put your knowledge to the test with these fun and tricky questions!"}
-            </p>
-
-            {/* Tags */}
-            {quiz.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-7">
-                {quiz.tags.map((tag) => (
-                  <span
-                    key={tag.tagId}
-                    className="px-3 py-1.5 rounded-full text-sm font-medium bg-white/15 backdrop-blur-sm hover:bg-white/25 transition-colors capitalize"
-                  >
-                    {tag.tag.name}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* Difficulty */}
-            <div
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full border ${difficultyStyle} font-medium text-base shadow-sm`}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-6`}
             >
-              <span>Difficulty:</span>
-              <span className="font-semibold">{quiz.difficulty.toUpperCase()}</span>
-            </div>
+              <Sparkles className={`w-4 h-4 text-transparent bg-clip-text bg-gradient-to-r ${bgColor} bg-white`} />
+              <span className="text-xs font-bold tracking-widest text-white/80 uppercase">
+                {quiz.category?.name || "General"}
+              </span>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight"
+            >
+              {quiz.title}
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-lg text-slate-400 max-w-2xl mb-8 leading-relaxed"
+            >
+              {quiz.description || "Challenge yourself with this expertly curated quiz and see how you rank!"}
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex flex-wrap justify-center lg:justify-start gap-3"
+            >
+              {quiz.tags.map((tag, i) => (
+                <span
+                  key={tag.tagId}
+                  className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm font-medium text-slate-300 backdrop-blur-sm"
+                >
+                  #{tag.tag.name}
+                </span>
+              ))}
+            </motion.div>
           </div>
 
-          {/* Right: Stats + Start */}
-          <div className="flex-1 flex justify-center">
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/15 max-w-sm w-full">
-              <h3 className="text-lg font-semibold mb-4">Quiz Details</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center pb-2 border-b border-white/10">
-                  <span className="text-white/80 text-sm">Questions</span>
-                  <span className="font-bold text-lg">{quiz._count.questions}</span>
+          {/* Right Side: Stats Panel */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ type: "spring", damping: 20 }}
+            className="w-full max-w-md"
+          >
+            <div className="relative p-1 rounded-[2.5rem] bg-gradient-to-br from-white/10 to-white/0 border border-white/10 backdrop-blur-2xl overflow-hidden shadow-2xl">
+              <div className="bg-slate-900/50 rounded-[2.3rem] p-8">
+                <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-2">
+                  <Trophy className="w-5 h-5 text-amber-400" />
+                  Quiz Intelligence
+                </h3>
+
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 group hover:bg-white/10 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-violet-500/20 flex items-center justify-center border border-violet-500/20">
+                        <Target className="w-5 h-5 text-violet-400" />
+                      </div>
+                      <span className="text-sm font-medium text-slate-300">Total Questions</span>
+                    </div>
+                    <span className="text-2xl font-bold text-white">{quiz._count.questions}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 group hover:bg-white/10 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10`}
+                      >
+                        <Layers className={`w-5 h-5 ${textColor}`} />
+                      </div>
+                      <span className="text-sm font-medium text-slate-300">Difficulty Level</span>
+                    </div>
+                    <span
+                      className={`text-sm font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r ${bgColor} bg-white`}
+                    >
+                      {quiz.difficulty}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex justify-between items-center pb-2 border-b border-white/10">
-                  <span className="text-white/80 text-sm">Category</span>
-                  <span className="font-bold text-lg">{quiz.category?.name || "General"}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-white/80 text-sm">Difficulty</span>
-                  <span className="font-bold text-lg">{quiz.difficulty.toUpperCase()}</span>
-                </div>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => document.getElementById("questions")?.scrollIntoView({ behavior: "smooth" })}
+                  className={`w-full mt-10 py-4 rounded-2xl bg-gradient-to-r ${bgColor} text-white font-bold shadow-lg shadow-violet-500/20 hover:shadow-violet-500/40 transition-all text-sm uppercase tracking-widest`}
+                >
+                  Begin Knowledge Quest
+                </motion.button>
               </div>
-
-              <Link
-                href={`#questions`}
-                // onClick={handleStart}
-                className="block text-center mt-6 w-full py-2.5 bg-white text-gray-900 font-semibold rounded-lg hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 transition"
-              >
-                Start Quiz
-              </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

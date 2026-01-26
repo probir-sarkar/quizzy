@@ -137,7 +137,7 @@ export default async function HoroscopePage({ searchParams }: Props) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-950">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 pt-32 pb-8">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-block">
