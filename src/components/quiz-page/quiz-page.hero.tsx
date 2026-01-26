@@ -58,7 +58,7 @@ export default function QuizHero({ quiz }: { quiz: QuizPageType }) {
             </div>
 
             <p className="max-w-2xl text-white/85 text-base md:text-lg mb-6 leading-relaxed">
-              {quiz.description ?? "Put your knowledge to the test with these fun and tricky questions!"}
+              {quiz.quizPageDescription ?? "Put your knowledge to the test with these fun and tricky questions!"}
             </p>
 
             {/* Tags */}

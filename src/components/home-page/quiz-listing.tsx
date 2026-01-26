@@ -95,7 +95,7 @@ export function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay
             </div>
 
             <h3 className="font-bold text-lg mb-1 text-gray-900 dark:text-white">{quiz.title}</h3>
-            <p className="text-sm mb-3 text-gray-600 dark:text-gray-400">{quiz.description}</p>
+            <p className="text-sm mb-3 text-gray-600 dark:text-gray-400">{quiz.quizPageDescription}</p>
 
             <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
               <span className="flex items-center gap-1">
