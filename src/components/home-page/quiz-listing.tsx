@@ -58,7 +58,7 @@ export function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay
   const shineColors = resolvedTheme === "dark" ? darkShineColors : lightShineColors;
 
   return (
-    <Link  href={`/quiz/${quiz.slug}`} className="w-full h-full">
+    <Link href={`/quiz/${quiz.slug}`} className="w-full h-full">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -72,7 +72,7 @@ export function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay
           {/* <ShineBorder shineColor={shineColors} borderWidth={2} duration={14} /> */}
 
           {/* Top gradient banner */}
-          <CardHeader className={`aspect-[3/1] bg-gradient-to-br ${getGradient(index)} relative overflow-hidden`}>
+          <CardHeader className={`aspect-3/1 bg-linear-to-br ${getGradient(index)} relative overflow-hidden`}>
             <div className="absolute inset-0 bg-black/10" />
             <div className="absolute top-3 right-3">
               <motion.button
@@ -88,14 +88,14 @@ export function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay
 
           <CardContent className="">
             <div className="flex items-center gap-2">
-              <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+              <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 line-clamp-1">
                 {quiz.category?.name}
               </span>
               <DifficultyBadge difficulty={quiz.difficulty} />
             </div>
 
             <h3 className="font-bold text-lg mb-1 text-gray-900 dark:text-white">{quiz.title}</h3>
-            <p className="text-sm mb-3 text-gray-600 dark:text-gray-400">{quiz.quizPageDescription}</p>
+            <p className="text-sm mb-3 text-gray-600 dark:text-gray-400 line-clamp-3">{quiz.quizPageDescription}</p>
 
             <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
               <span className="flex items-center gap-1">

@@ -22,15 +22,9 @@ function randomCount(): number {
 }
 
 export class GenerateQuizWorkflow extends WorkflowEntrypoint<Env, Params> {
-  async run(event: WorkflowEvent<Params>, step: WorkflowStep) {
+  async run(_event: WorkflowEvent<Params>, step: WorkflowStep) {
     const prisma = getPrisma();
     const model = getOpenAI();
-    const today = new Date().toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    });
-    const nonce = `${today}-${Math.random().toString(36).slice(2)}`;
     const difficulty = randomDifficulty();
     const count = randomCount();
     const { category, subCategory } = await step.do(
@@ -95,95 +89,62 @@ export class GenerateQuizWorkflow extends WorkflowEntrypoint<Env, Params> {
 
     const quizDoc = await step.do(
       "generate-quiz-json",
-
       async () => {
         const result = await generateText({
           model: model,
-          output: Output.object({
-            schema: QuizDoc
-          }),
-          system: `Strict JSON only. No markdown. No extra commentary.`,
-          prompt: `
-Create ONE complete, TEXT-ONLY, publish-ready quiz.
-Category: ${category.name}
-Subcategory: ${subCategory.name}
-Difficulty: ${difficulty}
-Question count: ${count}
+          output: Output.object({ schema: QuizDoc }),
+          system: "JSON output only. No markdown.",
+          prompt: `Category: ${category.name} | Subcategory: ${subCategory.name} | Difficulty: ${difficulty} | Questions: ${count}
 
-Additional context (for freshness): Today is ${today}.
-Nonce: ${nonce}
+Avoid these titles:
+${existingTitles.map((t) => `• ${t.quizPageTitle}`).join("\n") || "• None"}
 
-EXISTING TITLES TO AVOID (prevent duplicates and confusion):
-${
-  existingTitles.length > 0
-    ? existingTitles
-        .map(
-          (t, i) =>
-            `${i + 1}. Title: "${t.title}" | Quiz Page Title: "${t.quizPageTitle}" | Description: "${t.description}"`
-        )
-        .join("\n")
-    : "No existing titles in this category/subcategory"
-}
+Requirements:
+• quizPageTitle: catchy, unique, ≤70 chars
+• quizPageDescription: meta style, 120-160 chars
+• title: on-page heading, different phrasing
+• description: brief 1-line summary, 20-50 chars
+• tags: 3-6 relevant keywords
+• questions: ${count} objective MCQs with 2-6 options, correctIndex 0-based
+• All plain text, no markdown
 
-Hard rules:
-- Provide "quizPageTitle", "quizPageDescription", "tags".
-- "title"/"description" distinct from SEO fields.
-- ${count} MCQs; each has 2–6 text options and a valid 0-based "correctIndex".
-- Optional short "explanation".
-- Plain text only; avoid markdown characters.
-- Each question must be objective and allow exactly one defensible correct option. Avoid opinion-based or preference-based wording.
-- The quiz theme must clearly reflect both the category and subcategory.
-
-Uniqueness rules:
-- Vary sentence length, verbs, and specificity across fields.
-- Avoid repeating key nouns between title/description/prompts.
-- Tags should be diverse, short, and non-redundant.
-- AVOID using similar titles or themes to the existing titles listed above.
-
-Return ONLY schema-valid JSON. No extra fields, no comments.
-`
+Return valid JSON.`
         });
         return result.output;
       }
     );
-    // STEP 2: Save quiz in DB
-    const savedQuiz = await step.do(
-      "save-quiz-db",
-
-      async () =>
-        prisma.quiz.create({
-          data: {
-            quizPageTitle: quizDoc.quizPageTitle,
-            quizPageDescription: quizDoc.quizPageDescription,
-            categoryId: category.id,
-            subCategoryId: subCategory.id,
-            tags: {
-              create: quizDoc.tags.map((name) => ({
-                tag: {
-                  connectOrCreate: {
-                    where: { name },
-                    create: { name }
-                  }
+    await step.do("save-quiz-db", async () =>
+      prisma.quiz.create({
+        data: {
+          quizPageTitle: quizDoc.quizPageTitle,
+          quizPageDescription: quizDoc.quizPageDescription,
+          categoryId: category.id,
+          subCategoryId: subCategory.id,
+          tags: {
+            create: quizDoc.tags.map((name) => ({
+              tag: {
+                connectOrCreate: {
+                  where: { name },
+                  create: { name }
                 }
-              }))
-            },
-
-            difficulty: quizDoc.difficulty,
-            title: quizDoc.title,
-            description: quizDoc.description,
-            slug: kebabCase(quizDoc.quizPageTitle),
-            isPublished: false,
-            questions: {
-              create: quizDoc.questions.map((q) => ({
-                text: q.prompt,
-                options: q.options,
-                correctIndex: q.correctIndex,
-                explanation: q.explanation ?? null
-              }))
-            }
+              }
+            }))
           },
-          include: { questions: true }
-        })
+          difficulty: quizDoc.difficulty,
+          title: quizDoc.title,
+          description: quizDoc.description,
+          slug: kebabCase(quizDoc.quizPageTitle),
+          isPublished: false,
+          questions: {
+            create: quizDoc.questions.map((q) => ({
+              text: q.prompt,
+              options: q.options,
+              correctIndex: q.correctIndex,
+              explanation: q.explanation ?? null
+            }))
+          }
+        }
+      })
     );
   }
 }
