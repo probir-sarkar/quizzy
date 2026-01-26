@@ -20,9 +20,6 @@ export async function getHomePageData() {
       }
     },
     take: 12,
-    orderBy: {
-      name: "asc"
-    },
     include: {
       quizzes: {
         take: 4,
