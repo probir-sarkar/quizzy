@@ -5,7 +5,10 @@ import { QuizPageType } from "@/queries/home-page";
 import { QuizDifficulty } from "@/generated/prisma/enums";
 import { motion } from "motion/react";
 
-export default function QuizHero({ quiz }: { quiz: QuizPageType }) {
+import { BreadcrumbItem } from "../common/Breadcrumbs";
+import Breadcrumbs from "../common/Breadcrumbs";
+
+export default function QuizHero({ quiz, breadcrumbs }: { quiz: QuizPageType; breadcrumbs: BreadcrumbItem[] }) {
   if (!quiz) return null;
 
   const difficultyColors = {
@@ -14,10 +17,17 @@ export default function QuizHero({ quiz }: { quiz: QuizPageType }) {
     [QuizDifficulty.hard]: "from-rose-400 to-fuchsia-500"
   };
 
+  const difficultyTextColors = {
+    [QuizDifficulty.easy]: "text-emerald-400",
+    [QuizDifficulty.medium]: "text-amber-400",
+    [QuizDifficulty.hard]: "text-rose-400"
+  };
+
   const bgColor = difficultyColors[quiz.difficulty as QuizDifficulty] || "from-violet-400 to-fuchsia-500";
+  const textColor = difficultyTextColors[quiz.difficulty as QuizDifficulty] || "text-violet-400";
 
   return (
-    <div className="relative overflow-hidden bg-slate-950 py-12 md:py-20">
+    <div className="relative overflow-hidden bg-slate-950 pt-32 pb-12 md:pb-20">
       {/* Background blobs */}
       <div className="absolute inset-0 overflow-hidden">
         <div
@@ -32,6 +42,10 @@ export default function QuizHero({ quiz }: { quiz: QuizPageType }) {
         <div className="flex flex-col lg:flex-row gap-12 items-center">
           {/* Left Side */}
           <div className="flex-1 text-center lg:text-left">
+            <div className="mb-6 flex justify-center lg:justify-start">
+              <Breadcrumbs items={breadcrumbs} />
+            </div>
+
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -107,9 +121,7 @@ export default function QuizHero({ quiz }: { quiz: QuizPageType }) {
                       <div
                         className={`w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10`}
                       >
-                        <Layers
-                          className={`w-5 h-5 text-transparent bg-clip-text bg-gradient-to-r ${bgColor} bg-white`}
-                        />
+                        <Layers className={`w-5 h-5 ${textColor}`} />
                       </div>
                       <span className="text-sm font-medium text-slate-300">Difficulty Level</span>
                     </div>

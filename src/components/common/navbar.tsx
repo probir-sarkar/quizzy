@@ -78,13 +78,15 @@ const Navbar = () => {
 
           <ThemeToggle />
 
-          <Button
-            variant="default"
-            size="sm"
-            className="ml-2 h-9 rounded-xl bg-violet-600 hover:bg-violet-500 text-white border-0 shadow-lg shadow-violet-600/20 text-xs font-bold"
-          >
-            All Quizzes
-          </Button>
+          <Link href="/category">
+            <Button
+              variant="default"
+              size="sm"
+              className="ml-2 h-9 rounded-xl bg-violet-600 hover:bg-violet-500 text-white border-0 shadow-lg shadow-violet-600/20 text-xs font-bold cursor-pointer transition-transform active:scale-95"
+            >
+              All Quizzes
+            </Button>
+          </Link>
         </div>
 
         {/* Mobile Toggle */}
@@ -145,9 +147,11 @@ const Navbar = () => {
                 );
               })}
             </div>
-            <Button className="w-full mt-4 h-12 rounded-2xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-sm">
-              Explore All Quizzes
-            </Button>
+            <Link href="/category" onClick={() => setIsMobileMenuOpen(false)}>
+              <Button className="w-full mt-4 h-12 rounded-2xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-sm cursor-pointer shadow-lg shadow-violet-600/20">
+                Explore All Quizzes
+              </Button>
+            </Link>
           </motion.div>
         )}
       </AnimatePresence>

@@ -58,16 +58,14 @@ async function QuizPage({ params }: Props) {
 
   return (
     <section>
-      <div className="max-w-7xl mx-auto px-6 pt-32">
-        <Breadcrumbs
-          items={[
-            { label: "Categories", href: "/category" },
-            { label: quiz.category?.name || "General", href: `/category/${quiz.category?.slug}` },
-            { label: quiz.title, href: "#", active: true }
-          ]}
-        />
-      </div>
-      <QuizPageHero quiz={quiz} />
+      <QuizPageHero
+        quiz={quiz}
+        breadcrumbs={[
+          { label: "Categories", href: "/category" },
+          { label: quiz.category?.name || "General", href: `/category/${quiz.category?.slug}` },
+          { label: quiz.title, href: "#", active: true }
+        ]}
+      />
       <QuizQuestions questions={quiz.questions} />
 
       <div className="max-w-7xl mx-auto pl-7 pr-6">
