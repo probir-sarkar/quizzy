@@ -98,49 +98,71 @@ export class GenerateQuizWorkflow extends WorkflowEntrypoint<Env, Params> {
 
       async () => {
         const result = await generateText({
-          model: model,
-          output: Output.object({
-            schema: QuizDoc
-          }),
-          system: `Strict JSON only. No markdown. No extra commentary.`,
+          model,
+          temperature: 0.4,
+          output: Output.object({ schema: QuizDoc }),
+
+          system: `
+You are a JSON generator for a production system.
+You MUST output ONLY valid JSON matching the provided schema.
+DO NOT include explanations, reasoning, markdown, comments, or extra keys.
+If unsure, make a best valid guess and still return JSON.
+`,
+
           prompt: `
-Create ONE complete, TEXT-ONLY, publish-ready quiz.
+TASK:
+Generate exactly ONE complete quiz object.
+
+CONTEXT:
 Category: ${category.name}
 Subcategory: ${subCategory.name}
 Difficulty: ${difficulty}
 Question count: ${count}
-
-Additional context (for freshness): Today is ${today}.
+Date: ${today}
 Nonce: ${nonce}
 
-EXISTING TITLES TO AVOID (prevent duplicates and confusion):
+DUPLICATION AVOIDANCE:
+Do NOT reuse or closely resemble any of the following titles, descriptions, or themes:
 ${
-  existingTitles.length > 0
-    ? existingTitles
-        .map(
-          (t, i) =>
-            `${i + 1}. Title: "${t.title}" | Quiz Page Title: "${t.quizPageTitle}" | Description: "${t.description}"`
-        )
-        .join("\n")
-    : "No existing titles in this category/subcategory"
+  existingTitles.length
+    ? existingTitles.map((t, i) => `${i + 1}. "${t.title}" | "${t.quizPageTitle}" | "${t.description}"`).join("\n")
+    : "None"
 }
 
-Hard rules:
-- Provide "quizPageTitle", "quizPageDescription", "tags".
-- "title"/"description" distinct from SEO fields.
-- ${count} MCQs; each has 2–6 text options and a valid 0-based "correctIndex".
-- Optional short "explanation".
-- Plain text only; avoid markdown characters.
-- Each question must be objective and allow exactly one defensible correct option. Avoid opinion-based or preference-based wording.
-- The quiz theme must clearly reflect both the category and subcategory.
+STRICT RULES:
+- Output ONLY JSON, no surrounding text
+- Must match the schema exactly
+- No markdown, no bullet points, no emojis
+- No references to AI, model, or instructions
+- No meta language like "this quiz" or "in this quiz"
+- No placeholders or TODO text
+- No repeated sentences across fields
+- Keep all text natural, human, and publish-ready
 
-Uniqueness rules:
-- Vary sentence length, verbs, and specificity across fields.
-- Avoid repeating key nouns between title/description/prompts.
-- Tags should be diverse, short, and non-redundant.
-- AVOID using similar titles or themes to the existing titles listed above.
+QUIZ RULES:
+- quizPageTitle: SEO-friendly, unique, ≤70 chars
+- quizPageDescription: 120–160 chars, varied tone
+- title: different phrasing from quizPageTitle
+- description: different phrasing from both titles
+- tags: 1–10 short, non-redundant keywords
+- questions: exactly ${count} items
+- each question:
+  - objective, factual, single correct answer
+  - 2–6 options
+  - correctIndex must match options
+  - no opinion-based wording
+  - optional explanation (1–2 sentences, plain text)
 
-Return ONLY schema-valid JSON. No extra fields, no comments.
+STYLE RULES:
+- Vary sentence structure across fields
+- Avoid repeating the same nouns everywhere
+- Use precise, concrete wording
+- Sound like a professional educational product
+- Ensure topic clearly matches category + subcategory
+
+FINAL CHECK:
+Return ONLY schema-valid JSON.
+No extra fields. No comments. No explanations.
 `
         });
         return result.output;
@@ -181,8 +203,7 @@ Return ONLY schema-valid JSON. No extra fields, no comments.
                 explanation: q.explanation ?? null
               }))
             }
-          },
-          include: { questions: true }
+          }
         })
     );
   }
