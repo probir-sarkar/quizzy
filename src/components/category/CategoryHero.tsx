@@ -34,42 +34,51 @@ export default function CategoryHero({ category }: { category: CategoryPageType 
   const description = `Explore quizzes in ${category.name}. Find popular quizzes, filter by difficulty, and challenge yourself!`;
 
   return (
-    <section className={`relative ${gradient} text-white overflow-hidden`}>
-      {/* Decorative layers */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/15" />
-      <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-white/10 blur-3xl" />
-      <div className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-white/5 blur-3xl" />
+    <section className="relative overflow-hidden bg-slate-950 pt-24 pb-12 md:pt-32 md:pb-20">
+      {/* Background blobs */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div
+          className={`absolute -top-1/2 -right-1/4 w-[70%] h-[70%] rounded-full opacity-20 blur-[120px] animate-pulse ${gradient}`}
+        />
+        <div
+          className={`absolute -bottom-1/2 -left-1/4 w-[70%] h-[70%] rounded-full opacity-10 blur-[120px] animate-pulse [animation-delay:2s] ${gradient}`}
+        />
+      </div>
 
-      <div className="relative container mx-auto px-6 pt-32 pb-14">
-        {/* Home button in corner */}
-        <div className="mb-8">
+      <div className="relative container mx-auto px-4 sm:px-6">
+        {/* Back button */}
+        <div className="mb-6 md:mb-8">
           <Link
             href="/category"
-            className="inline-flex items-center gap-2 rounded-full bg-white/20 hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 backdrop-blur-sm px-3 py-1.5 text-sm font-medium transition"
+            className="inline-flex items-center gap-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-300 transition-colors"
           >
-            <ChevronLeft className="w-4 h-4" />
-            Back
+            <ChevronLeft className="w-3.5 h-3.5" />
+            Back to Categories
           </Link>
         </div>
 
-        {/* Left aligned content */}
-        <div className="max-w-3xl">
-          <div className="flex items-center gap-3 mb-3">
-            <Sparkles className="w-6 h-6 opacity-90" />
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{category.name}</h1>
+        {/* Content */}
+        <div className="max-w-3xl w-full">
+          <div className="flex items-center gap-3 mb-4 md:mb-6">
+            <div className="p-2 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+              <Sparkles className={`w-5 h-5 md:w-6 md:h-6 text-white`} />
+            </div>
+            <h1 className="text-3xl md:text-5xl font-black tracking-tight text-white break-words">{category.name}</h1>
           </div>
 
-          <p className="text-white/90 text-base md:text-lg leading-relaxed mb-6 max-w-2xl">{description}</p>
+          <p className="text-slate-400 text-base md:text-xl leading-relaxed mb-8 max-w-2xl break-words">
+            {description}
+          </p>
 
-          <div className="flex flex-wrap gap-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-sm font-medium">
-              <span className="text-white font-semibold">{category.quizCount}</span>
-              <span className="text-white/80">Quizzes</span>
+          <div className="flex flex-wrap gap-3">
+            <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm flex items-center gap-2">
+              <span className={`font-bold text-lg text-white`}>{category.quizCount}</span>
+              <span className="text-slate-400 text-sm font-medium">Quizzes</span>
             </div>
 
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 text-sm font-medium">
-              <span className="text-white font-semibold">{category.subCategryCount}</span>
-              <span className="text-white/80">Subcategories</span>
+            <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm flex items-center gap-2">
+              <span className={`font-bold text-lg text-white`}>{category.subCategryCount}</span>
+              <span className="text-slate-400 text-sm font-medium">Subcategories</span>
             </div>
           </div>
         </div>
