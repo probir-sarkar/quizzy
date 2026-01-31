@@ -18,39 +18,48 @@ export default async function CategoriesPage() {
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Hero Section */}
-      <section className="relative bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 dark:from-indigo-700 dark:via-purple-700 dark:to-pink-700 text-white overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-b from-black/10 via-transparent to-black/20 dark:from-black/30 dark:to-black/40" />
-        <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-white/10 dark:bg-white/5 blur-3xl" />
-        <div className="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-white/5 dark:bg-white/3 blur-3xl" />
+      <section className="relative overflow-hidden bg-slate-950 pt-24 pb-12 md:pt-32 md:pb-20">
+        {/* Background blobs */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-1/2 -right-1/4 w-[70%] h-[70%] rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 opacity-50 blur-[120px] animate-pulse" />
+          <div className="absolute -bottom-1/2 -left-1/4 w-[70%] h-[70%] rounded-full bg-gradient-to-br from-pink-500/20 to-fuchsia-500/20 opacity-30 blur-[120px] animate-pulse [animation-delay:2s]" />
+        </div>
 
-        <div className="relative container mx-auto px-6 pt-32 pb-20">
-          <div className="mb-6">
+        <div className="relative container mx-auto px-4 sm:px-6">
+          <div className="mb-6 md:mb-8">
             <Link
               href="/"
               prefetch
-              className="inline-flex items-center gap-2 rounded-full bg-white/20 hover:bg-white/30 dark:bg-white/10 dark:hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 backdrop-blur-sm px-3 py-1.5 text-sm font-medium transition"
+              className="inline-flex items-center gap-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-300 transition-colors"
             >
-              <ChevronLeft className="w-4 h-4" /> Home
+              <ChevronLeft className="w-3.5 h-3.5" /> Back to Home
             </Link>
           </div>
 
-          <div className="max-w-3xl">
-            <div className="flex items-center gap-3 mb-3">
-              <Sparkles className="w-6 h-6 opacity-95" />
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight">All Categories</h1>
+          <div className="max-w-3xl w-full">
+            <div className="flex items-center gap-3 mb-4 md:mb-6">
+              <div className="p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20">
+                <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-indigo-400" />
+              </div>
+              <h1 className="text-3xl md:text-5xl font-black tracking-tight text-white break-words">All Categories</h1>
             </div>
 
-            <p className="text-white/90 dark:text-white/80 text-base md:text-lg leading-relaxed mb-6 max-w-2xl">
-              Explore all quiz categories and their subcategories. Choose a topic and test your knowledge!
+            <p className="text-slate-400 text-base md:text-xl leading-relaxed mb-8 max-w-2xl break-words">
+              Explore our diverse collection of quizzes. From science to pop culture, find your perfect challenge and
+              test your knowledge.
             </p>
 
-            <div className="flex flex-wrap gap-4">
-              <span className="px-4 py-1.5 bg-white/10 dark:bg-white/5 border border-white/10 dark:border-white/5 rounded-full text-sm font-medium">
-                {categories.length} Categories
-              </span>
-              <span className="px-4 py-1.5 bg-white/10 dark:bg-white/5 border border-white/10 dark:border-white/5 rounded-full text-sm font-medium">
-                {categories.reduce((acc, c) => acc + c.subCategories.length, 0)} Subcategories
-              </span>
+            <div className="flex flex-wrap gap-3">
+              <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm flex items-center gap-2">
+                <span className="text-indigo-400 font-bold text-lg">{categories.length}</span>
+                <span className="text-slate-400 text-sm font-medium">Categories</span>
+              </div>
+              <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm flex items-center gap-2">
+                <span className="text-fuchsia-400 font-bold text-lg">
+                  {categories.reduce((acc, c) => acc + c.subCategories.length, 0)}
+                </span>
+                <span className="text-slate-400 text-sm font-medium">Subcategories</span>
+              </div>
             </div>
           </div>
         </div>
