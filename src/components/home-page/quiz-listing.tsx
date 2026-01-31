@@ -75,9 +75,7 @@ export function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay
           />
 
           {/* Top gradient banner */}
-          <CardHeader
-            className={`xl:aspect-video aspect-16/7 bg-linear-to-br ${getGradient(index)} relative overflow-hidden p-0`}
-          >
+          <CardHeader className={` aspect-16/7 bg-linear-to-br ${getGradient(index)} relative overflow-hidden p-0`}>
             <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors duration-300" />
             <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent p-4 sm:p-6 flex items-end">
               <span className="text-[10px] font-bold uppercase tracking-widest text-white/90 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
