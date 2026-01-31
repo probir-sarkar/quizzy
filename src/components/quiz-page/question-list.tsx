@@ -43,7 +43,12 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
       <QuizProgressBar />
 
       {/* Header */}
-      <motion.div className="px-6 py-10" variants={containerVariants} initial="hidden" animate="visible">
+      <motion.div
+        className="px-4 sm:px-6 py-4 md:py-10"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <motion.h2
           className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2"
           variants={itemVariants}
@@ -99,23 +104,23 @@ function QuestionCard({
 
   return (
     <motion.div
-      className="relative rounded-[2rem] border border-white/10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] p-8 sm:p-10"
+      className="relative rounded-[1.5rem] sm:rounded-[2rem] border border-white/10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] p-5 sm:p-10"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.5 }}
     >
       {/* Premium Number Chip */}
-      <div className="absolute -left-4 -top-4 flex items-center justify-center">
+      <div className="absolute -left-3 -top-3 sm:-left-4 sm:-top-4 flex items-center justify-center">
         <div className="relative">
           <div className="absolute inset-0 bg-violet-500 blur-lg opacity-40 animate-pulse" />
-          <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-white font-black text-lg shadow-xl border border-white/20 transform -rotate-6 group-hover:rotate-0 transition-transform">
+          <div className="relative w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-white font-black text-sm sm:text-lg shadow-xl border border-white/20 transform -rotate-6 group-hover:rotate-0 transition-transform">
             {index + 1}
           </div>
         </div>
       </div>
 
-      <h2 className="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white mb-8 pr-4 leading-tight tracking-tight">
+      <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white mb-4 sm:mb-8 pr-1 leading-snug sm:leading-tight tracking-tight break-words">
         {q.text}
       </h2>
 
@@ -130,7 +135,7 @@ function QuestionCard({
 
           // base (light + dark)
           let cls =
-            "w-full text-left px-3 sm:px-4 py-2.5 rounded-lg border transition-all duration-200 shadow-sm " +
+            "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 shadow-sm text-sm sm:text-base " +
             "bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 " +
             "border-gray-200 dark:border-gray-700 " +
             "hover:bg-gray-50 dark:hover:bg-white/5 " +
@@ -140,22 +145,22 @@ function QuestionCard({
           if (answered) {
             if (isPicked && isCorrect) {
               cls =
-                "w-full text-left px-3 sm:px-4 py-2.5 rounded-lg border shadow-sm transition-all duration-200 " +
+                "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border shadow-sm transition-all duration-200 text-sm sm:text-base " +
                 "bg-green-50 dark:bg-green-900/30 border-green-500 " +
                 "text-green-900 dark:text-green-100";
             } else if (isPicked && !isCorrect) {
               cls =
-                "w-full text-left px-3 sm:px-4 py-2.5 rounded-lg border shadow-sm transition-all duration-200 " +
+                "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border shadow-sm transition-all duration-200 text-sm sm:text-base " +
                 "bg-red-50 dark:bg-red-900/30 border-red-500 " +
                 "text-red-900 dark:text-red-100";
             } else if (isCorrect) {
               cls =
-                "w-full text-left px-3 sm:px-4 py-2.5 rounded-lg border shadow-sm transition-all duration-200 " +
+                "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border shadow-sm transition-all duration-200 text-sm sm:text-base " +
                 "bg-green-50/70 dark:bg-green-900/20 border-green-400 " +
                 "text-green-900/90 dark:text-green-200";
             } else {
               cls =
-                "w-full text-left px-3 sm:px-4 py-2.5 rounded-lg border shadow-sm transition-all duration-200 " +
+                "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border shadow-sm transition-all duration-200 text-sm sm:text-base " +
                 "bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 " +
                 "border-gray-200 dark:border-gray-700 opacity-60 cursor-not-allowed";
             }
@@ -188,13 +193,13 @@ function QuestionCard({
               whileHover={!isDisabled ? { scale: 1.02, x: 5 } : {}}
               whileTap={!isDisabled ? { scale: 0.98 } : {}}
             >
-              <span className="inline-flex items-center gap-3">
+              <span className="flex items-center gap-3">
                 <motion.span
                   className={`${dotBase} ${dotClass} shrink-0`}
                   animate={answered ? { scale: [1, 1.2, 1] } : {}}
                   transition={{ duration: 0.3 }}
                 />
-                <span>{opt}</span>
+                <span className="break-words">{opt}</span>
               </span>
             </motion.button>
           );

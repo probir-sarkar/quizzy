@@ -68,18 +68,18 @@ async function QuizPage({ params }: Props) {
       />
       <QuizQuestions questions={quiz.questions} />
 
-      <div className="max-w-7xl mx-auto pl-7 pr-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <TelegramCTA className="max-w-xl " />
         <ShareButtons url={process.env.NEXT_PUBLIC_URL + "/quiz/" + slug} title={quiz.quizPageTitle} />
       </div>
       {moreQuizzes?.length > 0 && (
-        <div className="mt-24 border-t border-white/5 bg-slate-900/30 py-20 px-6">
+        <div className="mt-12 md:mt-24 border-t border-white/5 bg-slate-900/30 py-10 md:py-20 px-4 md:px-6">
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-3 mb-10">
+            <div className="flex items-center gap-3 mb-6 md:mb-10">
               <div className="p-2 rounded-xl bg-violet-600/10 border border-violet-600/20">
                 <Sparkles className="w-5 h-5 text-violet-500" />
               </div>
-              <h2 className="text-3xl font-black text-white uppercase tracking-tight">Expand Your Mind</h2>
+              <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">Expand Your Mind</h2>
             </div>
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {moreQuizzes.map((q, i) => (

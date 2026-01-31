@@ -27,7 +27,7 @@ export default function QuizHero({ quiz, breadcrumbs }: { quiz: QuizPageType; br
   const textColor = difficultyTextColors[quiz.difficulty as QuizDifficulty] || "text-violet-400";
 
   return (
-    <div className="relative overflow-hidden bg-slate-950 pt-32 pb-12 md:pb-20">
+    <div className="relative overflow-hidden bg-slate-950 pt-24 md:pt-32 pb-12 md:pb-20">
       {/* Background blobs */}
       <div className="absolute inset-0 overflow-hidden">
         <div
@@ -38,11 +38,11 @@ export default function QuizHero({ quiz, breadcrumbs }: { quiz: QuizPageType; br
         />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex flex-col lg:flex-row gap-12 items-center">
           {/* Left Side */}
-          <div className="flex-1 text-center lg:text-left">
-            <div className="mb-6 flex justify-center lg:justify-start">
+          <div className="flex-1 text-center lg:text-left w-full max-w-full">
+            <div className="mb-6 flex justify-center lg:justify-start w-full">
               <Breadcrumbs items={breadcrumbs} />
             </div>
 
@@ -60,7 +60,7 @@ export default function QuizHero({ quiz, breadcrumbs }: { quiz: QuizPageType; br
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight break-words"
             >
               {quiz.title}
             </motion.h1>
@@ -69,7 +69,7 @@ export default function QuizHero({ quiz, breadcrumbs }: { quiz: QuizPageType; br
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-lg text-slate-400 max-w-2xl mb-8 leading-relaxed"
+              className="text-base sm:text-lg text-slate-400 max-w-2xl mb-8 leading-relaxed break-words"
             >
               {quiz.description || "Challenge yourself with this expertly curated quiz and see how you rank!"}
             </motion.p>
@@ -99,7 +99,7 @@ export default function QuizHero({ quiz, breadcrumbs }: { quiz: QuizPageType; br
             className="w-full max-w-md"
           >
             <div className="relative p-1 rounded-[2.5rem] bg-gradient-to-br from-white/10 to-white/0 border border-white/10 backdrop-blur-2xl overflow-hidden shadow-2xl">
-              <div className="bg-slate-900/50 rounded-[2.3rem] p-8">
+              <div className="bg-slate-900/50 rounded-[2.3rem] p-6 sm:p-8">
                 <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-2">
                   <Trophy className="w-5 h-5 text-amber-400" />
                   Quiz Intelligence
