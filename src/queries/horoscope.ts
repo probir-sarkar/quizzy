@@ -2,8 +2,11 @@ import prisma from "@/lib/prisma";
 import { ZodiacSign } from "@/generated/prisma/client";
 import { endOfDay, startOfDay } from "date-fns";
 import { UTCDate } from "@date-fns/utc";
+import { cacheLife } from "next/cache";
 
 export async function getHoroscopeBySignAndDate(zodiacSign: ZodiacSign, date: Date) {
+  "use cache";
+  cacheLife("hours");
   return prisma.horoscope.findUnique({
     where: {
       zodiacSign_date: {
@@ -15,6 +18,8 @@ export async function getHoroscopeBySignAndDate(zodiacSign: ZodiacSign, date: Da
 }
 
 export async function getAllHoroscopesForDate(date: Date) {
+  "use cache";
+  cacheLife("hours");
   return prisma.horoscope.findMany({
     where: {
       date: {

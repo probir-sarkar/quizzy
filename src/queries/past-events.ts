@@ -1,8 +1,10 @@
 import prisma from '@/lib/prisma'
 import { PastEvent, EventCategory } from '@/generated/prisma/client'
+import { cacheLife } from 'next/cache';
 
 export const getPastEventsByMonthDay = async (month: number, day: number): Promise<PastEvent[]> => {
-
+  "use cache";
+  cacheLife("days");
 
   try {
     const events = await prisma.pastEvent.findMany({
@@ -42,7 +44,8 @@ export const getPastEventsByMonthDay = async (month: number, day: number): Promi
 }
 
 export const getPastEventsByCategory = async (category: EventCategory): Promise<PastEvent[]> => {
-
+  "use cache";
+  cacheLife("days");
 
   try {
     const events = await prisma.pastEvent.findMany({
@@ -82,6 +85,9 @@ export const getPastEventsByCategory = async (category: EventCategory): Promise<
 }
 
 export const getAllEventCategories = async (): Promise<EventCategory[]> => {
+  "use cache";
+  cacheLife("days");
+
   try {
     const events = await prisma.pastEvent.findMany({
       where: {
