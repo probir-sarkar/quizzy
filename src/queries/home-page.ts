@@ -43,6 +43,8 @@ export type HomePageData = Awaited<ReturnType<typeof getHomePageData>>;
 export type QuizCard = HomePageData[number]["quizzes"][number];
 
 export async function getQuiz(slug: string) {
+  "use cache";
+  cacheLife("hours");
   return prisma.quiz.findUnique({
     where: { slug },
     include: {
@@ -69,6 +71,8 @@ export type QuizPageType = NonNullable<Awaited<ReturnType<typeof getQuiz>>>;
 export type QuestionType = QuizPageType["questions"][number];
 
 export async function getMoreQuizzes(currentSlug: string) {
+  "use cache";
+  cacheLife("hours");
   return prisma.quiz.findMany({
     where: { slug: { not: currentSlug } },
     take: 6,
