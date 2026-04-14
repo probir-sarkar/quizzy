@@ -9,6 +9,7 @@ import TelegramCTA from "@/components/common/telegram-cta";
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import { Sparkles } from "lucide-react";
 import dynamic from "next/dynamic";
+import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
 
 // Lazy load quiz components for better performance
 const QuizQuestions = dynamic(() => import("@/components/quiz-page/question-list"), {
@@ -88,6 +89,11 @@ async function QuizPage({ params }: Props) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <TelegramCTA className="max-w-xl " />
         <ShareButtons url={process.env.NEXT_PUBLIC_URL + "/quiz/" + slug} title={quiz.quizPageTitle} />
+      </div>
+
+      {/* Toolbox Promotion */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
+        <ToolboxPromoCard variant="default" />
       </div>
       {moreQuizzes?.length > 0 && (
         <div className="mt-12 md:mt-24 border-t border-white/5 bg-slate-900/30 py-10 md:py-20 px-4 md:px-6">

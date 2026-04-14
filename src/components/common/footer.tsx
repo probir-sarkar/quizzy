@@ -22,6 +22,17 @@ export default function Footer() {
         { label: "Help Center", href: "#" },
         { label: "Privacy Policy", href: "#" }
       ]
+    },
+    {
+      title: "More Projects",
+      links: [
+        {
+          label: "Toolbox",
+          href: "https://toolbox.probir.dev/",
+          external: true,
+          description: "Privacy-focused online tools"
+        }
+      ]
     }
   ];
 
@@ -55,12 +66,28 @@ export default function Footer() {
               <ul className="space-y-4">
                 {section.links.map((link) => (
                   <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="text-slate-600 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors text-sm font-medium"
-                    >
-                      {link.label}
-                    </Link>
+                    {link.external ? (
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-slate-600 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors text-sm font-medium"
+                      >
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className="text-slate-600 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors text-sm font-medium"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
+                    {link.description && (
+                      <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">
+                        {link.description}
+                      </p>
+                    )}
                   </li>
                 ))}
               </ul>

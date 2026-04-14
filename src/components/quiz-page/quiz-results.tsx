@@ -4,6 +4,7 @@ import { motion, Variants } from "motion/react";
 import { useMemo } from "react";
 import { useQuizStore, useQuizScore, getQuizScoreMessage, getQuizScoreColor } from "@/stores/quiz-store";
 import { memo } from "react";
+import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
 
 function QuizResults() {
   const showResults = useQuizStore((state) => state.showResults);
@@ -185,6 +186,16 @@ function QuizResults() {
                 Try Another Quiz
               </span>
             </motion.button>
+          </motion.div>
+
+          {/* Toolbox Promotion Card */}
+          <motion.div
+            className="mt-6 max-w-2xl mx-auto"
+            variants={slideUpVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <ToolboxPromoCard variant="compact" />
           </motion.div>
 
           {/* Decorative Floating Elements */}

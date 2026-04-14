@@ -167,3 +167,12 @@ html {
 .mask-fade-right {
   mask-image: linear-gradient(to right, black 85%, transparent 100%);
 }
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}

@@ -10,6 +10,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 
 import TrendingSection from "@/components/home-page/trending-section";
+import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
 
 export default async function Home() {
   await connection();
@@ -30,6 +31,12 @@ export default async function Home() {
       <Suspense fallback={<div className="h-64 animate-pulse bg-slate-100 dark:bg-slate-900" />}>
         <TrendingSection quizzes={trendingQuizzes} />
       </Suspense>
+
+      {/* Toolbox Promotion Section */}
+      <div className="container mx-auto px-4 py-12">
+        <ToolboxPromoCard variant="default" />
+      </div>
+
       <Suspense fallback={<div className="h-32 animate-pulse bg-slate-100 dark:bg-slate-900" />}>
         <CategoryFilters categories={categories} />
       </Suspense>

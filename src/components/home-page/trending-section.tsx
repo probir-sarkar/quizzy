@@ -5,7 +5,7 @@ import { TrendingUp, ArrowRight } from "lucide-react";
 import { QuizCard } from "@/queries/home-page";
 import Link from "next/link";
 import { Card } from "../ui/card";
-import { getGradient } from "./quiz-listing";
+import { getCardGradient } from "@/lib/visual-utils";
 
 interface TrendingSectionProps {
   quizzes: QuizCard[];
@@ -44,7 +44,7 @@ export default function TrendingSection({ quizzes }: TrendingSectionProps) {
             <Link href={`/quiz/${quiz.slug}`}>
               <Card className="group relative h-48 rounded-[2rem] border-0 overflow-hidden shadow-2xl">
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${getGradient(i)} opacity-90 group-hover:scale-110 transition-transform duration-500`}
+                  className={`absolute inset-0 bg-gradient-to-br ${getCardGradient(i)} opacity-90 group-hover:scale-110 transition-transform duration-500`}
                 />
                 <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors" />
 
