@@ -34,14 +34,14 @@ export default function CategoryHero({ category }: { category: CategoryPageType 
   const description = `Explore quizzes in ${category.name}. Find popular quizzes, filter by difficulty, and challenge yourself!`;
 
   return (
-    <section className="relative overflow-hidden bg-slate-950 pt-24 pb-12 md:pt-32 md:pb-20">
+    <section className="relative overflow-hidden bg-gray-100 dark:bg-slate-950 pt-24 pb-12 md:pt-32 md:pb-20">
       {/* Background blobs */}
       <div className="absolute inset-0 overflow-hidden">
         <div
-          className={`absolute -top-1/2 -right-1/4 w-[70%] h-[70%] rounded-full opacity-20 blur-[120px] animate-pulse ${gradient}`}
+          className={`absolute -top-1/2 -right-1/4 w-[70%] h-[70%] rounded-full opacity-10 dark:opacity-20 blur-[120px] animate-pulse ${gradient}`}
         />
         <div
-          className={`absolute -bottom-1/2 -left-1/4 w-[70%] h-[70%] rounded-full opacity-10 blur-[120px] animate-pulse [animation-delay:2s] ${gradient}`}
+          className={`absolute -bottom-1/2 -left-1/4 w-[70%] h-[70%] rounded-full opacity-5 dark:opacity-10 blur-[120px] animate-pulse [animation-delay:2s] ${gradient}`}
         />
       </div>
 
@@ -50,7 +50,7 @@ export default function CategoryHero({ category }: { category: CategoryPageType 
         <div className="mb-6 md:mb-8">
           <Link
             href="/category"
-            className="inline-flex items-center gap-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-300 transition-colors"
+            className="inline-flex items-center gap-2 rounded-full bg-white/80 hover:bg-white dark:bg-white/5 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 px-3 py-1.5 text-xs sm:text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
             Back to Categories
@@ -60,25 +60,25 @@ export default function CategoryHero({ category }: { category: CategoryPageType 
         {/* Content */}
         <div className="max-w-3xl w-full">
           <div className="flex items-center gap-3 mb-4 md:mb-6">
-            <div className="p-2 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
-              <Sparkles className={`w-5 h-5 md:w-6 md:h-6 text-white`} />
+            <div className="p-2 rounded-xl bg-white/80 dark:bg-white/5 border border-gray-200 dark:border-white/10 backdrop-blur-sm">
+              <Sparkles className={`w-5 h-5 md:w-6 md:h-6 text-gray-700 dark:text-white`} />
             </div>
-            <h1 className="text-3xl md:text-5xl font-black tracking-tight text-white break-words">{category.name}</h1>
+            <h1 className="text-3xl md:text-5xl font-black tracking-tight text-gray-900 dark:text-white break-words">{category.name}</h1>
           </div>
 
-          <p className="text-slate-400 text-base md:text-xl leading-relaxed mb-8 max-w-2xl break-words">
+          <p className="text-gray-600 dark:text-slate-400 text-base md:text-xl leading-relaxed mb-8 max-w-2xl break-words">
             {description}
           </p>
 
           <div className="flex flex-wrap gap-3">
-            <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm flex items-center gap-2">
-              <span className={`font-bold text-lg text-white`}>{category.quizCount}</span>
-              <span className="text-slate-400 text-sm font-medium">Quizzes</span>
+            <div className="px-4 py-2 rounded-xl bg-white/80 dark:bg-white/5 border border-gray-200 dark:border-white/10 backdrop-blur-sm flex items-center gap-2">
+              <span className={`font-bold text-lg text-gray-900 dark:text-white`}>{category.quizCount}</span>
+              <span className="text-gray-600 dark:text-slate-400 text-sm font-medium">Quizzes</span>
             </div>
 
-            <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm flex items-center gap-2">
-              <span className={`font-bold text-lg text-white`}>{category.subCategryCount}</span>
-              <span className="text-slate-400 text-sm font-medium">Subcategories</span>
+            <div className="px-4 py-2 rounded-xl bg-white/80 dark:bg-white/5 border border-gray-200 dark:border-white/10 backdrop-blur-sm flex items-center gap-2">
+              <span className={`font-bold text-lg text-gray-900 dark:text-white`}>{category.subCategryCount}</span>
+              <span className="text-gray-600 dark:text-slate-400 text-sm font-medium">Subcategories</span>
             </div>
           </div>
         </div>
