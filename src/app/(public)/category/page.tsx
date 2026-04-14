@@ -1,10 +1,18 @@
 import Link from "next/link";
-import { Sparkles, ChevronLeft, Search } from "lucide-react";
+import { Sparkles, ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
-import { Category, getCategories } from "@/queries/categories.query";
+import { getCategoriesWithStats } from "@/queries/categories.query";
 import { connection } from "next/server";
-import CategorySearch from "./category-search";
 import CategoryCard from "./category-card";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 export const metadata: Metadata = {
   title: "All Quiz Categories - Quizzy",
@@ -13,41 +21,25 @@ export const metadata: Metadata = {
 };
 
 const CATEGORIES_PER_PAGE = 12;
+const PAGINATION_WINDOW_SIZE = 5;
 
 export default async function CategoriesPage({
   searchParams
 }: {
-  searchParams: Promise<{ page?: string; search?: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   await connection();
 
-  const { page = "1", search = "" } = await searchParams;
+  const { page = "1" } = await searchParams;
   const currentPage = Math.max(1, parseInt(page));
 
-  const allCategories = await getCategories();
+  // Fetch paginated categories and stats from database in a single query
+  const { items: categories, meta } = await getCategoriesWithStats({
+    page: currentPage,
+    perPage: CATEGORIES_PER_PAGE
+  });
 
-  // Filter categories based on search
-  const filteredCategories = search
-    ? allCategories.filter((cat) =>
-        cat.name.toLowerCase().includes(search.toLowerCase()) ||
-        cat.subCategories?.some((sub) =>
-          sub.name.toLowerCase().includes(search.toLowerCase())
-        )
-      )
-    : allCategories;
-
-  // Calculate pagination
-  const totalCategories = filteredCategories.length;
-  const totalPages = Math.max(1, Math.ceil(totalCategories / CATEGORIES_PER_PAGE));
-  const validPage = Math.min(currentPage, totalPages);
-
-  // Get paginated categories
-  const startIndex = (validPage - 1) * CATEGORIES_PER_PAGE;
-  const endIndex = startIndex + CATEGORIES_PER_PAGE;
-  const categories = filteredCategories.slice(startIndex, endIndex);
-
-  // Calculate stats
-  const totalSubcategories = allCategories.reduce((acc, c) => acc + c.subCategories.length, 0);
+  const { totalCategories, totalSubcategories, totalPages, currentPage: validPage } = meta;
 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -85,27 +77,16 @@ export default async function CategoriesPage({
 
             <div className="flex flex-wrap gap-3">
               <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm flex items-center gap-2">
-                <span className="text-indigo-400 font-bold text-lg">{allCategories.length}</span>
+                <span className="text-indigo-400 font-bold text-lg">{totalCategories}</span>
                 <span className="text-slate-400 text-sm font-medium">Categories</span>
               </div>
               <div className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm flex items-center gap-2">
                 <span className="text-fuchsia-400 font-bold text-lg">{totalSubcategories}</span>
                 <span className="text-slate-400 text-sm font-medium">Subcategories</span>
               </div>
-              {search && (
-                <div className="px-4 py-2 rounded-xl bg-green-500/10 border border-green-500/20 backdrop-blur-sm flex items-center gap-2">
-                  <span className="text-green-400 font-bold text-lg">{totalCategories}</span>
-                  <span className="text-slate-400 text-sm font-medium">Found</span>
-                </div>
-              )}
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Search Section */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 -mt-6">
-        <CategorySearch initialSearch={search} />
       </section>
 
       {/* Category List Section */}
@@ -121,62 +102,57 @@ export default async function CategoriesPage({
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="mt-12 flex justify-center items-center gap-2">
-                  {validPage > 1 && (
-                    <Link
-                      href={`/category?page=${validPage - 1}${search ? `&search=${encodeURIComponent(search)}` : ""}`}
-                      className="px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
-                    >
-                      Previous
-                    </Link>
-                  )}
+                <div className="mt-12 flex justify-center">
+                  <Pagination>
+                    <PaginationContent>
+                      {validPage > 1 && (
+                        <PaginationItem>
+                          <PaginationPrevious href={`/category?page=${validPage - 1}`} />
+                        </PaginationItem>
+                      )}
 
-                  <div className="flex gap-1">
-                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                      let pageNum;
-                      if (totalPages <= 5) {
-                        pageNum = i + 1;
-                      } else if (validPage <= 3) {
-                        pageNum = i + 1;
-                      } else if (validPage >= totalPages - 2) {
-                        pageNum = totalPages - 4 + i;
-                      } else {
-                        pageNum = validPage - 2 + i;
-                      }
+                      {Array.from({ length: Math.min(PAGINATION_WINDOW_SIZE, totalPages) }, (_, i) => {
+                        let pageNum;
+                        if (totalPages <= 5) {
+                          pageNum = i + 1;
+                        } else if (validPage <= 3) {
+                          pageNum = i + 1;
+                        } else if (validPage >= totalPages - 2) {
+                          pageNum = totalPages - 4 + i;
+                        } else {
+                          pageNum = validPage - 2 + i;
+                        }
 
-                      const isActive = pageNum === validPage;
-                      return (
-                        <Link
-                          key={pageNum}
-                          href={`/category?page=${pageNum}${search ? `&search=${encodeURIComponent(search)}` : ""}`}
-                          className={`w-10 h-10 flex items-center justify-center rounded-lg transition ${
-                            isActive
-                              ? "bg-indigo-600 text-white font-bold"
-                              : "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
-                          }`}
-                        >
-                          {pageNum}
-                        </Link>
-                      );
-                    })}
-                  </div>
+                        const isActive = pageNum === validPage;
+                        return (
+                          <PaginationItem key={pageNum}>
+                            <PaginationLink href={`/category?page=${pageNum}`} isActive={isActive}>
+                              {pageNum}
+                            </PaginationLink>
+                          </PaginationItem>
+                        );
+                      })}
 
-                  {validPage < totalPages && (
-                    <Link
-                      href={`/category?page=${validPage + 1}${search ? `&search=${encodeURIComponent(search)}` : ""}`}
-                      className="px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
-                    >
-                      Next
-                    </Link>
-                  )}
+                      {totalPages > PAGINATION_WINDOW_SIZE && validPage < totalPages - 2 && (
+                        <PaginationItem>
+                          <PaginationEllipsis />
+                        </PaginationItem>
+                      )}
+
+                      {validPage < totalPages && (
+                        <PaginationItem>
+                          <PaginationNext href={`/category?page=${validPage + 1}`} />
+                        </PaginationItem>
+                      )}
+                    </PaginationContent>
+                  </Pagination>
                 </div>
               )}
             </>
           ) : (
             <div className="text-center py-20">
-              <Search className="w-16 h-16 mx-auto mb-4 text-gray-400" />
               <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">No categories found</h3>
-              <p className="text-gray-500 dark:text-gray-400">Try adjusting your search terms</p>
+              <p className="text-gray-500 dark:text-gray-400">Check back later for new content</p>
             </div>
           )}
         </div>
