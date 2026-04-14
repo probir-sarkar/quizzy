@@ -21,6 +21,9 @@ export async function getQuizzesByCategory({
   perPage = DEFAULT_PER_PAGE,
   subCategorySlug = null
 }: GetQuizzesByCategoryOpts) {
+  "use cache";
+  cacheLife("minutes");
+
   const skip = (page - 1) * perPage;
 
   // Build where clause
@@ -32,29 +35,29 @@ export async function getQuizzesByCategory({
     where.subCategory = { slug: subCategorySlug };
   }
 
-  // Fetch category and its subCategories (if any)
-  const category = await prisma.category.findUnique({
-    where: { slug: categorySlug },
-    include: {
-      subCategories: {
-        include: {
-          _count: {
-            select: {
-              quizzes: true
+  // Batch category lookup and count queries for better performance
+  const [category, total] = await Promise.all([
+    prisma.category.findUnique({
+      where: { slug: categorySlug },
+      include: {
+        subCategories: {
+          include: {
+            _count: {
+              select: {
+                quizzes: true
+              }
             }
           }
-        }
-      },
-      _count: {
-        select: {
-          quizzes: true
+        },
+        _count: {
+          select: {
+            quizzes: true
+          }
         }
       }
-    }
-  });
-
-  // total count for pagination meta
-  const total = await prisma.quiz.count({ where });
+    }),
+    prisma.quiz.count({ where })
+  ]);
 
   // fetch page of quizzes
   const items = await prisma.quiz.findMany({

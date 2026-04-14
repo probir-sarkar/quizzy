@@ -7,6 +7,7 @@ import { getCategories, getHomePageData, HomePageData } from "@/queries/home-pag
 import { getStats, Stats } from "@/queries/stats";
 import { cacheLife } from "next/cache";
 import { connection } from "next/server";
+import { Suspense } from "react";
 
 import TrendingSection from "@/components/home-page/trending-section";
 
@@ -19,19 +20,27 @@ export default async function Home() {
 
   return (
     <>
-      <HeroSection
-        totalQuizzes={stats.totalQuizzes}
-        totalCategories={stats.totalCategories}
-        totalSubCategories={stats.totalSubCategories}
-      />
-      <TrendingSection quizzes={trendingQuizzes} />
-      <CategoryFilters categories={categories} />
+      <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 dark:bg-slate-900" />}>
+        <HeroSection
+          totalQuizzes={stats.totalQuizzes}
+          totalCategories={stats.totalCategories}
+          totalSubCategories={stats.totalSubCategories}
+        />
+      </Suspense>
+      <Suspense fallback={<div className="h-64 animate-pulse bg-slate-100 dark:bg-slate-900" />}>
+        <TrendingSection quizzes={trendingQuizzes} />
+      </Suspense>
+      <Suspense fallback={<div className="h-32 animate-pulse bg-slate-100 dark:bg-slate-900" />}>
+        <CategoryFilters categories={categories} />
+      </Suspense>
       {data.map((cat) => (
-        <section key={cat.slug} id={cat.slug} className="container mx-auto pt-16">
-          {/* Title */}
-          <SectionHeader id={cat.slug} title={cat.name} />
-          <QuizListing key={cat.slug} quizzes={cat.quizzes} />
-        </section>
+        <Suspense key={cat.slug} fallback={<div className="container mx-auto pt-16 h-64 animate-pulse bg-slate-100 dark:bg-slate-900" />}>
+          <section id={cat.slug} className="container mx-auto pt-16">
+            {/* Title */}
+            <SectionHeader id={cat.slug} title={cat.name} />
+            <QuizListing quizzes={cat.quizzes} />
+          </section>
+        </Suspense>
       ))}
     </>
   );

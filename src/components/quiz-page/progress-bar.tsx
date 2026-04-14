@@ -2,8 +2,9 @@
 
 import { motion } from 'motion/react';
 import { useQuizStore, useQuizProgress } from '@/stores/quiz-store';
+import { memo } from 'react';
 
-export default function QuizProgressBar() {
+function QuizProgressBar() {
   const answers = useQuizStore((state) => state.answers);
   const currentQuiz = useQuizStore((state) => state.currentQuiz);
   const progress = useQuizProgress();
@@ -136,3 +137,5 @@ export default function QuizProgressBar() {
     </motion.div>
   );
 }
+
+export default memo(QuizProgressBar);

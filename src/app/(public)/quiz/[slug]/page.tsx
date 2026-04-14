@@ -1,4 +1,3 @@
-import QuizQuestions from "@/components/quiz-page/question-list";
 import QuizPageHero from "@/components/quiz-page/quiz-page.hero";
 import { getMoreQuizzes, getQuiz } from "@/queries/home-page";
 import { Metadata, ResolvingMetadata } from "next";
@@ -9,6 +8,24 @@ import ShareButtons from "@/components/common/ShareButtons";
 import TelegramCTA from "@/components/common/telegram-cta";
 import Breadcrumbs from "@/components/common/Breadcrumbs";
 import { Sparkles } from "lucide-react";
+import dynamic from "next/dynamic";
+
+// Lazy load quiz components for better performance
+const QuizQuestions = dynamic(() => import("@/components/quiz-page/question-list"), {
+  loading: () => (
+    <div className="max-w-3xl mx-auto px-4 space-y-4">
+      {[...Array(3)].map((_, i) => (
+        <div key={i} className="bg-slate-100 dark:bg-slate-900 rounded-2xl p-6 h-48 animate-pulse" />
+      ))}
+    </div>
+  )
+});
+
+const QuizResults = dynamic(() => import("@/components/quiz-page/quiz-results"), {
+  loading: () => (
+    <div className="max-w-3xl mx-auto px-4 bg-slate-100 dark:bg-slate-900 rounded-2xl p-8 h-64 animate-pulse" />
+  )
+});
 type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

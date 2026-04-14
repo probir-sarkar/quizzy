@@ -3,8 +3,9 @@
 import { motion, Variants } from "motion/react";
 import { useMemo } from "react";
 import { useQuizStore, useQuizScore, getQuizScoreMessage, getQuizScoreColor } from "@/stores/quiz-store";
+import { memo } from "react";
 
-export default function QuizResults() {
+function QuizResults() {
   const showResults = useQuizStore((state) => state.showResults);
   const resetQuiz = useQuizStore((state) => state.resetQuiz);
   const { correct, total, percentage } = useQuizScore();
@@ -230,3 +231,5 @@ export default function QuizResults() {
     </motion.div>
   );
 }
+
+export default memo(QuizResults);
