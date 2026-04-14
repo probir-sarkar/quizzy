@@ -116,6 +116,22 @@ bun lint             # Run ESLint
 
 ## 🏗️ Architecture Overview
 
+### Background Processing Options
+
+This project includes **two alternative implementations** for background job processing:
+
+1. **Main Application (Recommended)**: Uses **Inngest** for managed background job processing
+   - Located in `/src/inngest`
+   - Easier to set up and manage
+   - Better for development and most production use cases
+
+2. **Alternative**: Uses **Cloudflare Workers Workflows** for edge computing
+   - Located in `/backend` folder
+   - Lower latency, edge deployment
+   - See [backend/README.md](backend/README.md) for details
+
+Both implementations share the same database schema and provide the same AI-powered quiz generation functionality.
+
 ### Directory Structure
 ```
 src/
@@ -134,6 +150,11 @@ src/
 ├── queries/               # Database queries with caching
 ├── inngest/              # Background job functions
 └── generated/prisma/     # Auto-generated Prisma client
+
+backend/                   # Alternative Cloudflare Workers implementation
+├── src/                  # Cloudflare Workers backend code
+├── workflows/            # Workflows for background processing
+└── lib/                  # Backend utilities
 ```
 
 ### Key Components

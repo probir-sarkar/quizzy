@@ -7,21 +7,10 @@ import { ShineBorder } from "../ui/shine-border";
 import { useTheme } from "next-themes";
 import { QuizCard as QuizCardType } from "@/queries/home-page";
 import Link from "next/link";
+import { getCardGradient, getShineColors } from "@/lib/visual-utils";
 
 // ---- Types ----
 type Difficulty = "easy" | "medium" | "hard";
-
-const gradients = [
-  "from-violet-500 to-fuchsia-600",
-  "from-blue-500 to-cyan-600",
-  "from-green-500 to-emerald-600",
-  "from-yellow-500 to-amber-600",
-  "from-red-500 to-rose-600",
-  "from-pink-500 to-fuchsia-600"
-];
-export function getGradient(index: number) {
-  return gradients[index % gradients.length];
-}
 
 // ---- Listing ----
 export default function QuizListing({ quizzes }: { quizzes: QuizCardType[] }) {
@@ -37,25 +26,7 @@ export default function QuizListing({ quizzes }: { quizzes: QuizCardType[] }) {
 // ---- Card ----
 export function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay?: number; index: number }) {
   const { resolvedTheme } = useTheme();
-
-  // 🎨 Colorful shine colors
-  const lightShineColors = [
-    "#FF6B6B", // red-pink
-    "#FFD93D", // yellow
-    "#6BCB77", // green
-    "#4D96FF", // blue
-    "#9D4EDD" // purple
-  ];
-
-  const darkShineColors = [
-    "#FF9F1C", // orange
-    "#2EC4B6", // teal
-    "#E71D36", // red
-    "#FFBF69", // peach
-    "#A29BFE" // soft purple
-  ];
-
-  const shineColors = resolvedTheme === "dark" ? darkShineColors : lightShineColors;
+  const shineColors = getShineColors(resolvedTheme === "dark");
 
   return (
     <Link href={`/quiz/${quiz.slug}`} className="w-full h-full block">
@@ -75,7 +46,7 @@ export function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay
           />
 
           {/* Top gradient banner */}
-          <CardHeader className={` aspect-16/7 bg-linear-to-br ${getGradient(index)} relative overflow-hidden p-0`}>
+          <CardHeader className={` aspect-16/7 bg-linear-to-br ${getCardGradient(index)} relative overflow-hidden p-0`}>
             <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors duration-300" />
             <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent p-4 sm:p-6 flex items-end">
               <span className="text-[10px] font-bold uppercase tracking-widest text-white/90 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">

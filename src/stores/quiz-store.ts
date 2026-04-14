@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { QuestionType } from "@/queries/home-page";
+import { calculateQuizScore, getQuizScoreMessage, getQuizScoreColor } from "@/lib/quiz-utils";
 
 interface QuizState {
   answers: { [key: number]: number };
@@ -87,31 +88,8 @@ export const useQuizScore = () => {
   const answers = useQuizStore((state) => state.answers);
   const currentQuiz = useQuizStore((state) => state.currentQuiz) || [];
 
-  // Memoize score calculation to avoid recalculation on every store update
-  let correct = 0;
-  currentQuiz.forEach((question, index) => {
-    if (answers[index] === question.correctIndex) {
-      correct++;
-    }
-  });
-
-  const total = currentQuiz.length;
-  const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
-
-  return { correct, total, percentage };
+  return calculateQuizScore(answers, currentQuiz);
 };
 
-export const getQuizScoreMessage = (percentage: number) => {
-  if (percentage === 100) return "Perfect! You're a master! 🏆";
-  if (percentage >= 80) return "Excellent work! 🌟";
-  if (percentage >= 60) return "Good job! Keep it up! 👍";
-  if (percentage >= 40) return "Not bad! Room for improvement! 📚";
-  return "Keep practicing! You'll get better! 💪";
-};
-
-export const getQuizScoreColor = (percentage: number) => {
-  if (percentage >= 80) return "text-green-600 dark:text-green-400";
-  if (percentage >= 60) return "text-blue-600 dark:text-blue-400";
-  if (percentage >= 40) return "text-yellow-600 dark:text-yellow-400";
-  return "text-red-600 dark:text-red-400";
-};
+// Re-export utilities for convenience
+export { getQuizScoreMessage, getQuizScoreColor };
