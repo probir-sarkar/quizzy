@@ -3,11 +3,10 @@
 import { motion } from "motion/react";
 import { Bookmark, Target, TrendingUp } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { ShineBorder } from "../ui/shine-border";
 import { useTheme } from "next-themes";
 import { QuizCard as QuizCardType } from "@/queries/home-page";
 import Link from "next/link";
-import { getCardGradient, getShineColors } from "@/lib/visual-utils";
+import { getCardGradient } from "@/lib/visual-utils";
 
 // ---- Types ----
 type Difficulty = "easy" | "medium" | "hard";
@@ -25,9 +24,6 @@ export default function QuizListing({ quizzes }: { quizzes: QuizCardType[] }) {
 
 // ---- Card ----
 export function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay?: number; index: number }) {
-  const { resolvedTheme } = useTheme();
-  const shineColors = getShineColors(resolvedTheme === "dark");
-
   return (
     <Link href={`/quiz/${quiz.slug}`} className="w-full h-full block">
       <motion.div
@@ -38,13 +34,6 @@ export function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay
         className="w-full h-full"
       >
         <Card className="group pt-0 gap-0 pb-2 relative w-full h-full overflow-hidden cursor-pointer border-0 bg-white dark:bg-gray-900 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300">
-          <ShineBorder
-            shineColor={shineColors}
-            borderWidth={1.5}
-            duration={10}
-            className="opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-          />
-
           {/* Top gradient banner */}
           <CardHeader className={` aspect-16/7 bg-linear-to-br ${getCardGradient(index)} relative overflow-hidden p-0`}>
             <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors duration-300" />
