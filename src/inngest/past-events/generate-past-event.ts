@@ -50,8 +50,7 @@ function nextLeapDate(lastMonth?: number | null, lastDay?: number | null) {
 }
 
 export const generatePastEvent = inngest.createFunction(
-  { id: "generate-past-event", name: "Generate Past Event (15 min, always-leap)" },
-  { cron: "*/15 * * * *" }, // every 5 minutes
+  { id: "generate-past-event", name: "Generate Past Event (15 min, always-leap)", triggers: [{ cron: "*/15 * * * *" }] }, // every 15 minutes
   async ({ step }) => {
     // 1️⃣ Get last updated record
     const last = await step.run("last-event", () =>

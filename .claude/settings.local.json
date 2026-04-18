@@ -25,7 +25,8 @@
       "Bash(ls:*)",
       "Bash(bun run lint)",
       "Bash(npx tsc:*)",
-      "Bash(bunx eslint:*)"
+      "Bash(bunx eslint:*)",
+      "Bash(bun run *)"
     ],
     "deny": [],
     "ask": []

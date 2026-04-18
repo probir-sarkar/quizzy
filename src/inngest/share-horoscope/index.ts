@@ -17,8 +17,7 @@ const getHoroscopeImageUrl = (date: Date | string, zodiacSign: string): string =
 };
 
 export const shareHoroscope = inngest.createFunction(
-  { id: "share-horoscope" },
-  [{ event: "horoscope/share" }, { cron: "0 8 * * *" }],
+  { id: "share-horoscope", triggers: [{ event: "horoscope/share" }, { cron: "0 8 * * *" }] },
   async ({ step }) => {
     const bot = new Bot(TELEGRAM_BOT_TOKEN);
     const today = new UTCDate();

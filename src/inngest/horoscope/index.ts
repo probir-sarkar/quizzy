@@ -11,8 +11,7 @@ const DEFAULT_START_DATE = new UTCDate(2025, 0, 1);
 const MAX_GENERATION_DAYS = 730;
 
 export const generateHoroscopeFn = inngest.createFunction(
-  { id: "generate-horoscope", retries: 0 },
-  [{ event: "manual/generate-horoscope" }],
+  { id: "generate-horoscope", retries: 0, triggers: [{ event: "manual/generate-horoscope" }] },
   async ({ event, step }) => {
     const nonce = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     let nextDate: Date | null = null;

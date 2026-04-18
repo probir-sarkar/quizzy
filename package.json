@@ -29,7 +29,7 @@
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
     "es-toolkit": "^1.39.10",
-    "inngest": "^3.43.1",
+    "inngest": "^4.2.4",
     "lucide-react": "^0.545.0",
     "motion": "^12.23.22",
     "next": "16.2.3",
