@@ -94,7 +94,7 @@ async function QuizPage({ params }: Props) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
         <ToolboxPromoCard variant="default" />
       </div>
-      {moreQuizzes?.length > 0 && (
+      {moreQuizzes && moreQuizzes.length > 0 && (
         <div className="mt-12 md:mt-24 border-t border-white/5 bg-slate-900/30 py-10 md:py-20 px-4 md:px-6">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-3 mb-6 md:mb-10">

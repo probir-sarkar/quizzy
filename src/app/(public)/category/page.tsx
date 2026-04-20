@@ -25,8 +25,6 @@ const CATEGORIES_PER_PAGE = 12;
 const PAGINATION_WINDOW_SIZE = 5;
 
 export default async function CategoriesPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
-  await connection();
-
   const { page = "1" } = await searchParams;
   const currentPage = Math.max(1, parseInt(page));
 
@@ -45,7 +43,13 @@ export default async function CategoriesPage({ searchParams }: { searchParams: P
   });
 
   const categories = response?.items ?? [];
-  const meta = response?.meta ?? { totalCategories: 0, totalSubcategories: 0, totalPages: 1, currentPage: 1, perPage: CATEGORIES_PER_PAGE };
+  const meta = response?.meta ?? {
+    totalCategories: 0,
+    totalSubcategories: 0,
+    totalPages: 1,
+    currentPage: 1,
+    perPage: CATEGORIES_PER_PAGE
+  };
 
   const { totalCategories, totalSubcategories, totalPages, currentPage: validPage } = meta;
 
@@ -133,7 +137,11 @@ export default async function CategoriesPage({ searchParams }: { searchParams: P
                       })}
 
                       {(() => {
-                        const { showEndEllipsis } = calculatePaginationWindow(validPage, totalPages, PAGINATION_WINDOW_SIZE);
+                        const { showEndEllipsis } = calculatePaginationWindow(
+                          validPage,
+                          totalPages,
+                          PAGINATION_WINDOW_SIZE
+                        );
                         return showEndEllipsis ? (
                           <PaginationItem>
                             <PaginationEllipsis />
