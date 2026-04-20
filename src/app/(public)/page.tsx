@@ -3,8 +3,6 @@ import CategoryFilters from "@/components/home-page/category-filter";
 import HeroSection from "@/components/home-page/hero-section";
 import QuizListing from "@/components/home-page/quiz-listing";
 
-import { getCategories, getHomePageData } from "@/queries/home-page";
-import { connection } from "next/server";
 import { Suspense } from "react";
 
 import TrendingSection from "@/components/home-page/trending-section";
@@ -12,16 +10,39 @@ import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
 import { api } from "@/lib/eden";
 
 export default async function Home() {
-  await connection();
-  const [data, categories] = await Promise.all([getHomePageData(), getCategories()]);
-  const { data: stats } = await api.quiz.stats.get({
-    fetch: {
-      cache: "force-cache",
-      next: {
-        revalidate: 60 * 60 // 1 hour
+  const [
+    { data: stats },
+    { data: homePageData },
+    { data: categories }
+  ] = await Promise.all([
+    api.quiz.stats.get({
+      fetch: {
+        cache: "force-cache",
+        next: {
+          revalidate: 60 * 60 // 1 hour
+        }
       }
-    }
-  });
+    }),
+    api.quiz["home-data"].get({
+      fetch: {
+        cache: "force-cache",
+        next: {
+          revalidate: 60 * 60 // 1 hour
+        }
+      }
+    }),
+    api.quiz.categories.get({
+      fetch: {
+        cache: "force-cache",
+        next: {
+          revalidate: 60 * 60 // 1 hour
+        }
+      }
+    })
+  ]);
+
+  const data = homePageData ?? [];
+  if (!stats || !categories) return null;
 
   // Extract some trending quizzes (e.g., first quiz from each category)
   const trendingQuizzes = data.flatMap((cat) => cat.quizzes.slice(0, 1)).slice(0, 6);
