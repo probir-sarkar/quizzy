@@ -1,8 +1,8 @@
 import CategoryHero from "@/components/category/CategoryHero";
 import SubCategoryFilters from "@/components/category/sub-category-filter";
 import { QuizCard } from "@/components/home-page/quiz-listing";
-import { getQuizzesByCategory } from "@/queries/categories.query";
 import { notFound } from "next/navigation";
+import { api } from "@/lib/eden";
 type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -12,12 +12,21 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   const { slug } = await params;
   const { page = 1, subcategory = null } = await searchParams;
 
-  // server-side fetch the first page of quizzes
-  const quizzes = await getQuizzesByCategory({
-    categorySlug: slug,
-    page: Number(page),
-    subCategorySlug: subcategory
+  const { data: quizzes } = await api.quiz["by-category"].get({
+    query: {
+      categorySlug: slug,
+      page: Number(page),
+      perPage: 12,
+      subCategorySlug: subcategory
+    },
+    fetch: {
+      cache: "force-cache",
+      next: {
+        revalidate: 60 * 60
+      }
+    }
   });
+
   if (!quizzes) return notFound();
   const quizzesList = quizzes.items;
   const subcategoris = quizzes.category?.subCategories || [];

@@ -1,8 +1,6 @@
 import QuizPageHero from "@/components/quiz-page/quiz-page.hero";
-import { getMoreQuizzes, getQuiz } from "@/queries/home-page";
 import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
-import prisma from "@/lib/prisma";
 import { QuizCard } from "@/components/home-page/quiz-listing";
 import ShareButtons from "@/components/common/ShareButtons";
 import TelegramCTA from "@/components/common/telegram-cta";
@@ -10,6 +8,7 @@ import Breadcrumbs from "@/components/common/Breadcrumbs";
 import { Sparkles } from "lucide-react";
 import dynamic from "next/dynamic";
 import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
+import { api } from "@/lib/eden";
 
 // Lazy load quiz components for better performance
 const QuizQuestions = dynamic(() => import("@/components/quiz-page/question-list"), {
@@ -35,26 +34,8 @@ type Props = {
 export async function generateMetadata({ params, searchParams }: Props, parent: ResolvingMetadata): Promise<Metadata> {
   const slug = (await params).slug;
 
-  const post = await prisma.quiz.findUnique({
-    where: { slug },
-    select: {
-      quizPageTitle: true,
-      quizPageDescription: true,
-      category: {
-        select: {
-          name: true
-        }
-      },
-      tags: {
-        select: {
-          tag: {
-            select: {
-              name: true
-            }
-          }
-        }
-      }
-    }
+  const { data: post } = await api.quiz.metadata.get({
+    query: { slug }
   });
 
   if (!post) return {};
@@ -69,10 +50,29 @@ export async function generateMetadata({ params, searchParams }: Props, parent: 
 
 async function QuizPage({ params }: Props) {
   const { slug } = await params;
-  const quiz = await getQuiz(slug);
-  if (!quiz) return notFound();
 
-  const moreQuizzes = await getMoreQuizzes(slug);
+  const [{ data: quiz }, { data: moreQuizzes }] = await Promise.all([
+    api.quiz.detail.get({
+      query: { slug },
+      fetch: {
+        cache: "force-cache",
+        next: {
+          revalidate: 60 * 60
+        }
+      }
+    }),
+    api.quiz.more.get({
+      query: { slug },
+      fetch: {
+        cache: "force-cache",
+        next: {
+          revalidate: 60 * 60
+        }
+      }
+    })
+  ]);
+
+  if (!quiz) return notFound();
 
   return (
     <section>

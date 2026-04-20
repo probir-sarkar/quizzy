@@ -1,7 +1,17 @@
 import prisma from "@/lib/prisma";
+import { QuizWhereInput } from "@/generated/prisma/models";
 
 export type HomePageData = Awaited<ReturnType<typeof QuizService.getHomePageData>>;
 export type QuizCard = HomePageData[number]["quizzes"][number];
+
+export type GetQuizzesByCategoryOpts = {
+  categorySlug: string;
+  page?: number;
+  perPage?: number;
+  subCategorySlug?: string | null;
+};
+
+export const DEFAULT_PER_PAGE = 12;
 
 export abstract class QuizService {
   static async getHomePageStats() {
@@ -49,6 +59,164 @@ export abstract class QuizService {
     return prisma.category.findMany({
       orderBy: {
         name: "asc"
+      }
+    });
+  }
+
+  static async getQuizzesByCategory({
+    categorySlug,
+    page = 1,
+    perPage = DEFAULT_PER_PAGE,
+    subCategorySlug = null
+  }: GetQuizzesByCategoryOpts) {
+    const skip = (page - 1) * perPage;
+
+    const where: QuizWhereInput = {
+      category: { slug: categorySlug }
+    };
+
+    if (subCategorySlug) {
+      where.subCategory = { slug: subCategorySlug };
+    }
+
+    const [category, total] = await Promise.all([
+      prisma.category.findUnique({
+        where: { slug: categorySlug },
+        include: {
+          subCategories: {
+            include: {
+              _count: {
+                select: {
+                  quizzes: true
+                }
+              }
+            }
+          },
+          _count: {
+            select: {
+              quizzes: true
+            }
+          }
+        }
+      }),
+      prisma.quiz.count({ where })
+    ]);
+
+    const items = await prisma.quiz.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: perPage,
+      include: {
+        category: true,
+        subCategory: true,
+        tags: { include: { tag: true } },
+        _count: { select: { questions: true } }
+      }
+    });
+
+    const totalPages = Math.max(1, Math.ceil(total / perPage));
+
+    return {
+      items,
+      category,
+      meta: {
+        total,
+        totalPages,
+        currentPage: page,
+        perPage
+      }
+    };
+  }
+
+  static async getCategoriesWithStats({ page = 1, perPage = 12 } = {}) {
+    const skip = (page - 1) * perPage;
+
+    const [items, totalCategories, totalSubcategories] = await Promise.all([
+      prisma.category.findMany({
+        skip,
+        take: perPage,
+        include: {
+          subCategories: true,
+          _count: { select: { quizzes: true, subCategories: true } }
+        }
+      }),
+      prisma.category.count(),
+      prisma.subCategory.count()
+    ]);
+
+    const totalPages = Math.max(1, Math.ceil(totalCategories / perPage));
+
+    return {
+      items,
+      meta: {
+        totalCategories,
+        totalSubcategories,
+        totalPages,
+        currentPage: page,
+        perPage
+      }
+    };
+  }
+
+  static async getQuiz(slug: string) {
+    return prisma.quiz.findUnique({
+      where: { slug },
+      include: {
+        category: true,
+        questions: true,
+        tags: {
+          include: {
+            tag: true
+          }
+        },
+        _count: {
+          select: {
+            questions: true
+          }
+        }
+      }
+    });
+  }
+
+  static async getMoreQuizzes(currentSlug: string) {
+    return prisma.quiz.findMany({
+      where: { slug: { not: currentSlug } },
+      take: 6,
+      orderBy: { publishedAt: "desc" },
+      include: {
+        category: true,
+        _count: {
+          select: {
+            questions: true
+          }
+        }
+      }
+    });
+  }
+
+  static async getQuizForMetadata(slug: string) {
+    return prisma.quiz.findUnique({
+      where: { slug },
+      select: {
+        title: true,
+        description: true,
+        quizPageTitle: true,
+        quizPageDescription: true,
+        category: {
+          select: {
+            name: true
+          }
+        },
+        tags: {
+          select: {
+            tag: {
+              select: {
+                name: true
+              }
+            }
+          }
+        }
       }
     });
   }

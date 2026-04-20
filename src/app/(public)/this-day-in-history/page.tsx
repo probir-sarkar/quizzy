@@ -1,4 +1,3 @@
-import { getPastEventsByMonthDay } from "@/queries/past-events";
 import { DatePickerClient } from "@/components/this-day-in-history/date-picker-client";
 import {
   Calendar,
@@ -13,6 +12,7 @@ import {
   CalendarDays,
   BookOpen
 } from "lucide-react";
+import { api } from "@/lib/eden";
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -160,7 +160,19 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
   }
 
   // Get events for the selected date
-  const events = await getPastEventsByMonthDay(selectedMonth, selectedDay);
+  const { data: events } = await api.pastEvent["by-month-day"].get({
+    query: {
+      month: selectedMonth,
+      day: selectedDay
+    },
+    fetch: {
+      cache: "force-cache",
+      next: {
+        revalidate: 60 * 60 * 24
+      }
+    }
+  });
+  const eventsList = events ?? [];
   const formattedDate = `${monthNames[selectedMonth - 1]} ${selectedDay}`;
 
   return (
@@ -191,13 +203,13 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
           </div>
           <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm">
             <History className="w-4 h-4 text-purple-500" />
-            <span className="text-sm font-medium text-slate-900 dark:text-white">{events.length} events</span>
+            <span className="text-sm font-medium text-slate-900 dark:text-white">{eventsList.length} events</span>
           </div>
-          {events.length > 0 && (
+          {eventsList.length > 0 && (
             <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm">
               <BookOpen className="w-4 h-4 text-emerald-500" />
               <span className="text-sm font-medium text-slate-900 dark:text-white">
-                {new Set(events.map((e) => e.category)).size} categories
+                {new Set(eventsList.map((e) => e.category)).size} categories
               </span>
             </div>
           )}
@@ -225,7 +237,7 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
         </div>
 
         {/* Enhanced Events List */}
-        {events.length === 0 ? (
+        {eventsList.length === 0 ? (
           <div className="text-center py-12 sm:py-16">
             <div className="relative inline-block mb-6">
               <div className="text-6xl sm:text-7xl opacity-20">📚</div>
@@ -242,7 +254,7 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
         ) : (
           <div className="space-y-4 sm:space-y-6">
             <div className="grid gap-4 sm:gap-6">
-              {events.map((event) => {
+              {eventsList.map((event) => {
                 const categoryData = getCategoryData(event.category);
                 return (
                   <div
@@ -352,7 +364,7 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
         )}
 
         {/* Footer CTA */}
-        {events.length > 0 && (
+        {eventsList.length > 0 && (
           <div className="mt-8 sm:mt-12 text-center">
             <div className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-200/50 dark:border-slate-700/50">
               <Star className="w-4 h-4 text-yellow-500" />

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Sparkles, ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
-import { getCategoriesWithStats } from "@/queries/categories.query";
 import { connection } from "next/server";
 import CategoryCard from "./category-card";
 import { calculatePaginationWindow } from "@/lib/pagination-utils";
@@ -14,6 +13,7 @@ import {
   PaginationNext,
   PaginationPrevious
 } from "@/components/ui/pagination";
+import { api } from "@/lib/eden";
 
 export const metadata: Metadata = {
   title: "All Quiz Categories - Quizzy",
@@ -30,11 +30,22 @@ export default async function CategoriesPage({ searchParams }: { searchParams: P
   const { page = "1" } = await searchParams;
   const currentPage = Math.max(1, parseInt(page));
 
-  // Fetch paginated categories and stats from database in a single query
-  const { items: categories, meta } = await getCategoriesWithStats({
-    page: currentPage,
-    perPage: CATEGORIES_PER_PAGE
+  // Fetch paginated categories and stats from API
+  const { data: response } = await api.quiz["categories-with-stats"].get({
+    query: {
+      page: currentPage,
+      perPage: CATEGORIES_PER_PAGE
+    },
+    fetch: {
+      cache: "force-cache",
+      next: {
+        revalidate: 60 * 60
+      }
+    }
   });
+
+  const categories = response?.items ?? [];
+  const meta = response?.meta ?? { totalCategories: 0, totalSubcategories: 0, totalPages: 1, currentPage: 1, perPage: CATEGORIES_PER_PAGE };
 
   const { totalCategories, totalSubcategories, totalPages, currentPage: validPage } = meta;
 

@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import prisma from "@/lib/prisma";
+import { api } from "@/lib/eden";
 
 
 export const size = { width: 1200, height: 630 };
@@ -9,9 +9,8 @@ type Props = { params: Promise<{ slug: string }> };
 
 export default async function Image({ params }: Props) {
   const { slug } = await params;
-  const quiz = await prisma.quiz.findUnique({
-    where: { slug },
-    select: { title: true, description: true },
+  const { data: quiz } = await api.quiz.metadata.get({
+    query: { slug }
   });
 
   const title = quiz?.title ?? "Quizzone Quiz";

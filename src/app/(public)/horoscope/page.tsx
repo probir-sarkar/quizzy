@@ -1,4 +1,3 @@
-import { getAllHoroscopesForDate } from "@/queries/horoscope";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,9 +7,20 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { UTCDate } from "@date-fns/utc";
+import { api } from "@/lib/eden";
 
 async function getHoroscopesForDateCached(date: Date) {
-  return getAllHoroscopesForDate(date);
+  const dateStr = date.toISOString();
+  const { data } = await api.horoscope["all-for-date"].get({
+    query: { date: dateStr },
+    fetch: {
+      cache: "force-cache",
+      next: {
+        revalidate: 60 * 60
+      }
+    }
+  });
+  return data ?? [];
 }
 
 const zodiacSignInfo = {

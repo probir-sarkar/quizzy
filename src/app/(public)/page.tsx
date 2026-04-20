@@ -42,7 +42,8 @@ export default async function Home() {
   ]);
 
   const data = homePageData ?? [];
-  if (!stats || !categories) return null;
+  const categoriesList = categories ?? [];
+  if (!stats) return null;
 
   // Extract some trending quizzes (e.g., first quiz from each category)
   const trendingQuizzes = data.flatMap((cat) => cat.quizzes.slice(0, 1)).slice(0, 6);
@@ -67,7 +68,7 @@ export default async function Home() {
       </div>
 
       <Suspense fallback={<div className="h-32 animate-pulse bg-slate-100 dark:bg-slate-900" />}>
-        <CategoryFilters categories={categories} />
+        <CategoryFilters categories={categoriesList} />
       </Suspense>
       {data.map((cat) => (
         <Suspense
