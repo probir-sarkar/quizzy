@@ -4,10 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { memo } from "react";
-import type { Category } from "@/queries/categories.query";
+import type { CategoryWithStats } from "@/queries/categories.query";
 
 interface CategoryCardProps {
-  category: Category;
+  category: CategoryWithStats;
 }
 
 function CategoryCard({ category }: CategoryCardProps) {

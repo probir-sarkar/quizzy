@@ -4,12 +4,12 @@ import { Search } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function CategorySearch({ initialSearch }: { initialSearch: string }) {
+export default function CategorySearch({ initialSearch = "" }: { initialSearch?: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [isSearching, setIsSearching] = useState(false);
-  const searchTimeoutRef = useRef<NodeJS.Timeout>();
+  const searchTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   useEffect(() => {
     setSearchTerm(initialSearch);

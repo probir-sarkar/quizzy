@@ -133,6 +133,7 @@ export async function getCategories({
 }
 
 export type Category = Awaited<ReturnType<typeof getCategories>>["items"][number];
+export type CategoryWithStats = Awaited<ReturnType<typeof getCategoriesWithStats>>["items"][number];
 
 /**
  * Get total count of all subcategories across all categories.
@@ -162,7 +163,15 @@ export async function getCategoriesWithStats({
       skip,
       take: perPage,
       include: {
-        subCategories: true,
+        subCategories: {
+          include: {
+            _count: {
+              select: {
+                quizzes: true
+              }
+            }
+          }
+        },
         _count: { select: { quizzes: true, subCategories: true } }
       }
     }),
