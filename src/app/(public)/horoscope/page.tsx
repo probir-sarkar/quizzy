@@ -9,10 +9,17 @@ import Link from "next/link";
 import { UTCDate } from "@date-fns/utc";
 import { api } from "@/lib/eden";
 
-async function getHoroscopesForDateCached(date: Date) {
-  const dateStr = date.toISOString();
+type HoroscopeWithSign = {
+  zodiacSign: ZodiacSign;
+  description: string | null;
+  luckyColor: string | null;
+  luckyNumber: number | null;
+  mood: string | null;
+};
+
+async function getHoroscopesForDateCached(date?: string): Promise<HoroscopeWithSign[]> {
   const { data } = await api.horoscope["all-for-date"].get({
-    query: { date: dateStr },
+    query: { date },
     fetch: {
       cache: "force-cache",
       next: {
@@ -22,6 +29,8 @@ async function getHoroscopesForDateCached(date: Date) {
   });
   return data ?? [];
 }
+
+
 
 const zodiacSignInfo = {
   ARIES: {
@@ -119,18 +128,16 @@ type Props = {
 };
 
 export default async function HoroscopePage({ searchParams }: Props) {
-  // Parse the date from query params or use today
+  // Get date from query params or let API default to today
   const { date } = await searchParams;
-  let selectedDate = new UTCDate();
 
-  if (date) {
-    const parsedDate = parse(date, "yyyy-MM-dd", new UTCDate());
-    if (isValid(parsedDate)) {
-      selectedDate = parsedDate;
-    }
-  }
+  const horoscopes = await getHoroscopesForDateCached(date);
 
-  const horoscopes = await getHoroscopesForDateCached(selectedDate);
+  // Parse date for display (API defaults to today if not provided)
+  const selectedDate = date
+    ? parse(date, "yyyy-MM-dd", new UTCDate())
+    : new UTCDate();
+
   const formattedDate = format(selectedDate, "EEEE, MMMM d, yyyy");
 
   // Calculate navigation dates
@@ -143,7 +150,7 @@ export default async function HoroscopePage({ searchParams }: Props) {
   const canGoNext = nextDate <= today; // Prevent going to future dates
 
   // Create a map of zodiac signs to horoscopes for easy lookup
-  const horoscopeMap = new Map(horoscopes.map((h) => [h.zodiacSign, h]));
+  const horoscopeMap = new Map(horoscopes.map((h: HoroscopeWithSign) => [h.zodiacSign, h]));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-950">

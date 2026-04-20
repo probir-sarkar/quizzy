@@ -1,27 +1,24 @@
-import Elysia from "elysia";
+import Elysia, { t } from "elysia";
 import { HoroscopeService } from "./horoscope.service";
-
-type GetBySignAndDateParams = {
-  query: {
-    sign: ZodiacSign;
-    date: string;
-  };
-};
-
-type GetAllForDateParams = {
-  query: {
-    date: string;
-  };
-};
-
 import { ZodiacSign } from "@/generated/prisma/client";
+
+const zodiacSignEnum = t.Union(
+  (Object.keys(ZodiacSign) as Array<keyof typeof ZodiacSign>).map(sign => t.Literal(sign))
+);
 
 export const HoroscopeController = new Elysia({ prefix: "/horoscope" })
   .get("/by-sign-date", ({ query }) => {
-    const { sign, date } = query as GetBySignAndDateParams["query"];
-    return HoroscopeService.getBySignAndDate(sign, new Date(date));
+    return HoroscopeService.getBySignAndDate(query.sign, query.date);
+  }, {
+    query: t.Object({
+      sign: zodiacSignEnum,
+      date: t.Optional(t.String())
+    })
   })
   .get("/all-for-date", ({ query }) => {
-    const { date } = query as GetAllForDateParams["query"];
-    return HoroscopeService.getAllForDate(new Date(date));
+    return HoroscopeService.getAllForDate(query.date);
+  }, {
+    query: t.Object({
+      date: t.Optional(t.String())
+    })
   });

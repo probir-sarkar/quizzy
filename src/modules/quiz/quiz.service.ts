@@ -69,7 +69,9 @@ export abstract class QuizService {
     perPage = DEFAULT_PER_PAGE,
     subCategorySlug = null
   }: GetQuizzesByCategoryOpts) {
-    const skip = (page - 1) * perPage;
+    const actualPage = page ?? 1;
+    const actualPerPage = perPage ?? DEFAULT_PER_PAGE;
+    const skip = (actualPage - 1) * actualPerPage;
 
     const where: QuizWhereInput = {
       category: { slug: categorySlug }
@@ -106,7 +108,7 @@ export abstract class QuizService {
       where,
       orderBy: { createdAt: "desc" },
       skip,
-      take: perPage,
+      take: actualPerPage,
       include: {
         category: true,
         subCategory: true,
@@ -115,7 +117,7 @@ export abstract class QuizService {
       }
     });
 
-    const totalPages = Math.max(1, Math.ceil(total / perPage));
+    const totalPages = Math.max(1, Math.ceil(total / actualPerPage));
 
     return {
       items,
@@ -123,19 +125,21 @@ export abstract class QuizService {
       meta: {
         total,
         totalPages,
-        currentPage: page,
-        perPage
+        currentPage: actualPage,
+        perPage: actualPerPage
       }
     };
   }
 
   static async getCategoriesWithStats({ page = 1, perPage = 12 } = {}) {
-    const skip = (page - 1) * perPage;
+    const actualPage = page ?? 1;
+    const actualPerPage = perPage ?? 12;
+    const skip = (actualPage - 1) * actualPerPage;
 
     const [items, totalCategories, totalSubcategories] = await Promise.all([
       prisma.category.findMany({
         skip,
-        take: perPage,
+        take: actualPerPage,
         include: {
           subCategories: true,
           _count: { select: { quizzes: true, subCategories: true } }
@@ -145,7 +149,7 @@ export abstract class QuizService {
       prisma.subCategory.count()
     ]);
 
-    const totalPages = Math.max(1, Math.ceil(totalCategories / perPage));
+    const totalPages = Math.max(1, Math.ceil(totalCategories / actualPerPage));
 
     return {
       items,
@@ -153,8 +157,8 @@ export abstract class QuizService {
         totalCategories,
         totalSubcategories,
         totalPages,
-        currentPage: page,
-        perPage
+        currentPage: actualPage,
+        perPage: actualPerPage
       }
     };
   }

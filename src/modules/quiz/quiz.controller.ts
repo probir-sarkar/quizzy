@@ -1,4 +1,4 @@
-import Elysia from "elysia";
+import Elysia, { t } from "elysia";
 import { QuizService } from "./quiz.service";
 
 export const QuizController = new Elysia({ prefix: "/quiz" })
@@ -6,30 +6,49 @@ export const QuizController = new Elysia({ prefix: "/quiz" })
   .get("/home-data", () => QuizService.getHomePageData())
   .get("/categories", () => QuizService.getCategories())
   .get("/by-category", ({ query }) => {
-    const { categorySlug, page = 1, perPage = 12, subCategorySlug = null } = query as any;
     return QuizService.getQuizzesByCategory({
-      categorySlug,
-      page: Number(page),
-      perPage: Number(perPage),
-      subCategorySlug
+      categorySlug: query.categorySlug,
+      page: query.page,
+      perPage: query.perPage,
+      subCategorySlug: query.subCategorySlug
     });
+  }, {
+    query: t.Object({
+      categorySlug: t.String(),
+      page: t.Optional(t.Number()),
+      perPage: t.Optional(t.Number()),
+      subCategorySlug: t.Optional(t.String())
+    })
   })
   .get("/categories-with-stats", ({ query }) => {
-    const { page = 1, perPage = 12 } = query as any;
     return QuizService.getCategoriesWithStats({
-      page: Number(page),
-      perPage: Number(perPage)
+      page: query.page,
+      perPage: query.perPage
     });
+  }, {
+    query: t.Object({
+      page: t.Optional(t.Number()),
+      perPage: t.Optional(t.Number())
+    })
   })
   .get("/detail", ({ query }) => {
-    const { slug } = query as any;
-    return QuizService.getQuiz(slug);
+    return QuizService.getQuiz(query.slug);
+  }, {
+    query: t.Object({
+      slug: t.String()
+    })
   })
   .get("/more", ({ query }) => {
-    const { slug } = query as any;
-    return QuizService.getMoreQuizzes(slug);
+    return QuizService.getMoreQuizzes(query.slug);
+  }, {
+    query: t.Object({
+      slug: t.String()
+    })
   })
   .get("/metadata", ({ query }) => {
-    const { slug } = query as any;
-    return QuizService.getQuizForMetadata(slug);
+    return QuizService.getQuizForMetadata(query.slug);
+  }, {
+    query: t.Object({
+      slug: t.String()
+    })
   });

@@ -145,25 +145,11 @@ const getCategoryData = (category: string) => {
 export default async function ThisDayInHistoryPage({ searchParams }: Props) {
   const { month, day } = await searchParams;
 
-  // Parse the month and day from query params or use today's date
-  const today = new Date();
-  let selectedMonth = today.getMonth() + 1; // JavaScript months are 0-indexed
-  let selectedDay = today.getDate();
-
-  if (month && day) {
-    const parsedMonth = parseInt(month, 10);
-    const parsedDay = parseInt(day, 10);
-    if (parsedMonth >= 1 && parsedMonth <= 12 && parsedDay >= 1 && parsedDay <= 31) {
-      selectedMonth = parsedMonth;
-      selectedDay = parsedDay;
-    }
-  }
-
-  // Get events for the selected date
-  const { data: events } = await api.pastEvent["by-month-day"].get({
+  // Get events for the selected date (API defaults to today if not provided)
+  const { data: response } = await api["past-event"]["by-month-day"].get({
     query: {
-      month: selectedMonth,
-      day: selectedDay
+      month: month ? Number(month) : undefined,
+      day: day ? Number(day) : undefined
     },
     fetch: {
       cache: "force-cache",
@@ -172,15 +158,20 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
       }
     }
   });
-  const eventsList = events ?? [];
+
+  const eventsList = response?.events ?? [];
+  const selectedMonth = response?.month ?? new Date().getMonth() + 1;
+  const selectedDay = response?.day ?? new Date().getDate();
   const formattedDate = `${monthNames[selectedMonth - 1]} ${selectedDay}`;
 
+  const today = new Date();
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-blue-900/20 dark:to-indigo-900/20">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-blue-900/20 dark:to-indigo-900/20">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 pt-32 pb-8 sm:pb-12">
         {/* Enhanced Header */}
         <div className="text-center mb-6 sm:mb-8">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-600 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-4 sm:mb-6 shadow-lg">
+          <div className="inline-flex items-center gap-2 bg-linear-to-r from-blue-500 via-purple-500 to-indigo-600 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-4 sm:mb-6 shadow-lg">
             <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
             <span>Historical Time Machine</span>
             <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />

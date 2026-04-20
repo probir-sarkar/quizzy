@@ -6,23 +6,29 @@ export type HoroscopeData = NonNullable<Awaited<ReturnType<typeof HoroscopeServi
 export type AllHoroscopesData = Awaited<ReturnType<typeof HoroscopeService.getAllForDate>>;
 
 export abstract class HoroscopeService {
-  static async getBySignAndDate(zodiacSign: ZodiacSign, date: Date) {
+  static async getBySignAndDate(zodiacSign: ZodiacSign, date: Date | string | undefined) {
+    // Default to today if date not provided
+    const targetDate = date ? new Date(date) : new Date();
+
     return prisma.horoscope.findUnique({
       where: {
         zodiacSign_date: {
           zodiacSign,
-          date: date
+          date: targetDate
         }
       }
     });
   }
 
-  static async getAllForDate(date: Date) {
+  static async getAllForDate(date: Date | string | undefined) {
+    // Default to today if date not provided
+    const targetDate = date ? new Date(date) : new Date();
+
     return prisma.horoscope.findMany({
       where: {
         date: {
-          gte: startOfDay(date),
-          lte: endOfDay(date)
+          gte: startOfDay(targetDate),
+          lte: endOfDay(targetDate)
         }
       },
       orderBy: {

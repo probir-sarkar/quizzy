@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { QuizCard } from "@/components/home-page/quiz-listing";
 import ShareButtons from "@/components/common/ShareButtons";
 import TelegramCTA from "@/components/common/telegram-cta";
-import Breadcrumbs from "@/components/common/Breadcrumbs";
 import { Sparkles } from "lucide-react";
 import dynamic from "next/dynamic";
 import ToolboxPromoCard from "@/components/common/toolbox-promo-card";

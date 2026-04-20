@@ -2,12 +2,17 @@ import prisma from '@/lib/prisma'
 import { PastEvent, EventCategory } from '@/generated/prisma/client'
 
 export abstract class PastEventService {
-  static async getByMonthDay(month: number, day: number): Promise<PastEvent[]> {
+  static async getByMonthDay(month?: number, day?: number): Promise<{ events: PastEvent[], month: number, day: number }> {
+    // Default to today's date if not provided
+    const today = new Date();
+    const selectedMonth = month ?? today.getMonth() + 1; // JavaScript months are 0-indexed
+    const selectedDay = day ?? today.getDate();
+
     try {
       const events = await prisma.pastEvent.findMany({
         where: {
-          month: month,
-          day: day,
+          month: selectedMonth,
+          day: selectedDay,
           isPublished: true
         },
         orderBy: [
@@ -33,10 +38,10 @@ export abstract class PastEventService {
         }
       })
 
-      return events
+      return { events, month: selectedMonth, day: selectedDay }
     } catch (error) {
       console.error('Error fetching past events:', error)
-      return []
+      return { events: [], month: selectedMonth, day: selectedDay }
     }
   }
 
