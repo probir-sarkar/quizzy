@@ -10,11 +10,17 @@ import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
 import { api } from "@/lib/eden";
 
 export default async function Home() {
-  const [
-    { data: stats },
-    { data: homePageData },
-    { data: categories }
-  ] = await Promise.all([
+  return (
+    <>
+      <Suspense fallback={null}>
+        <HomePage />
+      </Suspense>
+    </>
+  );
+}
+
+async function HomePage() {
+  const [{ data: stats }, { data: homePageData }, { data: categories }] = await Promise.all([
     api.quiz.stats.get({
       fetch: {
         cache: "force-cache",
@@ -57,31 +63,32 @@ export default async function Home() {
           totalCategories={stats.totalCategories}
           totalSubCategories={stats.totalSubCategories}
         />
-      </Suspense>
-      <Suspense fallback={<div className="h-64 animate-pulse bg-slate-100 dark:bg-slate-900" />}>
-        <TrendingSection quizzes={trendingQuizzes} />
-      </Suspense>
 
-      {/* Toolbox Promotion Section */}
-      <div className="container mx-auto px-4 py-12">
-        <ToolboxPromoCard variant="default" />
-      </div>
-
-      <Suspense fallback={<div className="h-32 animate-pulse bg-slate-100 dark:bg-slate-900" />}>
-        <CategoryFilters categories={categoriesList} />
-      </Suspense>
-      {data.map((cat) => (
-        <Suspense
-          key={cat.slug}
-          fallback={<div className="container mx-auto pt-16 h-64 animate-pulse bg-slate-100 dark:bg-slate-900" />}
-        >
-          <section id={cat.slug} className="container mx-auto pt-16">
-            {/* Title */}
-            <SectionHeader id={cat.slug} title={cat.name} />
-            <QuizListing quizzes={cat.quizzes} />
-          </section>
+        <Suspense fallback={<div className="h-64 animate-pulse bg-slate-100 dark:bg-slate-900" />}>
+          <TrendingSection quizzes={trendingQuizzes} />
         </Suspense>
-      ))}
+
+        {/* Toolbox Promotion Section */}
+        <div className="container mx-auto px-4 py-12">
+          <ToolboxPromoCard variant="default" />
+        </div>
+
+        <Suspense fallback={<div className="h-32 animate-pulse bg-slate-100 dark:bg-slate-900" />}>
+          <CategoryFilters categories={categoriesList} />
+        </Suspense>
+        {data.map((cat) => (
+          <Suspense
+            key={cat.slug}
+            fallback={<div className="container mx-auto pt-16 h-64 animate-pulse bg-slate-100 dark:bg-slate-900" />}
+          >
+            <section id={cat.slug} className="container mx-auto pt-16">
+              {/* Title */}
+              <SectionHeader id={cat.slug} title={cat.name} />
+              <QuizListing quizzes={cat.quizzes} />
+            </section>
+          </Suspense>
+        ))}
+      </Suspense>
     </>
   );
 }

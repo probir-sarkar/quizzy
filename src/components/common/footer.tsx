@@ -1,9 +1,9 @@
 import { Sparkles, Github, Twitter, Mail, Heart } from "lucide-react";
 import Link from "next/link";
 import CurrentYear from "./current-year";
+import { Suspense } from "react";
 
 export default function Footer() {
-
   const footerLinks = [
     {
       title: "Explore",
@@ -84,9 +84,7 @@ export default function Footer() {
                       </Link>
                     )}
                     {link.description && (
-                      <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">
-                        {link.description}
-                      </p>
+                      <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">{link.description}</p>
                     )}
                   </li>
                 ))}
@@ -96,7 +94,14 @@ export default function Footer() {
         </div>
 
         <div className="pt-8 border-t border-slate-200 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="text-slate-500 text-sm">© <CurrentYear /> Quiz Zone. All rights reserved.</p>
+          <p className="text-slate-500 text-sm">
+            ©{" "}
+            <Suspense fallback="2026">
+              {" "}
+              <CurrentYear />
+            </Suspense>{" "}
+            Quiz Zone. All rights reserved.
+          </p>
           <div className="flex items-center gap-1.5 text-slate-500 text-sm font-medium">
             <span>Made with</span>
             <Heart className="w-4 h-4 text-rose-500 animate-pulse fill-rose-500" />
