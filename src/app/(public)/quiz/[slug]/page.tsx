@@ -20,11 +20,6 @@ const QuizQuestions = dynamic(() => import("@/components/quiz-page/question-list
   )
 });
 
-const QuizResults = dynamic(() => import("@/components/quiz-page/quiz-results"), {
-  loading: () => (
-    <div className="max-w-3xl mx-auto px-4 bg-slate-100 dark:bg-slate-900 rounded-2xl p-8 h-64 animate-pulse" />
-  )
-});
 type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
