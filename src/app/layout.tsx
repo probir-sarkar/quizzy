@@ -1,7 +1,6 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import NextTopLoader from "nextjs-toploader";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Suspense } from "react";
 
@@ -27,7 +26,6 @@ export default function RootLayout({
     <html lang="en" className="h-full" data-scroll-behavior="smooth" suppressHydrationWarning>
       <GoogleTagManager gtmId="G-KMP0FXVWFL" />
       <body suppressHydrationWarning className={` ${poppins.className} flex min-h-full flex-col antialiased`}>
-        <NextTopLoader color="#c800de" showSpinner={false} />
         <Suspense fallback={null}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             {children}
