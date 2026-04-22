@@ -2,6 +2,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 
 import Navbar from "@/components/common/navbar";
 import Footer from "@/components/common/footer";
+import { Suspense } from "react";
 
 export default function PublicLayout({
   children
@@ -9,12 +10,15 @@ export default function PublicLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-      <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col">
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
         <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
-      </div>
-    </ThemeProvider>
+      </ThemeProvider>
+      <main className="flex-1">
+        <Suspense fallback={null}>
+        {children}
+        </Suspense></main>
+      <Footer />
+    </div>
   );
 }
