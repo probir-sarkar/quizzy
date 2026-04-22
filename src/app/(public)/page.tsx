@@ -3,8 +3,6 @@ import CategoryFilters from "@/components/home-page/category-filter";
 import HeroSection from "@/components/home-page/hero-section";
 import QuizListing from "@/components/home-page/quiz-listing";
 
-import { Suspense } from "react";
-
 import TrendingSection from "@/components/home-page/trending-section";
 import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
 import { api } from "@/lib/eden";

@@ -5,20 +5,9 @@ import { QuizCard } from "@/components/home-page/quiz-listing";
 import ShareButtons from "@/components/common/ShareButtons";
 import TelegramCTA from "@/components/common/telegram-cta";
 import { Sparkles } from "lucide-react";
-import dynamic from "next/dynamic";
+import QuizQuestions from "@/components/quiz-page/question-list";
 import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
 import { api } from "@/lib/eden";
-
-// Lazy load quiz components for better performance
-const QuizQuestions = dynamic(() => import("@/components/quiz-page/question-list"), {
-  loading: () => (
-    <div className="max-w-3xl mx-auto px-4 space-y-4">
-      {[...Array(3)].map((_, i) => (
-        <div key={i} className="bg-slate-100 dark:bg-slate-900 rounded-2xl p-6 h-48 animate-pulse" />
-      ))}
-    </div>
-  )
-});
 
 type Props = {
   params: Promise<{ slug: string }>;

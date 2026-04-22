@@ -2,7 +2,6 @@ import { ThemeProvider } from "@/components/theme-provider";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { GoogleTagManager } from "@next/third-parties/google";
-import { Suspense } from "react";
 
 // @ts-ignore
 import "./globals.css";
