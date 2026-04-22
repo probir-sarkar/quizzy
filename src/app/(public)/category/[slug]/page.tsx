@@ -3,16 +3,15 @@ import SubCategoryFilters from "@/components/category/sub-category-filter";
 import { QuizCard } from "@/components/home-page/quiz-listing";
 import { notFound } from "next/navigation";
 import { api } from "@/lib/eden";
-import { connection } from "next/server";
-import { Suspense } from "react";
 type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | undefined }>;
 };
 
-async function QuizPage({ params, searchParams }: Props) {
+export default async function CategoryPage({ params, searchParams }: Props) {
   const { slug } = await params;
-  const { page = "1", subcategory } = await searchParams;
+  const { page = 1, subcategory } = await searchParams;
+
   const { data: quizzes } = await api.quiz["by-category"].get({
     query: {
       categorySlug: slug,
@@ -32,7 +31,7 @@ async function QuizPage({ params, searchParams }: Props) {
   const quizzesList = quizzes.items;
   const subcategoris = quizzes.category?.subCategories || [];
   return (
-    <>
+    <main>
       <CategoryHero
         category={{
           name: quizzes.category?.name || "",
@@ -59,16 +58,6 @@ async function QuizPage({ params, searchParams }: Props) {
           </div>
         )}
       </div>
-    </>
-  );
-}
-
-export default async function Page({ params, searchParams }: Props) {
-  return (
-    <main>
-      <Suspense fallback={null}>
-        <QuizPage params={params} searchParams={searchParams} />
-      </Suspense>
     </main>
   );
 }

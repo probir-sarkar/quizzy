@@ -26,11 +26,7 @@ export default function RootLayout({
     <html lang="en" className="h-full" data-scroll-behavior="smooth" suppressHydrationWarning>
       <GoogleTagManager gtmId="G-KMP0FXVWFL" />
       <body suppressHydrationWarning className={` ${poppins.className} flex min-h-full flex-col antialiased`}>
-        {/* <Suspense fallback={null}> */}
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-            {children}
-          </ThemeProvider>
-        {/* </Suspense> */}
+        {children}
       </body>
     </html>
   );
