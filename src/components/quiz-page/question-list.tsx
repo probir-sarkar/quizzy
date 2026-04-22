@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
 import { QuestionType } from "@/queries/home-page";
 import { useEffect } from "react";
 import { useQuizStore } from "@/stores/quiz-store";
@@ -22,57 +21,29 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
     return () => reset();
   }, [reset]);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.03
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  };
-
   return (
     <div id="questions" className="mx-auto max-w-7xl pb-32">
       {/* Sticky Progress Bar */}
       <QuizProgressBar />
 
       {/* Header */}
-      <motion.div
-        className="px-4 sm:px-6 py-4 md:py-10"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.h2
-          className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2"
-          variants={itemVariants}
-        >
+      <div className="px-4 sm:px-6 py-4 md:py-10">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">
           Quiz Questions
-        </motion.h2>
-        <motion.p className="text-gray-600 dark:text-gray-300" variants={itemVariants}>
+        </h2>
+        <p className="text-gray-600 dark:text-gray-300">
           Answer all questions below and test your knowledge.
-        </motion.p>
-      </motion.div>
+        </p>
+      </div>
 
       {/* Questions List */}
-      <motion.ol
-        className="max-w-4xl pl-4 sm:pl-7 pr-4 sm:pr-6 space-y-6 sm:space-y-8"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
+      <ol className="max-w-4xl pl-4 sm:pl-7 pr-4 sm:pr-6 space-y-6 sm:space-y-8">
         {questions.map((q, i) => (
-          <motion.li id={`question-${i + 1}`} key={q.id} variants={itemVariants} transition={{ duration: 0.3 }}>
+          <li id={`question-${i + 1}`} key={q.id}>
             <QuestionCard q={q} index={i} selected={answers[i]} onAnswer={setAnswer} showResult={showResults} />
-          </motion.li>
+          </li>
         ))}
-      </motion.ol>
+      </ol>
 
       {/* Bottom Results Section */}
       <QuizResults />
@@ -103,24 +74,18 @@ function QuestionCard({
   };
 
   return (
-    <motion.div
-      className="relative rounded-[1.5rem] sm:rounded-[2rem] border border-white/10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] p-5 sm:p-10"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.5 }}
-    >
+    <div className="relative rounded-3xl sm:rounded-4xl border border-white/10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] p-5 sm:p-10">
       {/* Premium Number Chip */}
       <div className="absolute -left-3 -top-3 sm:-left-4 sm:-top-4 flex items-center justify-center">
         <div className="relative">
-          <div className="absolute inset-0 bg-violet-500 blur-lg opacity-40 animate-pulse" />
-          <div className="relative w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-white font-black text-sm sm:text-lg shadow-xl border border-white/20 transform -rotate-6 group-hover:rotate-0 transition-transform">
+          <div className="absolute inset-0 bg-violet-500 blur-lg opacity-40" />
+          <div className="relative w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-2xl bg-linear-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center text-white font-black text-sm sm:text-lg shadow-xl border border-white/20 transform -rotate-6">
             {index + 1}
           </div>
         </div>
       </div>
 
-      <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white mb-4 sm:mb-8 pr-1 leading-snug sm:leading-tight tracking-tight break-words">
+      <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white mb-4 sm:mb-8 pr-1 leading-snug sm:leading-tight tracking-tight wrap-break-word">
         {q.text}
       </h2>
 
@@ -135,7 +100,7 @@ function QuestionCard({
 
           // base (light + dark)
           let cls =
-            "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border transition-all duration-200 shadow-sm text-sm sm:text-base " +
+            "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border shadow-sm text-sm sm:text-base " +
             "bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 " +
             "border-gray-200 dark:border-gray-700 " +
             "hover:bg-gray-50 dark:hover:bg-white/5 " +
@@ -145,29 +110,29 @@ function QuestionCard({
           if (answered) {
             if (isPicked && isCorrect) {
               cls =
-                "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border shadow-sm transition-all duration-200 text-sm sm:text-base " +
+                "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border shadow-sm text-sm sm:text-base " +
                 "bg-green-50 dark:bg-green-900/30 border-green-500 " +
                 "text-green-900 dark:text-green-100";
             } else if (isPicked && !isCorrect) {
               cls =
-                "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border shadow-sm transition-all duration-200 text-sm sm:text-base " +
+                "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border shadow-sm text-sm sm:text-base " +
                 "bg-red-50 dark:bg-red-900/30 border-red-500 " +
                 "text-red-900 dark:text-red-100";
             } else if (isCorrect) {
               cls =
-                "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border shadow-sm transition-all duration-200 text-sm sm:text-base " +
+                "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border shadow-sm text-sm sm:text-base " +
                 "bg-green-50/70 dark:bg-green-900/20 border-green-400 " +
                 "text-green-900/90 dark:text-green-200";
             } else {
               cls =
-                "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border shadow-sm transition-all duration-200 text-sm sm:text-base " +
+                "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border shadow-sm text-sm sm:text-base " +
                 "bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 " +
                 "border-gray-200 dark:border-gray-700 opacity-60 cursor-not-allowed";
             }
           }
 
           // decorative radio dot (light + dark states)
-          const dotBase = "inline-block h-4 w-4 rounded-full border transition-all duration-200";
+          const dotBase = "inline-block h-4 w-4 rounded-full border";
           const dotClass = answered
             ? isPicked
               ? isCorrect
@@ -181,47 +146,31 @@ function QuestionCard({
               : "border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-900";
 
           return (
-            <motion.button
+            <button
               key={i}
               type="button"
               className={cls}
               onClick={() => handleSelect(i)}
               disabled={isDisabled}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 + i * 0.03 }}
-              whileHover={!isDisabled ? { scale: 1.02, x: 5 } : {}}
-              whileTap={!isDisabled ? { scale: 0.98 } : {}}
             >
               <span className="flex items-center gap-3">
-                <motion.span
-                  className={`${dotBase} ${dotClass} shrink-0`}
-                  animate={answered ? { scale: [1, 1.2, 1] } : {}}
-                  transition={{ duration: 0.3 }}
-                />
-                <span className="break-words">{opt}</span>
+                <span className={`${dotBase} ${dotClass} shrink-0`} />
+                <span className="wrap-break-word">{opt}</span>
               </span>
-            </motion.button>
+            </button>
           );
         })}
       </fieldset>
 
       {/* explanation */}
       {isAnswered && q.explanation && (
-        <motion.div
-          className="mt-3 sm:mt-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-white/5 px-3 sm:px-4 py-3 text-sm text-gray-700 dark:text-gray-200"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1, duration: 0.2 }}
-        >
+        <div className="mt-3 sm:mt-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-white/5 px-3 sm:px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
           <div className="flex items-start gap-2">
-            <motion.svg
-              className="w-4 h-4 mt-0.5 text-blue-500 dark:text-blue-400 flex-shrink-0"
+            <svg
+              className="w-4 h-4 mt-0.5 text-blue-500 dark:text-blue-400 shrink-0"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
-              animate={{ rotate: [0, 5, -5, 0] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
             >
               <path
                 strokeLinecap="round"
@@ -229,11 +178,11 @@ function QuestionCard({
                 strokeWidth={2}
                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
-            </motion.svg>
+            </svg>
             <span>{q.explanation}</span>
           </div>
-        </motion.div>
+        </div>
       )}
-    </motion.div>
+    </div>
   );
 }

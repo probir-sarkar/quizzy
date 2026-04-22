@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
 import { ArrowUpRight, Shield, Zap, FileImage, Lock } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
@@ -31,14 +30,10 @@ export default function ToolboxPromoCard({ className = "", variant = "default" }
 
   if (variant === "compact") {
     return (
-      <motion.a
+      <a
         href="https://toolbox.probir.dev/"
         target="_blank"
         rel="noopener noreferrer"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        whileHover={{ y: -4, transition: { duration: 0.2 } }}
         className={`block relative overflow-hidden rounded-xl border border-teal-200 dark:border-teal-800/30
           bg-linear-to-br from-teal-50 to-teal-100 dark:from-teal-950/50 dark:to-teal-900/30
           hover:shadow-xl hover:shadow-teal-500/10 transition-all duration-300 ${className}`}
@@ -70,19 +65,15 @@ export default function ToolboxPromoCard({ className = "", variant = "default" }
         {isDark && (
           <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-teal-600/5 pointer-events-none" />
         )}
-      </motion.a>
+      </a>
     );
   }
 
   return (
-    <motion.a
+    <a
       href="https://toolbox.probir.dev/"
       target="_blank"
       rel="noopener noreferrer"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      whileHover={{ y: -4, transition: { duration: 0.2 } }}
       className={`block relative overflow-hidden rounded-2xl border border-teal-200 dark:border-teal-800/30
         bg-linear-to-br from-teal-50 to-teal-100 dark:from-teal-950/50 dark:to-teal-900/30
         hover:shadow-xl hover:shadow-teal-500/10 transition-all duration-300 ${className}`}
@@ -128,16 +119,12 @@ export default function ToolboxPromoCard({ className = "", variant = "default" }
             </div>
           </div>
 
-          <motion.div
-            whileHover={{ scale: 1.05, rotate: 5 }}
-            transition={{ duration: 0.2 }}
-            className="shrink-0"
-          >
+          <div className="shrink-0">
             <div className="w-10 h-10 rounded-xl bg-linear-to-br from-teal-500 to-teal-600
               flex items-center justify-center shadow-lg hover:shadow-xl transition-all">
               <ArrowUpRight className="w-5 h-5 text-white" />
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* CTA Section */}
@@ -157,6 +144,6 @@ export default function ToolboxPromoCard({ className = "", variant = "default" }
       {/* Decorative gradient orbs */}
       <div className="absolute -top-10 -right-10 w-20 h-20 bg-teal-500/10 rounded-full blur-2xl pointer-events-none" />
       <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-teal-600/10 rounded-full blur-2xl pointer-events-none" />
-    </motion.a>
+    </a>
   );
 }

@@ -3,7 +3,6 @@
 import { Sparkles, Target, Layers, Trophy } from "lucide-react";
 import { QuizPageType } from "@/queries/home-page";
 import { QuizDifficulty } from "@/generated/prisma/enums";
-import { motion } from "motion/react";
 
 import { BreadcrumbItem } from "../common/Breadcrumbs";
 import Breadcrumbs from "../common/Breadcrumbs";
@@ -31,10 +30,10 @@ export default function QuizHero({ quiz, breadcrumbs }: { quiz: QuizPageType; br
       {/* Background blobs */}
       <div className="absolute inset-0 overflow-hidden">
         <div
-          className={`absolute -top-1/2 -right-1/4 w-[70%] h-[70%] rounded-full bg-gradient-to-br ${bgColor} opacity-10 dark:opacity-20 blur-[120px] animate-pulse`}
+          className={`absolute -top-1/2 -right-1/4 w-[70%] h-[70%] rounded-full bg-gradient-to-br ${bgColor} opacity-10 dark:opacity-20 blur-[120px]`}
         />
         <div
-          className={`absolute -bottom-1/2 -left-1/4 w-[70%] h-[70%] rounded-full bg-gradient-to-br ${bgColor} opacity-5 dark:opacity-10 blur-[120px] animate-pulse [animation-delay:2s]`}
+          className={`absolute -bottom-1/2 -left-1/4 w-[70%] h-[70%] rounded-full bg-gradient-to-br ${bgColor} opacity-5 dark:opacity-10 blur-[120px]`}
         />
       </div>
 
@@ -46,38 +45,28 @@ export default function QuizHero({ quiz, breadcrumbs }: { quiz: QuizPageType; br
               <Breadcrumbs items={breadcrumbs} />
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
+            <div
               className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 dark:bg-white/5 border border-gray-200 dark:border-white/10 backdrop-blur-md mb-6`}
             >
               <Sparkles className={`w-4 h-4 text-transparent bg-clip-text bg-gradient-to-r ${bgColor} bg-white`} />
               <span className="text-xs font-bold tracking-widest text-gray-700 dark:text-white/80 uppercase">
                 {quiz.category?.name || "General"}
               </span>
-            </motion.div>
+            </div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+            <h1
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight break-words"
             >
               {quiz.title}
-            </motion.h1>
+            </h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
+            <p
               className="text-base sm:text-lg text-gray-600 dark:text-slate-400 max-w-2xl mb-8 leading-relaxed break-words"
             >
               {quiz.description || "Challenge yourself with this expertly curated quiz and see how you rank!"}
-            </motion.p>
+            </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+            <div
               className="flex flex-wrap justify-center lg:justify-start gap-3"
             >
               {quiz.tags.map((tag, i) => (
@@ -88,14 +77,11 @@ export default function QuizHero({ quiz, breadcrumbs }: { quiz: QuizPageType; br
                   #{tag.tag.name}
                 </span>
               ))}
-            </motion.div>
+            </div>
           </div>
 
           {/* Right Side: Stats Panel */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ type: "spring", damping: 20 }}
+          <div
             className="w-full max-w-md"
           >
             <div className="relative p-1 rounded-[2.5rem] bg-gradient-to-br from-white/60 to-white/20 dark:from-white/10 dark:to-white/0 border border-gray-200 dark:border-white/10 backdrop-blur-2xl overflow-hidden shadow-xl dark:shadow-2xl">
@@ -133,17 +119,15 @@ export default function QuizHero({ quiz, breadcrumbs }: { quiz: QuizPageType; br
                   </div>
                 </div>
 
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                <button
                   onClick={() => document.getElementById("questions")?.scrollIntoView({ behavior: "smooth" })}
                   className={`w-full mt-10 py-4 rounded-2xl bg-gradient-to-r ${bgColor} text-white font-bold shadow-lg shadow-violet-500/20 hover:shadow-violet-500/40 transition-all text-sm uppercase tracking-widest`}
                 >
                   Begin Knowledge Quest
-                </motion.button>
+                </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>

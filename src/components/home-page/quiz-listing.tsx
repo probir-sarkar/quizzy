@@ -1,7 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
-import { Bookmark, Target, TrendingUp } from "lucide-react";
+import { Target } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { useTheme } from "next-themes";
 import { QuizCard as QuizCardType } from "@/queries/home-page";
@@ -26,14 +25,8 @@ export default function QuizListing({ quizzes }: { quizzes: QuizCardType[] }) {
 export function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay?: number; index: number }) {
   return (
     <Link href={`/quiz/${quiz.slug}`} className="w-full h-full block">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay, duration: 0.5 }}
-        whileHover={{ y: -8, transition: { duration: 0.2 } }}
-        className="w-full h-full"
-      >
-        <Card className="group pt-0 gap-0 pb-2 relative w-full h-full overflow-hidden cursor-pointer border-0 bg-white dark:bg-gray-900 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300">
+      <div className="w-full h-full">
+        <Card className="group pt-0 gap-0 pb-2 relative w-full h-full overflow-hidden cursor-pointer border-0 bg-white dark:bg-gray-900 rounded-3xl shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
           {/* Top gradient banner */}
           <CardHeader className={` aspect-16/7 bg-linear-to-br ${getCardGradient(index)} relative overflow-hidden p-0`}>
             <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors duration-300" />
@@ -61,7 +54,7 @@ export function QuizCard({ quiz, delay = 0, index }: { quiz: QuizCardType; delay
             </p>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
     </Link>
   );
 }
