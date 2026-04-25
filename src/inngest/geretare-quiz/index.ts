@@ -15,7 +15,7 @@ import {
 } from "./utils";
 
 export const generateQuizFn = inngest.createFunction(
-  { id: "generate-quiz", retries: 0, triggers: [{ event: "quiz/generate-quiz" }, { cron: "*/5 * * * *" }] },
+  { id: "generate-quiz", retries: 0, triggers: [{ event: "quiz/generate-quiz" }, { cron: "*/3 * * * *" }] },
   async ({ step }) => {
     const today = format(new Date(), "MMMM d, yyyy");
     const nonce = `${today}-${Math.random().toString(36).slice(2)}`;
