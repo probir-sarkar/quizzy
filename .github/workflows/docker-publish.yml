@@ -31,3 +31,10 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: ghcr.io/${{github.repository}}:latest
+
+      - name: Clean up untagged GHCR images
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          delete-untagged: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
