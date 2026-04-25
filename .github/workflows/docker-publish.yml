@@ -37,4 +37,3 @@ jobs:
         with:
           delete-untagged: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
