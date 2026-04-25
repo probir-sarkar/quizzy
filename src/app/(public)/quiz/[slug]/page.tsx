@@ -89,7 +89,7 @@ async function QuizPage({ params }: Props) {
             </div>
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {moreQuizzes.map((q, i) => (
-                <QuizCard key={q.id} delay={0.1 * i} index={i} quiz={q} />
+                <QuizCard key={q.id} index={i} quiz={q} />
               ))}
             </div>
           </div>
