@@ -58,7 +58,7 @@ async function QuizPage({ params }: Props) {
   if (!quiz) return notFound();
 
   return (
-    <section>
+    <section className="bg-gray-50 dark:bg-slate-950">
       <QuizPageHero
         quiz={quiz}
         breadcrumbs={[
