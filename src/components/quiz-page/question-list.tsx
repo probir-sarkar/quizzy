@@ -1,92 +1,49 @@
 "use client";
-import { Info, Circle, CheckCircle2, XCircle, Check, Trophy, RotateCcw } from "lucide-react";
+import { useReducer, useMemo } from "react";
+import { Info, Trophy, RotateCcw } from "lucide-react";
 import { QuestionType } from "@/modules/quiz/quiz.service";
-import { useQuizStore, useQuizScore, getQuizScoreMessage, getQuizScoreColor } from "@/stores/quiz-store";
+import { calculateQuizScore, getQuizScoreMessage, getQuizScoreColor } from "@/lib/quiz-utils";
 import { cn } from "@/lib/utils";
+import { AnswerButton } from "./quiz-answer-button";
 
-// Button styles
-const styles = {
-  button:
-    "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border shadow-sm text-sm sm:text-base transition-all",
-  default:
-    "bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-gray-200 dark:border-gray-700 hover:shadow-md hover:bg-gray-50 dark:hover:bg-white/5",
-  correct: "bg-green-50 dark:bg-green-900/30 border-green-500 text-green-900 dark:text-green-100",
-  wrong: "bg-red-50 dark:bg-red-900/30 border-red-500 text-red-900 dark:text-red-100",
-  reveal: "bg-green-50/70 dark:bg-green-900/20 border-green-400 text-green-900/90 dark:text-green-200",
-  faded: "bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700 opacity-60"
-};
+type AnswersState = Record<number, number>;
 
-function AnswerIcon({ isPicked, isCorrect, answered }: { isPicked: boolean; isCorrect: boolean; answered: boolean }) {
-  if (!answered)
-    return <Circle className={cn("h-4 w-4 shrink-0 transition-all", isPicked && "fill-gray-900 dark:fill-gray-100")} />;
-  if (isPicked)
-    return isCorrect ? (
-      <CheckCircle2 className="h-4 w-4 shrink-0 text-green-600 dark:text-green-500" />
-    ) : (
-      <XCircle className="h-4 w-4 shrink-0 text-red-600 dark:text-red-500" />
-    );
-  if (isCorrect) return <Check className="h-4 w-4 shrink-0 text-green-500" />;
-  return <Circle className="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-600" />;
-}
+type QuizAction =
+  | { type: "SET_ANSWER"; questionIndex: number; answerIndex: number }
+  | { type: "RESET" };
 
-function AnswerButton({
-  text,
-  isPicked,
-  isCorrect,
-  answered,
-  disabled,
-  onClick
-}: {
-  text: string;
-  isPicked: boolean;
-  isCorrect: boolean;
-  answered: boolean;
-  disabled: boolean;
-  onClick: () => void;
-}) {
-  let variant = styles.default;
-
-  if (answered) {
-    if (isPicked && isCorrect) variant = styles.correct;
-    else if (isPicked && !isCorrect) variant = styles.wrong;
-    else if (isCorrect) variant = styles.reveal;
-    else variant = styles.faded;
+function quizReducer(state: AnswersState, action: QuizAction): AnswersState {
+  switch (action.type) {
+    case "SET_ANSWER": {
+      const { questionIndex, answerIndex } = action;
+      if (state[questionIndex] === answerIndex) return state;
+      return { ...state, [questionIndex]: answerIndex };
+    }
+    case "RESET":
+      return {};
+    default:
+      return state;
   }
-
-  return (
-    <button
-      type="button"
-      className={cn(
-        styles.button,
-        variant,
-        !answered &&
-        !disabled &&
-        "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 dark:focus-visible:ring-white/20",
-        !answered && disabled && "cursor-not-allowed"
-      )}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      <span className="flex items-center gap-3">
-        <AnswerIcon isPicked={isPicked} isCorrect={isCorrect} answered={answered} />
-        <span className="wrap-break-word">
-          {text}
-        </span>
-      </span>
-    </button>
-  );
 }
 
 export default function QuizQuestions({ questions }: { questions: QuestionType[] }) {
-  const answers = useQuizStore((state) => state.answers);
-  const setAnswer = useQuizStore((state) => state.setAnswer);
-  const reset = useQuizStore((state) => state.reset);
-  const { correct, percentage } = useQuizScore();
+  const [answers, dispatch] = useReducer(quizReducer, {});
 
-  const answeredCount = Object.values(answers).filter((a) => a !== undefined && a !== null).length;
+  const score = useMemo(() => calculateQuizScore(answers, questions), [answers, questions]);
+  const { correct, percentage } = score;
+
+  const answeredCount = Object.keys(answers).length;
   const totalQuestions = questions.length;
   const progress = Math.round((answeredCount / totalQuestions) * 100);
   const isComplete = answeredCount === totalQuestions;
+
+  const handleAnswer = (questionIndex: number, answerIndex: number) => {
+    dispatch({ type: "SET_ANSWER", questionIndex, answerIndex });
+  };
+
+  const handleReset = () => {
+    dispatch({ type: "RESET" });
+  };
 
   return (
     <div id="questions" className="mx-auto max-w-7xl pb-8">
@@ -103,7 +60,7 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
               q={q}
               index={i}
               selected={answers[i]}
-              onAnswer={setAnswer}
+              onAnswer={handleAnswer}
               totalQuestions={totalQuestions}
             />
           </li>
@@ -139,7 +96,7 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
             </div>
 
             <button
-              onClick={() => reset()}
+              onClick={handleReset}
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
@@ -183,7 +140,6 @@ function QuestionCard({
   totalQuestions: number;
 }) {
   const isAnswered = selected !== undefined && selected !== null;
-  const isDisabled = isAnswered;
 
   return (
     <div className="rounded-2xl border border-white/10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] p-5 sm:p-6">
@@ -206,8 +162,8 @@ function QuestionCard({
             isPicked={selected === i}
             isCorrect={i === q.correctIndex}
             answered={isAnswered}
-            disabled={isDisabled}
-            onClick={() => !isDisabled && onAnswer?.(index, i)}
+            disabled={isAnswered}
+            onClick={() => !isAnswered && onAnswer?.(index, i)}
           />
         ))}
       </fieldset>
