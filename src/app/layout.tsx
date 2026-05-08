@@ -2,8 +2,6 @@ import NextTopLoader from "nextjs-toploader";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { GoogleTagManager } from "@next/third-parties/google";
-import JsonLd from "@/components/common/JsonLd";
-import { generateWebSiteSchema } from "@/lib/structured-data";
 import { Providers } from "./providers";
 
 // @ts-ignore
@@ -36,9 +34,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full" data-scroll-behavior="smooth" suppressHydrationWarning>
-      <head>
-        <JsonLd data={generateWebSiteSchema()} />
-      </head>
       <GoogleTagManager gtmId="G-KMP0FXVWFL" />
       <Providers>
       <body suppressHydrationWarning className={` ${poppins.className} flex min-h-full flex-col antialiased`}>

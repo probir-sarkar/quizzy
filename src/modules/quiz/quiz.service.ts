@@ -249,23 +249,59 @@ export abstract class QuizService {
   static async getQuiz(slug: string) {
     const quiz = await prisma.quiz.findUnique({
       where: { slug },
-      include: {
-        category: true,
-        questions: true,
-        tags: {
-          include: {
-            tag: true,
+      select: {
+        id: true,
+        quizPageTitle: true,
+        quizPageDescription: true,
+        difficulty: true,
+        title: true,
+        description: true,
+        slug: true,
+        isPublished: true,
+        publishedAt: true,
+        views: true,
+        categoryId: true,
+        subCategoryId: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
           },
         },
-        _count: {
+        questions: {
           select: {
-            questions: true,
+            id: true,
+            quizId: true,
+            text: true,
+            options: true,
+            correctIndex: true,
+            explanation: true,
+          },
+        },
+        tags: {
+          select: {
+            quizId: true,
+            tagId: true,
+            tag: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
     });
 
-    return quiz;
+    if (!quiz) return null;
+
+    return {
+      ...quiz,
+      _count: {
+        questions: quiz.questions.length,
+      },
+    };
   }
 
   static async getMoreQuizzes(currentSlug: string) {

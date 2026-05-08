@@ -1,7 +1,5 @@
 import CategoryHero from "@/components/category/CategoryHero";
 import { QuizList } from "./quiz-list";
-import JsonLd from "@/components/common/JsonLd";
-import { generateCategorySchema, generateBreadcrumbSchema } from "@/lib/structured-data";
 import { notFound } from "next/navigation";
 import { api } from "@/lib/eden";
 import { BASE_URL } from "@/lib/constants";
@@ -58,18 +56,6 @@ export default async function CategoryPage({ params }: Props) {
 
   return (
     <>
-      <JsonLd data={generateCategorySchema({
-        name: categoryName,
-        slug,
-        quizCount: categoryQuizCount
-      })} />
-      <JsonLd data={generateBreadcrumbSchema({
-        items: [
-          { name: "Home", href: "/" },
-          { name: "Categories", href: "/category" },
-          { name: categoryName, href: `/category/${slug}` }
-        ]
-      })} />
       <main>
         <CategoryHero
           category={{

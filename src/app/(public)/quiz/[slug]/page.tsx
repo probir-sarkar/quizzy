@@ -7,8 +7,6 @@ import TelegramCTA from "@/components/common/telegram-cta";
 import { Sparkles } from "lucide-react";
 import QuizQuestions from "@/components/quiz-page/question-list";
 import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
-import JsonLd from "@/components/common/JsonLd";
-import { generateQuizSchema, generateBreadcrumbSchema } from "@/lib/structured-data";
 import { api } from "@/lib/eden";
 
 type Props = {
@@ -58,31 +56,20 @@ async function QuizPage({ params }: Props) {
   ]);
 
   if (!quiz) return notFound();
+  if (!quiz.questions || quiz.questions.length === 0) return notFound();
+  if (!quiz.tags) return notFound();
+
+  const categorySlug = quiz.category?.slug ?? "general";
+  const categoryName = quiz.category?.name ?? "General";
 
   return (
     <>
-      <JsonLd data={generateQuizSchema({
-        name: quiz.title,
-        description: quiz.description || "",
-        numberOfQuestions: quiz._count.questions,
-        difficulty: quiz.difficulty,
-        categoryName: quiz.category?.name || "General",
-        slug
-      })} />
-      <JsonLd data={generateBreadcrumbSchema({
-        items: [
-          { name: "Home", href: "/" },
-          { name: "Categories", href: "/category" },
-          { name: quiz.category?.name || "General", href: `/category/${quiz.category?.slug}` },
-          { name: quiz.title, href: `/quiz/${slug}` }
-        ]
-      })} />
       <section className="bg-gray-50 dark:bg-slate-950">
         <QuizPageHero
           quiz={quiz}
           breadcrumbs={[
             { label: "Categories", href: "/category" },
-            { label: quiz.category?.name || "General", href: `/category/${quiz.category?.slug}` },
+            { label: categoryName, href: `/category/${categorySlug}` },
             { label: quiz.title, href: "#", active: true }
           ]}
         />
