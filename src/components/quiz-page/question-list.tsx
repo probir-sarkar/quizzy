@@ -1,5 +1,5 @@
 "use client";
-import { useReducer, useMemo, useEffect, useRef } from "react";
+import { useReducer, useMemo, useEffect } from "react";
 import { Info, Trophy, RotateCcw } from "lucide-react";
 import { QuestionType } from "@/modules/quiz/quiz.service";
 import { calculateQuizScore, getQuizScoreMessage, getQuizScoreColor } from "@/lib/quiz-utils";
@@ -26,8 +26,6 @@ function quizReducer(state: AnswersState, action: QuizAction): AnswersState {
 
 export default function QuizQuestions({ questions }: { questions: QuestionType[] }) {
   const [answers, dispatch] = useReducer(quizReducer, {});
-  const resultsRef = useRef<HTMLDivElement>(null);
-  const previousCompleteState = useRef(false);
 
   const score = useMemo(() => calculateQuizScore(answers, questions), [answers, questions]);
   const { correct, percentage } = score;
@@ -38,10 +36,10 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
   const isComplete = answeredCount === totalQuestions;
 
   useEffect(() => {
-    if (isComplete && !previousCompleteState.current && resultsRef.current) {
-      resultsRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (isComplete) {
+      const resultsElement = document.getElementById("quiz-results");
+      resultsElement?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-    previousCompleteState.current = isComplete;
   }, [isComplete]);
 
   const handleAnswer = (questionIndex: number, answerIndex: number) => {
@@ -50,6 +48,10 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
 
   const handleReset = () => {
     dispatch({ type: "RESET" });
+    setTimeout(() => {
+      const questionsElement = document.getElementById("questions");
+      questionsElement?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
   };
 
   return (
@@ -73,7 +75,7 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
       </ol>
 
       {/* Progress bar after last question - transforms to results when complete */}
-      <div ref={resultsRef} className="max-w-4xl mx-auto pl-4 sm:pl-7 pr-4 sm:pr-6 mt-5 sm:mt-6">
+      <div id="quiz-results" className="max-w-4xl mx-auto pl-4 sm:pl-7 pr-4 sm:pr-6 mt-5 sm:mt-6">
         {isComplete ? (
           // Results display when complete
           <div className="rounded-2xl border border-white/10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] p-5 sm:p-6 space-y-4">
