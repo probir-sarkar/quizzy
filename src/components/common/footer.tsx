@@ -3,8 +3,15 @@ import Link from "next/link";
 import CurrentYear from "./current-year";
 import { Suspense } from "react";
 
+type FooterLink = {
+  label: string;
+  href: string;
+  external?: boolean;
+  description?: string;
+};
+
 export default function Footer() {
-  const footerLinks = [
+  const footerLinks: { title: string; links: FooterLink[] }[] = [
     {
       title: "Explore",
       links: [

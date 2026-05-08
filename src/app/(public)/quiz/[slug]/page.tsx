@@ -66,18 +66,18 @@ async function QuizPage({ params }: Props) {
     <>
       <section className="bg-gray-50 dark:bg-slate-950">
         <QuizPageHero
-          quiz={quiz}
+          quiz={quiz as any}
           breadcrumbs={[
             { label: "Categories", href: "/category" },
             { label: categoryName, href: `/category/${categorySlug}` },
-            { label: quiz.title, href: "#", active: true }
+            { label: quiz.title || "", href: "#", active: true }
           ]}
         />
         <QuizQuestions questions={quiz.questions} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <TelegramCTA className="max-w-xl " />
-          <ShareButtons url={process.env.NEXT_PUBLIC_URL + "/quiz/" + slug} title={quiz.quizPageTitle} />
+          <ShareButtons url={process.env.NEXT_PUBLIC_URL + "/quiz/" + slug} title={quiz.quizPageTitle || ""} />
         </div>
 
         {/* Toolbox Promotion */}

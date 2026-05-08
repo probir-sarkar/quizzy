@@ -19,8 +19,6 @@ function quizReducer(state: AnswersState, action: QuizAction): AnswersState {
     }
     case "RESET":
       return {};
-    default:
-      return state;
   }
 }
 
@@ -75,7 +73,7 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
       </ol>
 
       {/* Progress bar after last question - transforms to results when complete */}
-      <div id="quiz-results" className="max-w-4xl mx-auto pl-4 sm:pl-7 pr-4 sm:pr-6 mt-5 sm:mt-6">
+      <div id="quiz-results" className="max-w-4xl pl-4 sm:pl-7 pr-4 sm:pr-6 mt-5 sm:mt-6">
         {isComplete ? (
           // Results display when complete
           <div className="rounded-2xl border border-white/10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] p-5 sm:p-6 space-y-4">
@@ -113,12 +111,9 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
         ) : (
           // Progress bar when in progress
           <div className="rounded-2xl border border-white/10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] p-5 sm:p-6">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-violet-500" />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Your Progress</span>
-              </div>
-              <span className="text-2xl font-bold text-gray-900 dark:text-white">{progress}%</span>
+            <div className="flex items-center gap-3 mb-3">
+              <Trophy className="w-5 h-5 text-violet-500" />
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Your Progress: {progress}%</span>
             </div>
             <div className="relative w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
               <div
@@ -146,7 +141,7 @@ function QuestionCard({
   onAnswer?: (questionIndex: number, answerIndex: number) => void;
   totalQuestions: number;
 }) {
-  const isAnswered = selected !== undefined && selected !== null;
+  const isAnswered = selected !== undefined;
 
   return (
     <div className="rounded-2xl border border-white/10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] p-5 sm:p-6">
