@@ -1,5 +1,5 @@
 "use client";
-import { useReducer, useMemo } from "react";
+import { useReducer, useMemo, useEffect, useRef } from "react";
 import { Info, Trophy, RotateCcw } from "lucide-react";
 import { QuestionType } from "@/modules/quiz/quiz.service";
 import { calculateQuizScore, getQuizScoreMessage, getQuizScoreColor } from "@/lib/quiz-utils";
@@ -8,9 +8,7 @@ import { AnswerButton } from "./quiz-answer-button";
 
 type AnswersState = Record<number, number>;
 
-type QuizAction =
-  | { type: "SET_ANSWER"; questionIndex: number; answerIndex: number }
-  | { type: "RESET" };
+type QuizAction = { type: "SET_ANSWER"; questionIndex: number; answerIndex: number } | { type: "RESET" };
 
 function quizReducer(state: AnswersState, action: QuizAction): AnswersState {
   switch (action.type) {
@@ -28,6 +26,8 @@ function quizReducer(state: AnswersState, action: QuizAction): AnswersState {
 
 export default function QuizQuestions({ questions }: { questions: QuestionType[] }) {
   const [answers, dispatch] = useReducer(quizReducer, {});
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const previousCompleteState = useRef(false);
 
   const score = useMemo(() => calculateQuizScore(answers, questions), [answers, questions]);
   const { correct, percentage } = score;
@@ -36,6 +36,13 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
   const totalQuestions = questions.length;
   const progress = Math.round((answeredCount / totalQuestions) * 100);
   const isComplete = answeredCount === totalQuestions;
+
+  useEffect(() => {
+    if (isComplete && !previousCompleteState.current && resultsRef.current) {
+      resultsRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    previousCompleteState.current = isComplete;
+  }, [isComplete]);
 
   const handleAnswer = (questionIndex: number, answerIndex: number) => {
     dispatch({ type: "SET_ANSWER", questionIndex, answerIndex });
@@ -47,8 +54,6 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
 
   return (
     <div id="questions" className="mx-auto max-w-7xl pb-8">
-
-
       <div className="px-4 sm:px-6 py-6 md:py-10">
         <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Quiz Questions</h2>
         <p className="text-gray-600 dark:text-gray-300">Answer all questions below and test your knowledge.</p>
@@ -68,7 +73,7 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
       </ol>
 
       {/* Progress bar after last question - transforms to results when complete */}
-      <div className="max-w-4xl mx-auto pl-4 sm:pl-7 pr-4 sm:pr-6 mt-5 sm:mt-6">
+      <div ref={resultsRef} className="max-w-4xl mx-auto pl-4 sm:pl-7 pr-4 sm:pr-6 mt-5 sm:mt-6">
         {isComplete ? (
           // Results display when complete
           <div className="rounded-2xl border border-white/10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] p-5 sm:p-6 space-y-4">

@@ -24,7 +24,8 @@
       "Bash(npx tsc:*)",
       "Bash(bunx eslint:*)",
       "Bash(bun run *)",
-      "Bash(curl -s \"http://localhost:3000/api/quiz/categories-stats\")"
+      "Bash(curl -s \"http://localhost:3000/api/quiz/categories-stats\")",
+      "Bash(xargs grep *)"
     ],
     "deny": [],
     "ask": []
