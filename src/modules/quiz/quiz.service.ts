@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { QuizWhereInput } from "@/generated/prisma/models";
+import { shuffle } from "es-toolkit/array";
 
 export type HomePageData = Awaited<ReturnType<typeof QuizService.getHomePageData>>;
 export type QuizCard = HomePageData[number]["quizzes"][number];
@@ -10,7 +11,9 @@ export type QuizPageType = NonNullable<Awaited<ReturnType<typeof QuizService.get
 // question type helper
 export type QuestionType = QuizPageType["questions"][number];
 
-export type CategoriesWithStatsData = Awaited<ReturnType<typeof QuizService.getCategoriesWithStats>>;
+export type CategoriesWithStatsData = Awaited<
+  ReturnType<typeof QuizService.getCategoriesWithStats>
+>;
 export type CategoryWithStats = CategoriesWithStatsData["items"][number];
 
 export type GetQuizzesByCategoryOpts = {
@@ -21,19 +24,33 @@ export type GetQuizzesByCategoryOpts = {
 };
 
 export const DEFAULT_PER_PAGE = 12;
+export function shuffleOptions(question: QuestionType): QuestionType {
+  const optionsWithIndex = question.options.map((text, index) => ({
+    text,
+    index,
+  }));
+
+  const shuffled = shuffle(optionsWithIndex);
+
+  return {
+    ...question,
+    options: shuffled.map((o) => o.text),
+    correctIndex: shuffled.findIndex((o) => o.index === question.correctIndex),
+  };
+}
 
 export abstract class QuizService {
   static async getHomePageStats() {
     const [totalQuizzes, totalCategories, totalSubCategories] = await Promise.all([
       prisma.quiz.count(),
       prisma.category.count(),
-      prisma.subCategory.count()
+      prisma.subCategory.count(),
     ]);
 
     return {
       totalQuizzes,
       totalCategories,
-      totalSubCategories
+      totalSubCategories,
     };
   }
 
@@ -41,34 +58,34 @@ export abstract class QuizService {
     return prisma.category.findMany({
       where: {
         quizzes: {
-          some: {}
-        }
+          some: {},
+        },
       },
       take: 12,
       include: {
         quizzes: {
           take: 4,
           orderBy: {
-            createdAt: "desc"
+            createdAt: "desc",
           },
           include: {
             category: true,
             _count: {
               select: {
-                questions: true
-              }
-            }
-          }
-        }
-      }
+                questions: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 
   static async getCategories() {
     return prisma.category.findMany({
       orderBy: {
-        name: "asc"
-      }
+        name: "asc",
+      },
     });
   }
 
@@ -80,22 +97,22 @@ export abstract class QuizService {
           include: {
             _count: {
               select: {
-                quizzes: true
-              }
-            }
+                quizzes: true,
+              },
+            },
           },
           orderBy: {
             quizzes: {
-              _count: "desc"
-            }
-          }
+              _count: "desc",
+            },
+          },
         },
         _count: {
           select: {
-            quizzes: true
-          }
-        }
-      }
+            quizzes: true,
+          },
+        },
+      },
     });
   }
 
@@ -103,14 +120,14 @@ export abstract class QuizService {
     categorySlug,
     page = 1,
     perPage = DEFAULT_PER_PAGE,
-    subCategorySlug = null
+    subCategorySlug = null,
   }: GetQuizzesByCategoryOpts) {
     const actualPage = page ?? 1;
     const actualPerPage = perPage ?? DEFAULT_PER_PAGE;
     const skip = (actualPage - 1) * actualPerPage;
 
     const where: QuizWhereInput = {
-      category: { slug: categorySlug }
+      category: { slug: categorySlug },
     };
 
     if (subCategorySlug) {
@@ -125,24 +142,24 @@ export abstract class QuizService {
             include: {
               _count: {
                 select: {
-                  quizzes: true
-                }
-              }
+                  quizzes: true,
+                },
+              },
             },
             orderBy: {
               quizzes: {
-                _count: "desc"
-              }
-            }
+                _count: "desc",
+              },
+            },
           },
           _count: {
             select: {
-              quizzes: true
-            }
-          }
-        }
+              quizzes: true,
+            },
+          },
+        },
       }),
-      prisma.quiz.count({ where })
+      prisma.quiz.count({ where }),
     ]);
 
     const items = await prisma.quiz.findMany({
@@ -154,8 +171,8 @@ export abstract class QuizService {
         category: true,
         subCategory: true,
         tags: { include: { tag: true } },
-        _count: { select: { questions: true } }
-      }
+        _count: { select: { questions: true } },
+      },
     });
 
     const totalPages = Math.max(1, Math.ceil(total / actualPerPage));
@@ -167,20 +184,20 @@ export abstract class QuizService {
         total,
         totalPages,
         currentPage: actualPage,
-        perPage: actualPerPage
-      }
+        perPage: actualPerPage,
+      },
     };
   }
 
   static async getCategoriesStats() {
     const [totalCategories, totalSubcategories] = await Promise.all([
       prisma.category.count(),
-      prisma.subCategory.count()
+      prisma.subCategory.count(),
     ]);
 
     return {
       totalCategories,
-      totalSubcategories
+      totalSubcategories,
     };
   }
 
@@ -198,21 +215,21 @@ export abstract class QuizService {
             include: {
               _count: {
                 select: {
-                  quizzes: true
-                }
-              }
+                  quizzes: true,
+                },
+              },
             },
             orderBy: {
               quizzes: {
-                _count: "desc"
-              }
-            }
+                _count: "desc",
+              },
+            },
           },
-          _count: { select: { quizzes: true, subCategories: true } }
-        }
+          _count: { select: { quizzes: true, subCategories: true } },
+        },
       }),
       prisma.category.count(),
-      prisma.subCategory.count()
+      prisma.subCategory.count(),
     ]);
 
     const totalPages = Math.max(1, Math.ceil(totalCategories / actualPerPage));
@@ -224,29 +241,31 @@ export abstract class QuizService {
         totalSubcategories,
         totalPages,
         currentPage: actualPage,
-        perPage: actualPerPage
-      }
+        perPage: actualPerPage,
+      },
     };
   }
 
   static async getQuiz(slug: string) {
-    return prisma.quiz.findUnique({
+    const quiz = await prisma.quiz.findUnique({
       where: { slug },
       include: {
         category: true,
         questions: true,
         tags: {
           include: {
-            tag: true
-          }
+            tag: true,
+          },
         },
         _count: {
           select: {
-            questions: true
-          }
-        }
-      }
+            questions: true,
+          },
+        },
+      },
     });
+
+    return quiz;
   }
 
   static async getMoreQuizzes(currentSlug: string) {
@@ -258,10 +277,10 @@ export abstract class QuizService {
         category: true,
         _count: {
           select: {
-            questions: true
-          }
-        }
-      }
+            questions: true,
+          },
+        },
+      },
     });
   }
 
@@ -275,19 +294,19 @@ export abstract class QuizService {
         quizPageDescription: true,
         category: {
           select: {
-            name: true
-          }
+            name: true,
+          },
         },
         tags: {
           select: {
             tag: {
               select: {
-                name: true
-              }
-            }
-          }
-        }
-      }
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 }
