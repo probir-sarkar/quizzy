@@ -4,7 +4,6 @@ import { shuffle } from "es-toolkit/array";
 import { Index } from "@upstash/vector";
 import { redis } from "bun";
 
-
 export type HomePageData = Awaited<ReturnType<typeof QuizService.getHomePageData>>;
 export type QuizCard = HomePageData[number]["quizzes"][number];
 
@@ -324,7 +323,7 @@ export abstract class QuizService {
       .filter((id) => id !== quizId)
       .slice(0, 6);
 
-    await redis.setex(cacheKey, 3600, JSON.stringify(ids));
+    await redis.setex(cacheKey, 7 * 24 * 60 * 60, JSON.stringify(ids));
     return ids;
   }
 
