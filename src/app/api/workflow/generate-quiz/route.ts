@@ -14,7 +14,7 @@ import {
 } from "@/app/api/workflow/generate-quiz/utils";
 import { WorkflowNonRetryableError } from "@upstash/workflow";
 import { Index } from "@upstash/vector";
-const index = Index.fromEnv();
+
 
 export const { POST } = serve(
   async (context) => {
@@ -96,6 +96,7 @@ export const { POST } = serve(
 
     await context.run("index-quiz", async () => {
       const { quizDoc } = generationResult;
+      const index = Index.fromEnv();
 
       await index.upsert({
         id: savedQuiz.id,
