@@ -13,7 +13,7 @@ import {
   generateQuizPrompt
 } from "@/app/api/workflow/generate-quiz/utils";
 import { WorkflowNonRetryableError } from "@upstash/workflow";
-import { Index } from "@upstash/vector";
+import { indexQuiz } from "@/lib/vector";
 
 
 export const { POST } = serve(
@@ -96,12 +96,13 @@ export const { POST } = serve(
 
     await context.run("index-quiz", async () => {
       const { quizDoc } = generationResult;
-      const index = Index.fromEnv();
 
-      await index.upsert({
-        id: savedQuiz.id,
-        data: `${quizDoc.title}. Tags: ${quizDoc.tags.join(", ")}`,
-        metadata: { title: quizDoc.title, tags: quizDoc.tags },
+      await indexQuiz({
+        quizId: savedQuiz.id,
+        title: quizDoc.title,
+        description: quizDoc.description,
+        difficulty: quizDoc.difficulty,
+        tags: quizDoc.tags
       });
 
       await prisma.quiz.update({
