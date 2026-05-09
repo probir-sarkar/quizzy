@@ -37,6 +37,7 @@ model Quiz {
   description         String
   slug                String         @unique
   isPublished         Boolean        @default(false)
+  isIndexed           Boolean        @default(false)
   publishedAt         DateTime?
   views               Int            @default(0)
   categoryId          Int?

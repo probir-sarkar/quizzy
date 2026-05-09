@@ -102,6 +102,11 @@ export const { POST } = serve(
         data: `${quizDoc.title}. Tags: ${quizDoc.tags.join(", ")}`,
         metadata: { title: quizDoc.title, tags: quizDoc.tags },
       });
+
+      await prisma.quiz.update({
+        where: { id: savedQuiz.id },
+        data: { isIndexed: true },
+      });
     });
 
     return { quizId: savedQuiz.id };
