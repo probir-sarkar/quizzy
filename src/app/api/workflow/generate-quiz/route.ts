@@ -13,6 +13,8 @@ import {
   generateQuizPrompt
 } from "@/app/api/workflow/generate-quiz/utils";
 import { WorkflowNonRetryableError } from "@upstash/workflow";
+import { Index } from "@upstash/vector";
+const index = Index.fromEnv();
 
 export const { POST } = serve(
   async (context) => {
@@ -90,6 +92,16 @@ export const { POST } = serve(
         console.error("Quiz save error:", error);
         throw new WorkflowNonRetryableError(`Quiz save failed: ${error instanceof Error ? error.message : "Unknown error"}`);
       }
+    });
+
+    await context.run("index-quiz", async () => {
+      const { quizDoc } = generationResult;
+
+      await index.upsert({
+        id: savedQuiz.id,
+        data: `${quizDoc.title}. Tags: ${quizDoc.tags.join(", ")}`,
+        metadata: { title: quizDoc.title, tags: quizDoc.tags },
+      });
     });
 
     return { quizId: savedQuiz.id };
