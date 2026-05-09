@@ -30,7 +30,7 @@ export function MoreQuizzesSection({ slug }: MoreQuizzesSectionProps) {
               <Sparkles className="w-5 h-5 text-violet-500" />
             </div>
             <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">
-              Expand Your Mind
+              Related Quizzes
             </h2>
           </div>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -55,7 +55,7 @@ export function MoreQuizzesSection({ slug }: MoreQuizzesSectionProps) {
             <Sparkles className="w-5 h-5 text-violet-500" />
           </div>
           <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">
-            Expand Your Mind
+            Related Quizzes
           </h2>
         </div>
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
