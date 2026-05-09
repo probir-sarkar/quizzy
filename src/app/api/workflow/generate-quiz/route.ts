@@ -13,7 +13,6 @@ import {
   generateQuizPrompt
 } from "@/app/api/workflow/generate-quiz/utils";
 import { WorkflowNonRetryableError } from "@upstash/workflow";
-import { indexQuiz } from "@/lib/vector";
 
 
 export const { POST } = serve(
@@ -92,23 +91,6 @@ export const { POST } = serve(
         console.error("Quiz save error:", error);
         throw new WorkflowNonRetryableError(`Quiz save failed: ${error instanceof Error ? error.message : "Unknown error"}`);
       }
-    });
-
-    await context.run("index-quiz", async () => {
-      const { quizDoc } = generationResult;
-
-      await indexQuiz({
-        quizId: savedQuiz.id,
-        title: quizDoc.title,
-        description: quizDoc.description,
-        difficulty: quizDoc.difficulty,
-        tags: quizDoc.tags
-      });
-
-      await prisma.quiz.update({
-        where: { id: savedQuiz.id },
-        data: { isIndexed: true },
-      });
     });
 
     return { quizId: savedQuiz.id };

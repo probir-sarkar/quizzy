@@ -1,8 +1,6 @@
 import prisma from "@/lib/prisma";
 import { QuizWhereInput } from "@/generated/prisma/models";
 import { shuffle } from "es-toolkit/array";
-import { Index } from "@upstash/vector";
-import { redis } from "bun";
 
 export type HomePageData = Awaited<ReturnType<typeof QuizService.getHomePageData>>;
 export type QuizCard = HomePageData[number]["quizzes"][number];
@@ -304,43 +302,44 @@ export abstract class QuizService {
     };
   }
 
-  private static async getSimilarQuizIds(quizId: string): Promise<string[]> {
-    const cacheKey = `similar-quizzes:${quizId}`;
-    const cached = await redis.get(cacheKey);
-    if (cached) return JSON.parse(cached as string) as string[];
-
-    const index = Index.fromEnv();
-    const [v] = await index.fetch([quizId], { includeVectors: true });
-    if (!v?.vector) return [];
-
-    const results = await index.query({
-      vector: v.vector,
-      topK: 7
-    });
-
-    const ids = results
-      .map((r) => r.id.toString())
-      .filter((id) => id !== quizId)
-      .slice(0, 6);
-
-    await redis.setex(cacheKey, 7 * 24 * 60 * 60, JSON.stringify(ids));
-    return ids;
-  }
-
-  static async getMoreQuizzes(currentSlug: string) {
+  static async getMoreQuizzes(slug: string) {
     const quiz = await prisma.quiz.findUnique({
-      where: { slug: currentSlug },
-      select: {
-        id: true
+      where: { slug },
+      include: {
+        tags: {
+          include: {
+            tag: true
+          }
+        }
       }
     });
+
     if (!quiz) return [];
 
-    const ids = await this.getSimilarQuizIds(quiz.id);
-    if (ids.length === 0) return [];
-
+    const tagIds = quiz.tags.map((t) => t.tagId);
     return prisma.quiz.findMany({
-      where: { id: { in: ids } },
+      where: {
+        id: {
+          not: quiz.id
+        },
+        OR: [
+          {
+            categoryId: quiz.categoryId
+          },
+          {
+            subCategoryId: quiz.subCategoryId
+          },
+          {
+            tags: {
+              some: {
+                tagId: {
+                  in: tagIds
+                }
+              }
+            }
+          }
+        ]
+      },
       include: {
         category: true,
         _count: {
@@ -348,7 +347,8 @@ export abstract class QuizService {
             questions: true
           }
         }
-      }
+      },
+      take: 6
     });
   }
 

@@ -27,7 +27,6 @@
     "@radix-ui/react-tabs": "^1.1.13",
     "@tanstack/react-query": "^5.100.9",
     "@upstash/redis": "^1.38.0",
-    "@upstash/vector": "^1.2.3",
     "@upstash/workflow": "^1.2.0",
     "ai": "^6.0.168",
     "class-variance-authority": "^0.7.1",
