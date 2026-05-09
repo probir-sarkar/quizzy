@@ -1,5 +1,7 @@
 import { Index } from "@upstash/vector";
 
+export type QuizVectorMetadata = { title: string; description: string; difficulty: string; tags: string[] };
+
 export async function indexQuiz({
   quizId,
   title,
@@ -15,7 +17,7 @@ export async function indexQuiz({
 }) {
   const index = Index.fromEnv();
 
-  await index.upsert({
+  await index.upsert<QuizVectorMetadata>({
     id: quizId,
     data: `${title}. ${description}. Tags: ${tags.join(", ")}`,
     metadata: { title, description, difficulty, tags }
