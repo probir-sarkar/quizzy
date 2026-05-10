@@ -45,6 +45,7 @@ export default async function Home() {
 
   return (
     <div>
+      <h1 className="sr-only">Quizzy - Master Your Knowledge with Thousands of Quizzes</h1>
       <HeroSection
         totalQuizzes={stats.totalQuizzes}
         totalCategories={stats.totalCategories}
