@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Providers } from "./providers";
+import { BASE_URL } from "@/lib/constants";
 
 // @ts-ignore
 import "./globals.css";
@@ -13,17 +14,15 @@ const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800"]
 });
 
-const baseUrl = process.env.BASE_URL ?? "https://quizzy.probir.dev";
-
 export const metadata: Metadata = {
   title: "Quiz Zone – Fun Quizzes, Horoscopes & More",
   description: "Quiz Zone – Your hub for quizzes, horoscopes, and fun knowledge adventures all in one place.",
-  metadataBase: new URL(baseUrl),
+  metadataBase: new URL(BASE_URL),
   alternates: {
-    canonical: baseUrl
+    canonical: BASE_URL
   },
   openGraph: {
-    url: baseUrl,
+    url: BASE_URL,
     siteName: "Quizzy",
     type: "website"
   }

@@ -7,6 +7,7 @@ import QuizQuestions from "@/components/quiz-page/question-list";
 import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
 import { MoreQuizzesSection } from "@/components/quiz-page/more-quizzes-section";
 import { api } from "@/lib/eden";
+import { BASE_URL } from "@/lib/constants";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -21,20 +22,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!post) return {};
 
-  const baseUrl = process.env.BASE_URL ?? "https://quizzy.probir.dev";
-
   return {
     title: post.quizPageTitle + " | Quiz Zone",
     description: post.quizPageDescription,
     keywords: post.tags.map((tag) => tag.tag.name),
     category: post?.category?.name,
     alternates: {
-      canonical: `${baseUrl}/quiz/${slug}`
+      canonical: `${BASE_URL}/quiz/${slug}`
     },
     openGraph: {
       title: post.quizPageTitle,
       description: post.quizPageDescription,
-      url: `${baseUrl}/quiz/${slug}`,
+      url: `${BASE_URL}/quiz/${slug}`,
       siteName: "Quizzy",
       type: "website"
     }
