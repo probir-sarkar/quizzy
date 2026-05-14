@@ -1,5 +1,5 @@
 "use client";
-import { useReducer, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Info, Trophy, RotateCcw } from "lucide-react";
 import { QuestionType } from "@/modules/quiz/quiz.service";
 import { calculateQuizScore, getQuizScoreMessage, getQuizScoreColor } from "@/lib/quiz-utils";
@@ -8,22 +8,8 @@ import { AnswerButton } from "./quiz-answer-button";
 
 type AnswersState = Record<number, number>;
 
-type QuizAction = { type: "SET_ANSWER"; questionIndex: number; answerIndex: number } | { type: "RESET" };
-
-function quizReducer(state: AnswersState, action: QuizAction): AnswersState {
-  switch (action.type) {
-    case "SET_ANSWER": {
-      const { questionIndex, answerIndex } = action;
-      if (state[questionIndex] === answerIndex) return state;
-      return { ...state, [questionIndex]: answerIndex };
-    }
-    case "RESET":
-      return {};
-  }
-}
-
 export default function QuizQuestions({ questions }: { questions: QuestionType[] }) {
-  const [answers, dispatch] = useReducer(quizReducer, {});
+  const [answers, setAnswers] = useState<AnswersState>({});
 
   const score = useMemo(() => calculateQuizScore(answers, questions), [answers, questions]);
   const { correct, percentage } = score;
@@ -40,17 +26,20 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
     }
   }, [isComplete]);
 
-  const handleAnswer = (questionIndex: number, answerIndex: number) => {
-    dispatch({ type: "SET_ANSWER", questionIndex, answerIndex });
-  };
+  const handleAnswer = useCallback((questionIndex: number, answerIndex: number) => {
+    setAnswers((prev) => {
+      if (prev[questionIndex] === answerIndex) return prev;
+      return { ...prev, [questionIndex]: answerIndex };
+    });
+  }, []);
 
-  const handleReset = () => {
-    dispatch({ type: "RESET" });
+  const handleReset = useCallback(() => {
+    setAnswers({});
     setTimeout(() => {
       const questionsElement = document.getElementById("questions");
       questionsElement?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 100);
-  };
+  }, []);
 
   return (
     <div id="questions" className="mx-auto max-w-7xl pb-8">
