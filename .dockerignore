@@ -14,3 +14,4 @@ packages/prisma/generated
 packages/prisma/node_modules
 .vscode/
 *.log
+.claude
