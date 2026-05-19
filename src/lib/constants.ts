@@ -1,7 +1,5 @@
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://quizzy.probir.dev";
 export const TELEGRAM_CHANNEL_URL = "https://t.me/quizzone_club";
-
-
 export const zodiacSigns = [
   {
     name: "ARIES",

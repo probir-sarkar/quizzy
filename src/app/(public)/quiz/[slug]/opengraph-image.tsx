@@ -1,22 +1,11 @@
 import { ImageResponse } from "next/og";
-import { api } from "@/lib/eden";
-
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-type Props = { params: Promise<{ slug: string }> };
-
-export default async function Image({ params }: Props) {
-  const { slug } = await params;
-  const { data: quiz } = await api.quiz.metadata.get({
-    query: { slug }
-  });
-
-  const title = quiz?.title ?? "Quizzone Quiz";
-  const subtitle = quiz?.description ?? "Sharpen your skills with today’s challenge.";
-  const GRADIENT_FROM = "#7c3aed";
-  const GRADIENT_TO = "#ec4899";
+export default function Image() {
+  const GRADIENT_FROM = "#7c3aed"; // purple
+  const GRADIENT_TO = "#ec4899"; // fuchsia
 
   return new ImageResponse(
     (
@@ -38,23 +27,23 @@ export default async function Image({ params }: Props) {
         <div
           style={{
             display: "flex",
-            width: 90,
-            height: 90,
-            borderRadius: 20,
+            width: 100,
+            height: 100,
+            borderRadius: 24,
             background: "rgba(255,255,255,0.12)",
             alignItems: "center",
             justifyContent: "center",
             marginBottom: 16,
           }}
         >
-          <div style={{ fontSize: 44 }}>📝</div>
+          <div style={{ fontSize: 48 }}>📝</div>
         </div>
 
         {/* Brand name */}
         <div
           style={{
             display: "flex",
-            fontSize: 26,
+            fontSize: 28,
             fontWeight: 700,
             color: "#fdf4ff",
             marginBottom: 12,
@@ -64,42 +53,39 @@ export default async function Image({ params }: Props) {
           Quiz Zone
         </div>
 
-        {/* Quiz title */}
+        {/* Title */}
         <div
           style={{
             display: "flex",
-            fontSize: 48,
+            fontSize: 56,
             fontWeight: 800,
             color: "#fff",
-            maxWidth: 960,
-            lineHeight: 1.2,
           }}
         >
-          {title}
+          Test Your Knowledge
         </div>
 
-        {/* Quiz subtitle */}
+        {/* Subtitle */}
         <div
           style={{
             display: "flex",
-            marginTop: 16,
-            fontSize: 22,
+            marginTop: 12,
+            fontSize: 24,
             color: "rgba(255,255,255,0.9)",
-            maxWidth: 880,
           }}
         >
-          {subtitle}
+          Sharpen your skills with today's challenge
         </div>
 
         {/* Badge */}
         <div
           style={{
             display: "flex",
-            marginTop: 32,
-            padding: "10px 20px",
+            marginTop: 36,
+            padding: "12px 24px",
             borderRadius: 12,
             background: "rgba(255,255,255,0.15)",
-            fontSize: 20,
+            fontSize: 22,
             fontWeight: 700,
             color: "#fff",
           }}

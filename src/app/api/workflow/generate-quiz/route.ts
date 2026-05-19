@@ -3,26 +3,23 @@ import { generateText, Output } from "ai";
 import prisma from "@/lib/prisma";
 import { kebabCase } from "es-toolkit";
 import { QuizDoc } from "@/app/api/workflow/generate-quiz/schema";
-import { format } from "date-fns";
 import { model } from "@/lib/ai-models";
 import {
   randomDifficulty,
   randomCount,
   pickRandomSubCategory,
-  fetchExistingQuizTitles,
   generateQuizPrompt
 } from "@/app/api/workflow/generate-quiz/utils";
 import { WorkflowNonRetryableError } from "@upstash/workflow";
+
 
 export const { POST } = serve(
   async (context) => {
     const generationResult = await context.run("generate-quiz", async () => {
       try {
-        const today = format(new Date(), "d MMM yyyy");
         const difficulty = randomDifficulty();
         const count = randomCount();
         const selected = await pickRandomSubCategory();
-        const existingTitles = await fetchExistingQuizTitles(selected.category.id, selected.subCategory.id);
 
         const result = await generateText({
           model,
@@ -34,9 +31,7 @@ export const { POST } = serve(
             categoryName: selected.category.name,
             subCategoryName: selected.subCategory.name,
             difficulty,
-            count,
-            today,
-            existingTitles
+            count
           })
         });
 
