@@ -4,7 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { memo } from "react";
-import type { CategoryWithStats } from "@/modules/quiz/quiz.service";
+import { CategoryWithStats } from "@/server/modules/quiz/quiz.service";
+
 
 interface CategoryCardProps {
   category: CategoryWithStats;
