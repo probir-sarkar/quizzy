@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { QuizWhereInput } from "@/generated/prisma/models";
 import { shuffle } from "es-toolkit/array";
+import * as D from "./dto/quiz.schema";
 
 export type HomePageData = Awaited<ReturnType<typeof QuizService.getHomePageData>>;
 export type QuizCard = HomePageData[number]["quizzes"][number];
@@ -14,12 +15,7 @@ export type QuestionType = QuizPageType["questions"][number];
 export type CategoriesWithStatsData = Awaited<ReturnType<typeof QuizService.getCategoriesWithStats>>;
 export type CategoryWithStats = CategoriesWithStatsData["items"][number];
 
-export type GetQuizzesByCategoryOpts = {
-  categorySlug: string;
-  page?: number;
-  perPage?: number;
-  subCategorySlug?: string | null;
-};
+export type GetQuizzesByCategoryOpts = D.GetQuizzesByCategoryDto;
 
 export const DEFAULT_PER_PAGE = 12;
 export function shuffleOptions(question: QuestionType): QuestionType {

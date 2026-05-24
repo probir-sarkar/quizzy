@@ -8,11 +8,7 @@ import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
 import { client } from "@/lib/orpc";
 
 export default async function Home() {
-  const [stats, homePageData, categories] = await Promise.all([
-    client.getQuizStats(),
-    client.getQuizHomeData(),
-    client.getQuizCategories()
-  ]);
+  const { stats, homePageData, categories } = await client.getHomePageData();
 
   const data = homePageData ?? [];
   const categoriesList = categories ?? [];

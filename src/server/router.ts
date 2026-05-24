@@ -1,8 +1,5 @@
 // Quiz Module
 import {
-  getQuizStats,
-  getQuizHomeData,
-  getQuizCategories,
   getQuizCategoryInfo,
   getQuizzesByCategory,
   getCategoriesWithStats,
@@ -10,7 +7,8 @@ import {
   getQuizDetail,
   getMoreQuizzes,
   getQuizMetadata,
-  getQuiz
+  getQuiz,
+  getHomePageData
 } from "@/server/modules/quiz/quiz.controller";
 
 // Horoscope Module
@@ -22,9 +20,7 @@ import { getPastEventsByMonthDay } from "@/server/modules/past-event/past-event.
 // Aggregate all routes
 export const router = {
   // Quiz routes
-  getQuizStats,
-  getQuizHomeData,
-  getQuizCategories,
+
   getQuizCategoryInfo,
   getQuizzesByCategory,
   getCategoriesWithStats,
@@ -33,7 +29,7 @@ export const router = {
   getMoreQuizzes,
   getQuizMetadata,
   getQuiz,
-
+  getHomePageData,
   // Horoscope routes
   getAllHoroscopesForDate,
 

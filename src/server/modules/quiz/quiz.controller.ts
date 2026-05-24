@@ -1,96 +1,55 @@
 import { QuizService, shuffleOptions } from "./quiz.service";
 import { os } from "@orpc/server";
-import { z } from "zod";
+import * as D from "./dto/quiz.schema";
+import { cacheMiddleware, ONE_DAY, ONE_HOUR } from "@/server/middleware/cache.middleware";
 
-export const getQuizStats = os.handler(async () => {
-  return await QuizService.getHomePageStats();
+export const getHomePageData = os
+  .use(
+    cacheMiddleware({
+      ttl: ONE_HOUR
+    })
+  )
+  .handler(async () => {
+    const [stats, homePageData, categories] = await Promise.all([
+      QuizService.getHomePageStats(),
+      QuizService.getHomePageData(),
+      QuizService.getCategories()
+    ]);
+
+    return { stats, homePageData, categories };
+  });
+
+export const getQuizCategoryInfo = os.input(D.getCategoryInfoSchema).handler(async ({ input: { slug } }) => {
+  return await QuizService.getCategoryInfo(slug);
 });
 
-export const getQuizHomeData = os.handler(async () => {
-  return await QuizService.getHomePageData();
+export const getQuizzesByCategory = os.input(D.getQuizzesByCategorySchema).handler(async ({ input }) => {
+  return await QuizService.getQuizzesByCategory(input);
 });
 
-export const getQuizCategories = os.handler(async () => {
-  return await QuizService.getCategories();
+export const getCategoriesWithStats = os.input(D.getCategoriesWithStatsSchema).handler(async ({ input }) => {
+  return await QuizService.getCategoriesWithStats(input);
 });
 
-export const getQuizCategoryInfo = os
-  .input(
-    z.object({
-      slug: z.string()
-    })
-  )
-  .handler(async ({ input: { slug } }) => {
-    return await QuizService.getCategoryInfo(slug);
-  });
+export const getQuizDetail = os.use(cacheMiddleware({ ttl: ONE_DAY })).input(D.getQuizSchema).handler(async ({ input: { slug } }) => {
+  const quiz = await QuizService.getQuiz(slug);
+  return {
+    ...quiz,
+    questions: quiz?.questions?.map(shuffleOptions)
+  };
+});
 
-export const getQuizzesByCategory = os
-  .input(
-    z.object({
-      categorySlug: z.string(),
-      page: z.number().optional(),
-      perPage: z.number().optional(),
-      subCategorySlug: z.string().optional()
-    })
-  )
-  .handler(async ({ input }) => {
-    return await QuizService.getQuizzesByCategory(input);
-  });
+export const getMoreQuizzes = os.input(D.getQuizSchema).handler(async ({ input: { slug } }) => {
+  return await QuizService.getMoreQuizzes(slug);
+});
 
-export const getCategoriesWithStats = os
-  .input(
-    z.object({
-      page: z.number().optional(),
-      perPage: z.number().optional()
-    })
-  )
-  .handler(async ({ input }) => {
-    return await QuizService.getCategoriesWithStats(input);
-  });
+export const getQuizMetadata = os.input(D.getQuizSchema).handler(async ({ input: { slug } }) => {
+  return await QuizService.getQuizForMetadata(slug);
+});
 
-export const getQuizDetail = os
-  .input(
-    z.object({
-      slug: z.string()
-    })
-  )
-  .handler(async ({ input: { slug } }) => {
-    const quiz = await QuizService.getQuiz(slug);
-    return {
-      ...quiz,
-      questions: quiz?.questions?.map(shuffleOptions),
-    };
-  });
-
-export const getMoreQuizzes = os
-  .input(
-    z.object({
-      slug: z.string()
-    })
-  )
-  .handler(async ({ input: { slug } }) => {
-    return await QuizService.getMoreQuizzes(slug);
-  });
-
-export const getQuizMetadata = os
-  .input(
-    z.object({
-      slug: z.string()
-    })
-  )
-  .handler(async ({ input: { slug } }) => {
-    return await QuizService.getQuizForMetadata(slug);
-  });
-
-export const getQuiz = os
-  .input(
-    z.object({
-      slug: z.string()
-    })
-  )
-  .handler(async ({ input: { slug } }) => {
-    return await QuizService.getQuiz(slug);
-  });
+export const getQuiz = os.input(D.getQuizSchema).handler(async ({ input: { slug } }) => {
+  return await QuizService.getQuiz(slug);
+});
 
 export const getCategoriesStats = os.handler(async () => {
   return await QuizService.getCategoriesStats();
