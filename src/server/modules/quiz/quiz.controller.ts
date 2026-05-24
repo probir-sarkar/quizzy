@@ -54,3 +54,7 @@ export const getQuiz = os.input(D.getQuizSchema).handler(async ({ input: { slug 
 export const getCategoriesStats = os.use(cacheMiddleware({ ttl: ONE_DAY })).handler(async () => {
   return await QuizService.getCategoriesStats();
 });
+
+export const getAllCategoriesWithStats = os.use(cacheMiddleware({ ttl: ONE_DAY })).handler(async () => {
+  return await QuizService.getAllCategoriesWithStats();
+});

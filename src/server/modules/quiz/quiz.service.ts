@@ -195,6 +195,29 @@ export abstract class QuizService {
     };
   }
 
+  static async getAllCategoriesWithStats() {
+    const categories = await prisma.category.findMany({
+      include: {
+        _count: {
+          select: { quizzes: true, subCategories: true }
+        }
+      },
+      orderBy: { name: "asc" }
+    });
+
+    const totalCategories = categories.length;
+    const totalSubcategories = categories.reduce(
+      (sum, cat) => sum + (cat._count.subCategories ?? 0),
+      0
+    );
+
+    return {
+      categories,
+      totalCategories,
+      totalSubcategories
+    };
+  }
+
   static async getCategoriesWithStats({ page = 1, perPage = 12 } = {}) {
     const actualPage = page ?? 1;
     const actualPerPage = perPage ?? 12;

@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Sparkles, ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
-import { CategoryList } from "./category-list";
 import { client } from "@/lib/orpc";
+import { CategoryCard } from "./category-card";
 
 export const metadata: Metadata = {
   title: "All Quiz Categories - Quizzy",
@@ -11,10 +11,11 @@ export const metadata: Metadata = {
 };
 
 export default async function CategoriesPage() {
-  const stats = await client.getCategoriesStats();
+  const data = await client.getAllCategoriesWithStats();
 
-  const totalCategories = stats.totalCategories ?? 0;
-  const totalSubcategories = stats.totalSubcategories ?? 0;
+  const categories = data.categories;
+  const totalCategories = data.totalCategories;
+  const totalSubcategories = data.totalSubcategories;
 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -66,7 +67,22 @@ export default async function CategoriesPage() {
         </div>
       </section>
 
-      <CategoryList />
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <div className="max-w-6xl">
+          {categories.length > 0 ? (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {categories.map((cat) => (
+                <CategoryCard key={cat.id} category={cat} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">No categories found</h3>
+              <p className="text-gray-500 dark:text-gray-400">Check back later for new content</p>
+            </div>
+          )}
+        </div>
+      </section>
     </main>
   );
 }
