@@ -4,6 +4,7 @@ import { Poppins } from "next/font/google";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Providers } from "./providers";
 import { BASE_URL } from "@/lib/constants";
+import "../lib/orpc.server"; // for pre-rendering
 
 // @ts-ignore
 import "./globals.css";

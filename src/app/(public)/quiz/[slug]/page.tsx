@@ -8,6 +8,7 @@ import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
 import { MoreQuizzesSection } from "@/components/quiz-page/more-quizzes-section";
 import { api } from "@/lib/eden";
 import { BASE_URL } from "@/lib/constants";
+import { client } from "@/lib/orpc";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -43,13 +44,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 async function QuizPage({ params }: Props) {
   const { slug } = await params;
 
-  const { data: quiz } = await api.quiz.detail.get({
-    query: { slug }
-  });
-
+  const quiz = await client.getQuiz({ slug });
   if (!quiz) return notFound();
-  if (!quiz.questions || quiz.questions.length === 0) return notFound();
-  if (!quiz.tags) return notFound();
 
   const categorySlug = quiz.category?.slug ?? "general";
   const categoryName = quiz.category?.name ?? "General";

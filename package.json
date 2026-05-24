@@ -15,6 +15,8 @@
     "@elysiajs/eden": "^1.4.9",
     "@next/third-parties": "16.2.3",
     "@openrouter/ai-sdk-provider": "^2.8.1",
+    "@orpc/client": "^1.14.3",
+    "@orpc/server": "^1.14.3",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
     "@radix-ui/react-alert-dialog": "^1.1.15",
