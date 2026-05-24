@@ -31,13 +31,16 @@ export const getCategoriesWithStats = os.input(D.getCategoriesWithStatsSchema).h
   return await QuizService.getCategoriesWithStats(input);
 });
 
-export const getQuizDetail = os.use(cacheMiddleware({ ttl: ONE_DAY })).input(D.getQuizSchema).handler(async ({ input: { slug } }) => {
-  const quiz = await QuizService.getQuiz(slug);
-  return {
-    ...quiz,
-    questions: quiz?.questions?.map(shuffleOptions)
-  };
-});
+export const getQuizDetail = os
+  .use(cacheMiddleware({ ttl: ONE_DAY }))
+  .input(D.getQuizSchema)
+  .handler(async ({ input: { slug } }) => {
+    const quiz = await QuizService.getQuiz(slug);
+    return {
+      ...quiz,
+      questions: quiz?.questions?.map(shuffleOptions)
+    };
+  });
 
 export const getMoreQuizzes = os.input(D.getQuizSchema).handler(async ({ input: { slug } }) => {
   return await QuizService.getMoreQuizzes(slug);
@@ -55,6 +58,3 @@ export const getCategoriesStats = os.use(cacheMiddleware({ ttl: ONE_DAY })).hand
   return await QuizService.getCategoriesStats();
 });
 
-export const getAllCategoriesWithStats = os.use(cacheMiddleware({ ttl: ONE_DAY })).handler(async () => {
-  return await QuizService.getAllCategoriesWithStats();
-});

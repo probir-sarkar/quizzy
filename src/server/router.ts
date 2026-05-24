@@ -4,7 +4,6 @@ import {
   getQuizzesByCategory,
   getCategoriesWithStats,
   getCategoriesStats,
-  getAllCategoriesWithStats,
   getQuizDetail,
   getMoreQuizzes,
   getQuizMetadata,
@@ -17,6 +16,7 @@ import { getAllHoroscopesForDate } from "@/server/modules/horoscope/horoscope.co
 
 // Past Event Module
 import { getPastEventsByMonthDay } from "@/server/modules/past-event/past-event.controller";
+import { getAllCategoriesWithStats } from "./modules/category";
 
 // Aggregate all routes
 export const router = {
