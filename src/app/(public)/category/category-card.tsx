@@ -36,3 +36,15 @@ export function CategoryCard({ category }: CategoryCardProps) {
     </Link>
   );
 }
+
+export function CategoryCardSkeleton() {
+  return (
+    <div className="rounded-xl border border-gray-200/60 dark:border-gray-800/60 bg-gray-100 dark:bg-gray-900 p-4">
+      <div className="flex items-center justify-between mb-2">
+        <div className="h-5 w-32 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+        <div className="h-4 w-4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+      </div>
+      <div className="h-3 w-24 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+    </div>
+  );
+}

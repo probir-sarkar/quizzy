@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Sparkles, ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
-import { client } from "@/lib/orpc";
-import { CategoryCard } from "./category-card";
+import { Suspense } from "react";
+import { CategoryCountSection, CategoryCountSkeleton } from "./category-count";
+import { CategoryListSection, CategoryListSkeleton } from "./category-list";
 
 export const metadata: Metadata = {
   title: "All Quiz Categories - Quizzy",
@@ -11,12 +12,6 @@ export const metadata: Metadata = {
 };
 
 export default async function CategoriesPage() {
-  const data = await client.getAllCategoriesWithStats();
-
-  const categories = data.categories;
-  const totalCategories = data.totalCategories;
-  const totalSubcategories = data.totalSubcategories;
-
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Hero Section */}
@@ -52,37 +47,16 @@ export default async function CategoriesPage() {
               Explore our diverse collection of quizzes. From science to pop culture, find your perfect challenge and
               test your knowledge.
             </p>
-
-            <div className="flex flex-wrap gap-3">
-              <div className="px-4 py-2 rounded-xl bg-white/80 dark:bg-white/5 border border-gray-200 dark:border-white/10 backdrop-blur-sm flex items-center gap-2">
-                <span className="text-indigo-600 dark:text-indigo-400 font-bold text-lg">{totalCategories}</span>
-                <span className="text-gray-600 dark:text-slate-400 text-sm font-medium">Categories</span>
-              </div>
-              <div className="px-4 py-2 rounded-xl bg-white/80 dark:bg-white/5 border border-gray-200 dark:border-white/10 backdrop-blur-sm flex items-center gap-2">
-                <span className="text-fuchsia-600 dark:text-fuchsia-400 font-bold text-lg">{totalSubcategories}</span>
-                <span className="text-gray-600 dark:text-slate-400 text-sm font-medium">Subcategories</span>
-              </div>
-            </div>
+            <Suspense fallback={<CategoryCountSkeleton />}>
+              <CategoryCountSection />
+            </Suspense>
           </div>
         </div>
       </section>
 
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="max-w-6xl">
-          {categories.length > 0 ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {categories.map((cat) => (
-                <CategoryCard key={cat.id} category={cat} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-20">
-              <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">No categories found</h3>
-              <p className="text-gray-500 dark:text-gray-400">Check back later for new content</p>
-            </div>
-          )}
-        </div>
-      </section>
+      <Suspense fallback={<CategoryListSkeleton />}>
+        <CategoryListSection />
+      </Suspense>
     </main>
   );
 }
