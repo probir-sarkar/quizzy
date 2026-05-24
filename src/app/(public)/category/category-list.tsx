@@ -1,10 +1,7 @@
 import { client } from "@/lib/orpc";
 import { CategoryCard, CategoryCardSkeleton } from "./category-card";
-import { cacheLife } from "next/cache";
 
 export async function CategoryListSection() {
-  "use cache";
-  cacheLife("days");
   const data = await client.getAllCategoriesWithStats();
   const categories = data.categories;
 
