@@ -1,6 +1,9 @@
 import { client } from "@/lib/orpc";
+import { cacheLife } from "next/cache";
 
 export async function CategoryCountSection() {
+  "use cache";
+  cacheLife("days");
   const { categoryCount, subCategoryCount } = await client.getCategoryCounts();
 
   return (
