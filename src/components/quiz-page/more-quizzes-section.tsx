@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { QuizCard } from "@/components/home-page/quiz-card";
 import { Sparkles } from "lucide-react";
-import { api } from "@/lib/eden";
+import { client } from "@/lib/orpc";
 
 type MoreQuizzesSectionProps = {
   slug: string;
@@ -13,10 +13,7 @@ export function MoreQuizzesSection({ slug }: MoreQuizzesSectionProps) {
   const { data: moreQuizzes, isLoading } = useQuery({
     queryKey: ["more-quizzes", slug],
     queryFn: async () => {
-      const response = await api.quiz.more.get({
-        query: { slug }
-      });
-      return response.data;
+      return await client.getMoreQuizzes({ slug });
     },
     enabled: !!slug
   });

@@ -12,7 +12,7 @@ import {
   CalendarDays,
   BookOpen
 } from "lucide-react";
-import { api } from "@/lib/eden";
+import { client } from "@/lib/orpc";
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -146,17 +146,9 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
   const { month, day } = await searchParams;
 
   // Get events for the selected date (API defaults to today if not provided)
-  const { data: response } = await api["past-event"]["by-month-day"].get({
-    query: {
-      month: month ? Number(month) : undefined,
-      day: day ? Number(day) : undefined
-    },
-    fetch: {
-      cache: "force-cache",
-      next: {
-        revalidate: 60 * 60 * 24
-      }
-    }
+  const response = await client.getPastEventsByMonthDay({
+    month: month ? Number(month) : undefined,
+    day: day ? Number(day) : undefined
   });
 
   const eventsList = response?.events ?? [];

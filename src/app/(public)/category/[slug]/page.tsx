@@ -1,7 +1,7 @@
 import CategoryHero from "@/components/category/CategoryHero";
 import { QuizList } from "./quiz-list";
 import { notFound } from "next/navigation";
-import { api } from "@/lib/eden";
+import { client } from "@/lib/orpc";
 import { BASE_URL } from "@/lib/constants";
 import type { Metadata } from "next";
 
@@ -12,15 +12,13 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
 
-  const categoryInfo = await api.quiz["category-info"].get({
-    query: { slug }
-  });
+  const categoryInfo = await client.getQuizCategoryInfo({ slug });
 
-  if (!categoryInfo.data) {
+  if (!categoryInfo) {
     notFound();
   }
 
-  const categoryName = categoryInfo.data?.name;
+  const categoryName = categoryInfo?.name;
 
   return {
     title: `${categoryName} Quizzes - Quizzy`,
@@ -41,18 +39,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CategoryPage({ params }: Props) {
   const { slug } = await params;
 
-  const categoryInfo = await api.quiz["category-info"].get({
-    query: { slug }
-  });
+  const categoryInfo = await client.getQuizCategoryInfo({ slug });
 
-  if (!categoryInfo.data) {
+  if (!categoryInfo) {
     return notFound();
   }
 
-  const categoryName = categoryInfo.data?.name || "";
-  const categorySlug = categoryInfo.data?.slug || "";
-  const categoryQuizCount = categoryInfo.data?._count?.quizzes || 0;
-  const subCategoryCount = categoryInfo.data?.subCategories?.length || 0;
+  const categoryName = categoryInfo?.name || "";
+  const categorySlug = categoryInfo?.slug || "";
+  const categoryQuizCount = categoryInfo?._count?.quizzes || 0;
+  const subCategoryCount = categoryInfo?.subCategories?.length || 0;
 
   return (
     <>

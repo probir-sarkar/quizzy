@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { UTCDate } from "@date-fns/utc";
-import { api } from "@/lib/eden";
+import { client } from "@/lib/orpc";
 import { ZODIAC_SIGN_INFO, getElementColor } from "@/lib/zodiac-constants";
 
 type HoroscopeWithSign = {
@@ -19,15 +19,7 @@ type HoroscopeWithSign = {
 };
 
 async function getHoroscopesForDateCached(date?: string): Promise<HoroscopeWithSign[]> {
-  const { data } = await api.horoscope["all-for-date"].get({
-    query: { date },
-    fetch: {
-      cache: "force-cache",
-      next: {
-        revalidate: 60 * 60
-      }
-    }
-  });
+  const data = await client.getAllHoroscopesForDate({ date });
   return data ?? [];
 }
 

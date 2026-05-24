@@ -11,7 +11,7 @@ import {
   PaginationEllipsis,
   PaginationItem,
 } from "@/components/ui/pagination";
-import { api } from "@/lib/eden";
+import { client } from "@/lib/orpc";
 
 const CATEGORIES_PER_PAGE = 12;
 const PAGINATION_WINDOW_SIZE = 5;
@@ -24,13 +24,10 @@ export function CategoryList() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["categories-with-stats", currentPage],
     queryFn: async () => {
-      const response = await api.quiz["categories-with-stats"].get({
-        query: {
-          page: currentPage,
-          perPage: CATEGORIES_PER_PAGE
-        }
+      return await client.getCategoriesWithStats({
+        page: currentPage,
+        perPage: CATEGORIES_PER_PAGE
       });
-      return response;
     },
     staleTime: 60 * 60 * 1000 // 1 hour
   });
@@ -58,8 +55,8 @@ export function CategoryList() {
     );
   }
 
-  const categories = data?.data?.items ?? [];
-  const meta = data?.data?.meta ?? {
+  const categories = data?.items ?? [];
+  const meta = data?.meta ?? {
     totalCategories: 0,
     totalSubcategories: 0,
     totalPages: 1,

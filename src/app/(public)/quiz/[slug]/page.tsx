@@ -6,7 +6,6 @@ import TelegramCTA from "@/components/common/telegram-cta";
 import QuizQuestions from "@/components/quiz-page/question-list";
 import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
 import { MoreQuizzesSection } from "@/components/quiz-page/more-quizzes-section";
-import { api } from "@/lib/eden";
 import { BASE_URL } from "@/lib/constants";
 import { client } from "@/lib/orpc";
 
@@ -17,9 +16,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const slug = (await params).slug;
 
-  const { data: post } = await api.quiz.metadata.get({
-    query: { slug }
-  });
+  const post = await client.getQuizMetadata({ slug });
 
   if (!post) return {};
 

@@ -12,7 +12,7 @@ import {
   PaginationEllipsis,
   PaginationItem,
 } from "@/components/ui/pagination";
-import { api } from "@/lib/eden";
+import { client } from "@/lib/orpc";
 
 const QUIZZES_PER_PAGE = 12;
 const PAGINATION_WINDOW_SIZE = 5;
@@ -33,27 +33,24 @@ export function QuizList({ categorySlug }: QuizListProps) {
   const { data, isLoading, error } = useQuery({
     queryKey: ["quizzes-by-category", categorySlug, currentPage, selectedSubcategory],
     queryFn: async () => {
-      const response = await api.quiz["by-category"].get({
-        query: {
-          categorySlug,
-          page: currentPage,
-          perPage: QUIZZES_PER_PAGE,
-          subCategorySlug: selectedSubcategory ?? undefined
-        }
+      return await client.getQuizzesByCategory({
+        categorySlug,
+        page: currentPage,
+        perPage: QUIZZES_PER_PAGE,
+        subCategorySlug: selectedSubcategory ?? undefined
       });
-      return response;
     },
     staleTime: 60 * 60 * 1000 // 1 hour
   });
 
-  const quizzes = data?.data?.items ?? [];
-  const meta = data?.data?.meta ?? {
+  const quizzes = data?.items ?? [];
+  const meta = data?.meta ?? {
     total: 0,
     totalPages: 1,
     currentPage: 1,
     perPage: QUIZZES_PER_PAGE
   };
-  const subCategories = data?.data?.category?.subCategories ?? [];
+  const subCategories = data?.category?.subCategories ?? [];
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);

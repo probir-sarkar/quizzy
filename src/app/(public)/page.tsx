@@ -5,34 +5,13 @@ import QuizListing from "@/components/home-page/quiz-listing";
 
 import TrendingSection from "@/components/home-page/trending-section";
 import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
-import { api } from "@/lib/eden";
+import { client } from "@/lib/orpc";
 
 export default async function Home() {
-  const [{ data: stats }, { data: homePageData }, { data: categories }] = await Promise.all([
-    api.quiz.stats.get({
-      fetch: {
-        cache: "force-cache",
-        next: {
-          revalidate: 60 * 60 // 1 hour
-        }
-      }
-    }),
-    api.quiz["home-data"].get({
-      fetch: {
-        cache: "force-cache",
-        next: {
-          revalidate: 60 * 60 // 1 hour
-        }
-      }
-    }),
-    api.quiz.categories.get({
-      fetch: {
-        cache: "force-cache",
-        next: {
-          revalidate: 60 * 60 // 1 hour
-        }
-      }
-    })
+  const [stats, homePageData, categories] = await Promise.all([
+    client.getQuizStats(),
+    client.getQuizHomeData(),
+    client.getQuizCategories()
   ]);
 
   const data = homePageData ?? [];
