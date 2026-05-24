@@ -14,9 +14,7 @@ function CategoryCard({ category }: CategoryCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Show only first 6 subcategories by default
-  const visibleSubCategories = isExpanded
-    ? category.subCategories
-    : category.subCategories?.slice(0, 6);
+  const visibleSubCategories = isExpanded ? category.subCategories : category.subCategories?.slice(0, 6);
 
   const hasMoreSubCategories = category.subCategories && category.subCategories.length > 6;
   const hasSubCategories = category.subCategories && category.subCategories.length > 0;
@@ -51,9 +49,6 @@ function CategoryCard({ category }: CategoryCardProps) {
                 className="px-3 py-1.5 text-sm rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-indigo-950 hover:text-fuchsia-600 dark:hover:text-fuchsia-400 hover:border-indigo-200 dark:hover:border-indigo-800 transition"
               >
                 {sub.name}
-                {sub._count?.quizzes > 0 && (
-                  <span className="ml-1.5 text-xs text-gray-400">({sub._count.quizzes})</span>
-                )}
               </Link>
             ))}
           </div>
@@ -83,7 +78,7 @@ function CategoryCard({ category }: CategoryCardProps) {
     </div>
   );
 }
-
+ 
 export default memo(CategoryCard, (prev, next) => {
   return prev.category.id === next.category.id;
 });

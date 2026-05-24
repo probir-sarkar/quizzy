@@ -205,20 +205,7 @@ export abstract class QuizService {
         skip,
         take: actualPerPage,
         include: {
-          subCategories: {
-            include: {
-              _count: {
-                select: {
-                  quizzes: true
-                }
-              }
-            },
-            orderBy: {
-              quizzes: {
-                _count: "desc"
-              }
-            }
-          },
+          subCategories: {},
           _count: { select: { quizzes: true, subCategories: true } }
         }
       }),

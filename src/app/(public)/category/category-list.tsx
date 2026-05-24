@@ -5,21 +5,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import CategoryCard from "./category-card";
 import { calculatePaginationWindow } from "@/lib/pagination-utils";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-} from "@/components/ui/pagination";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem } from "@/components/ui/pagination";
 import { client } from "@/lib/orpc";
 
 const CATEGORIES_PER_PAGE = 12;
 const PAGINATION_WINDOW_SIZE = 5;
 
 export function CategoryList() {
-  const searchParams = useSearchParams();
-  const initialPage = parseInt(searchParams.get("page") || "1");
-  const [currentPage, setCurrentPage] = useState(Math.max(1, initialPage));
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["categories-with-stats", currentPage],

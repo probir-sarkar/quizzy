@@ -51,6 +51,6 @@ export const getQuiz = os.input(D.getQuizSchema).handler(async ({ input: { slug 
   return await QuizService.getQuiz(slug);
 });
 
-export const getCategoriesStats = os.handler(async () => {
+export const getCategoriesStats = os.use(cacheMiddleware({ ttl: ONE_DAY })).handler(async () => {
   return await QuizService.getCategoriesStats();
 });
