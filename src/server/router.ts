@@ -16,7 +16,7 @@ import { getAllHoroscopesForDate } from "@/server/modules/horoscope/horoscope.co
 
 // Past Event Module
 import { getPastEventsByMonthDay } from "@/server/modules/past-event/past-event.controller";
-import { getAllCategoriesWithStats } from "./modules/category";
+import { getAllCategoriesWithStats, getCategoryCounts } from "./modules/category";
 
 // Aggregate all routes
 export const router = {
@@ -34,6 +34,7 @@ export const router = {
   getHomePageData,
   // Horoscope routes
   getAllHoroscopesForDate,
+  getCategoryCounts,
 
   // Past event routes
   getPastEventsByMonthDay

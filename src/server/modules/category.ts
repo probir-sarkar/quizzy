@@ -12,12 +12,12 @@ export const getAllCategoriesWithStats = os.use(cacheMiddleware({ ttl: ONE_DAY }
     orderBy: { name: "asc" }
   });
 
-  const totalCategories = categories.length;
-  const totalSubcategories = categories.reduce((sum, cat) => sum + (cat._count.subCategories ?? 0), 0);
-
   return {
-    categories,
-    totalCategories,
-    totalSubcategories
+    categories
   };
+});
+
+export const getCategoryCounts = os.use(cacheMiddleware({ ttl: ONE_DAY })).handler(async () => {
+  const [categoryCount, subCategoryCount] = await Promise.all([prisma.category.count(), prisma.subCategory.count()]);
+  return { categoryCount, subCategoryCount };
 });
