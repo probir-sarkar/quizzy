@@ -1,14 +1,11 @@
 import { MetadataRoute } from "next";
-import { client } from "@/lib/orpc";
 import { ZodiacSign } from "@/generated/prisma/client";
 import { BASE_URL } from "@/lib/constants";
+import { client } from "@/lib/orpc";
 const currentDate = new Date();
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [categories, homeData] = await Promise.all([
-    client.getQuizCategories(),
-    client.getQuizHomeData()
-  ]);
+  const { homePageData, categories } = await client.getHomePageData();
 
   const staticPages: MetadataRoute.Sitemap = [
     {
@@ -38,7 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Collect all quizzes from home data
-  const allQuizzes = homeData?.flatMap((category) => category.quizzes ?? []) ?? [];
+  const allQuizzes = homePageData.flatMap((category) => category.quizzes ?? []) ?? [];
 
   const quizUrls: MetadataRoute.Sitemap = allQuizzes.map((quiz) => ({
     url: `${BASE_URL}/quiz/${quiz.slug}`,
