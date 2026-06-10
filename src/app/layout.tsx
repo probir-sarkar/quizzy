@@ -8,7 +8,6 @@ import "../lib/orpc.server"; // for pre-rendering
 
 // @ts-ignore
 import "./globals.css";
-import Script from "next/script";
 
 const poppins = Poppins({
   subsets: ["latin"],
