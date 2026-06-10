@@ -35,8 +35,6 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: hyd.ocir.io/${{ secrets.TENANCY_NAMESPACE }}/${{ github.repository }}:latest
-          build-args: |
-            BASE_URL=https://quizzy.probir.dev
 
       - name: Trigger auto-deploy
         run: curl "${{ secrets.AUTO_DEPLOY_WEBHOOK_URL }}"
