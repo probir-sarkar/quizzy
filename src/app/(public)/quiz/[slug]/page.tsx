@@ -1,13 +1,17 @@
+import dynamic from "next/dynamic";
+
 import QuizPageHero from "@/components/quiz-page/quiz-page.hero";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ShareButtons from "@/components/common/ShareButtons";
 import TelegramCTA from "@/components/common/telegram-cta";
 import QuizQuestions from "@/components/quiz-page/question-list";
+
 import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
 import { MoreQuizzesSection } from "@/components/quiz-page/more-quizzes-section";
 import { BASE_URL } from "@/lib/constants";
 import { client } from "@/lib/orpc";
+import { QuizService } from "@/server/modules/quiz/quiz.service";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -41,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 async function QuizPage({ params }: Props) {
   const { slug } = await params;
 
-  const quiz = await client.getQuiz({ slug });
+  const quiz = await QuizService.getQuiz(slug);
   if (!quiz) return notFound();
 
   const categorySlug = quiz.category?.slug ?? "general";

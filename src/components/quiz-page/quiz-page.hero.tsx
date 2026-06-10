@@ -1,10 +1,10 @@
 import { Sparkles, Target, Layers } from "lucide-react";
-import { QuizPageType } from "@/modules/quiz/quiz.service";
 import { QuizDifficulty } from "@/generated/prisma/enums";
 import { cn } from "@/lib/utils";
 
 import { BreadcrumbItem } from "../common/Breadcrumbs";
 import Breadcrumbs from "../common/Breadcrumbs";
+import { QuizPageType } from "@/server/modules/quiz/quiz.service";
 
 type QuizPageHeroProps = Omit<QuizPageType, 'createdAt' | 'updatedAt'>;
 

@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { AnswerButton } from "./quiz-answer-button";
 import { QuestionType } from "@/server/modules/quiz/quiz.service";
 
+
 type AnswersState = Record<number, number>;
 
 export default function QuizQuestions({ questions }: { questions: QuestionType[] }) {

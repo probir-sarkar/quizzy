@@ -46,15 +46,20 @@ export const getMoreQuizzes = os.input(D.getQuizSchema).handler(async ({ input: 
   return await QuizService.getMoreQuizzes(slug);
 });
 
-export const getQuizMetadata = os.input(D.getQuizSchema).handler(async ({ input: { slug } }) => {
-  return await QuizService.getQuizForMetadata(slug);
-});
+export const getQuizMetadata = os
+  .use(cacheMiddleware({ ttl: ONE_HOUR }))
+  .input(D.getQuizSchema)
+  .handler(async ({ input: { slug } }) => {
+    return await QuizService.getQuizForMetadata(slug);
+  });
 
-export const getQuiz = os.input(D.getQuizSchema).handler(async ({ input: { slug } }) => {
-  return await QuizService.getQuiz(slug);
-});
+export const getQuiz = os
+  .use(cacheMiddleware({ ttl: ONE_HOUR }))
+  .input(D.getQuizSchema)
+  .handler(async ({ input: { slug } }) => {
+    return await QuizService.getQuiz(slug);
+  });
 
 export const getCategoriesStats = os.use(cacheMiddleware({ ttl: ONE_DAY })).handler(async () => {
   return await QuizService.getCategoriesStats();
 });
-
