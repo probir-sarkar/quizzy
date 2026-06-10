@@ -2,7 +2,6 @@ import prisma from "@/lib/prisma";
 import { QuizWhereInput } from "@/generated/prisma/models";
 import { shuffle } from "es-toolkit/array";
 import * as D from "./dto/quiz.schema";
-import { cache } from "react";
 
 export type HomePageData = Awaited<ReturnType<typeof QuizService.getHomePageData>>;
 export type QuizCard = HomePageData[number]["quizzes"][number];
@@ -207,10 +206,7 @@ export abstract class QuizService {
     });
 
     const totalCategories = categories.length;
-    const totalSubcategories = categories.reduce(
-      (sum, cat) => sum + (cat._count.subCategories ?? 0),
-      0
-    );
+    const totalSubcategories = categories.reduce((sum, cat) => sum + (cat._count.subCategories ?? 0), 0);
 
     return {
       categories,
@@ -252,7 +248,7 @@ export abstract class QuizService {
   }
 
   // Cached base query for quiz - shared by getQuiz and getQuizForMetadata
-  static cachedGetQuizBase = cache(async (slug: string) => {
+  static cachedGetQuizBase = async (slug: string) => {
     return prisma.quiz.findUnique({
       where: { slug },
       select: {
@@ -299,7 +295,7 @@ export abstract class QuizService {
         }
       }
     });
-  });
+  };
 
   static async getQuiz(slug: string) {
     const quiz = await this.cachedGetQuizBase(slug);
