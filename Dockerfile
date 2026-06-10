@@ -1,7 +1,7 @@
 # ========================================
 # Build Stage
 # ========================================
-FROM dhi.io/node:26-alpine-dev AS builder
+FROM dhi.io/node:24-alpine3.22-dev AS builder
 
 WORKDIR /app
 
@@ -21,12 +21,13 @@ RUN pnpm build
 # Stage 3: Run Next.js application
 # ============================================
 
-FROM dhi.io/node:26-alpine AS runner
+FROM dhi.io/node:24-alpine3.22 AS runner
 
 # Set working directory
 WORKDIR /app
 
-
+ARG BASE_URL
+ENV NEXT_PUBLIC_BASE_URL=$BASE_URL
 # Set production environment variables
 ENV NODE_ENV=production
 ENV PORT=3000
