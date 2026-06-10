@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { QuizWhereInput } from "@/generated/prisma/models";
 import { shuffle } from "es-toolkit/array";
 import * as D from "./dto/quiz.schema";
+import { cache } from "react";
 
 export type HomePageData = Awaited<ReturnType<typeof QuizService.getHomePageData>>;
 export type QuizCard = HomePageData[number]["quizzes"][number];
@@ -250,8 +251,9 @@ export abstract class QuizService {
     };
   }
 
-  static async getQuiz(slug: string) {
-    const quiz = await prisma.quiz.findUnique({
+  // Cached base query for quiz - shared by getQuiz and getQuizForMetadata
+  static cachedGetQuizBase = cache(async (slug: string) => {
+    return prisma.quiz.findUnique({
       where: { slug },
       select: {
         id: true,
@@ -297,6 +299,10 @@ export abstract class QuizService {
         }
       }
     });
+  });
+
+  static async getQuiz(slug: string) {
+    const quiz = await this.cachedGetQuizBase(slug);
 
     if (!quiz) return null;
 
@@ -359,28 +365,17 @@ export abstract class QuizService {
   }
 
   static async getQuizForMetadata(slug: string) {
-    return prisma.quiz.findUnique({
-      where: { slug },
-      select: {
-        title: true,
-        description: true,
-        quizPageTitle: true,
-        quizPageDescription: true,
-        category: {
-          select: {
-            name: true
-          }
-        },
-        tags: {
-          select: {
-            tag: {
-              select: {
-                name: true
-              }
-            }
-          }
-        }
-      }
-    });
+    const quiz = await this.cachedGetQuizBase(slug);
+
+    if (!quiz) return null;
+
+    return {
+      title: quiz.title,
+      description: quiz.description,
+      quizPageTitle: quiz.quizPageTitle,
+      quizPageDescription: quiz.quizPageDescription,
+      category: quiz.category,
+      tags: quiz.tags
+    };
   }
 }

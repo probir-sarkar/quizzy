@@ -1,10 +1,11 @@
 "use client";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { Info, Trophy, RotateCcw } from "lucide-react";
-import { QuestionType } from "@/modules/quiz/quiz.service";
+
 import { calculateQuizScore, getQuizScoreMessage, getQuizScoreColor } from "@/lib/quiz-utils";
 import { cn } from "@/lib/utils";
 import { AnswerButton } from "./quiz-answer-button";
+import { QuestionType } from "@/server/modules/quiz/quiz.service";
 
 type AnswersState = Record<number, number>;
 
