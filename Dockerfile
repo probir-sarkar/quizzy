@@ -26,6 +26,10 @@ FROM dhi.io/node:24-alpine3.22 AS runner
 # Set working directory
 WORKDIR /app
 
+# Install CA certificates for HTTPS connections
+RUN apk add --no-cache ca-certificates
+RUN update-ca-certificates
+
 ARG BASE_URL
 ENV NEXT_PUBLIC_BASE_URL=$BASE_URL
 # Set production environment variables
