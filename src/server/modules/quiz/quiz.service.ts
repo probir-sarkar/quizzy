@@ -110,6 +110,33 @@ export abstract class QuizService {
     });
   }
 
+  static async getSubCategoriesByCategory(slug: string) {
+    const category = await prisma.category.findUnique({
+      where: { slug },
+      select: {
+        subCategories: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            _count: {
+              select: {
+                quizzes: true
+              }
+            }
+          },
+          orderBy: {
+            quizzes: {
+              _count: "desc"
+            }
+          }
+        }
+      }
+    });
+
+    return category?.subCategories ?? [];
+  }
+
   static async getQuizzesByCategory({
     categorySlug,
     page = 1,

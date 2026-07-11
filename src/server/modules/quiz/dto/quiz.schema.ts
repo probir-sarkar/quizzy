@@ -32,6 +32,13 @@ export const getQuizzesByCategorySchema = z.object({
 
 export type GetQuizzesByCategoryDto = z.infer<typeof getQuizzesByCategorySchema>;
 
+// DTO: Get subCategories by category slug
+export const getSubCategoriesByCategorySchema = z.object({
+  slug: slugSchema
+});
+
+export type GetSubCategoriesByCategoryDto = z.infer<typeof getSubCategoriesByCategorySchema>;
+
 // DTO: Get categories with stats (paginated)
 export const getCategoriesWithStatsSchema = paginationSchema;
 

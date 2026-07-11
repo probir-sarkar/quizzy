@@ -23,6 +23,13 @@ export const getQuizCategoryInfo = os.input(D.getCategoryInfoSchema).handler(asy
   return await QuizService.getCategoryInfo(slug);
 });
 
+export const getSubCategoriesByCategory = os
+  .use(cacheMiddleware({ ttl: ONE_HOUR }))
+  .input(D.getSubCategoriesByCategorySchema)
+  .handler(async ({ input: { slug } }) => {
+    return await QuizService.getSubCategoriesByCategory(slug);
+  });
+
 export const getQuizzesByCategory = os.input(D.getQuizzesByCategorySchema).handler(async ({ input }) => {
   return await QuizService.getQuizzesByCategory(input);
 });

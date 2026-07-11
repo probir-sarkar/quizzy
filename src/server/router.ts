@@ -1,6 +1,7 @@
 // Quiz Module
 import {
   getQuizCategoryInfo,
+  getSubCategoriesByCategory,
   getQuizzesByCategory,
   getCategoriesWithStats,
   getCategoriesStats,
@@ -23,6 +24,7 @@ export const router = {
   // Quiz routes
 
   getQuizCategoryInfo,
+  getSubCategoriesByCategory,
   getQuizzesByCategory,
   getCategoriesWithStats,
   getCategoriesStats,

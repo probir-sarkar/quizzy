@@ -2,16 +2,10 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
 import { QuizCard } from "@/components/home-page/quiz-card";
 import SubCategoryFilters from "@/components/category/sub-category-filter";
 import { calculatePaginationWindow } from "@/lib/pagination-utils";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-} from "@/components/ui/pagination";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem } from "@/components/ui/pagination";
 import { client } from "@/lib/orpc";
 
 const QUIZZES_PER_PAGE = 12;
@@ -22,13 +16,17 @@ type QuizListProps = {
 };
 
 export function QuizList({ categorySlug }: QuizListProps) {
-  const searchParams = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
 
-  const pageParam = searchParams.get("page");
-  const subcategoryParam = searchParams.get("subcategory");
-
-  const [currentPage, setCurrentPage] = useState(Math.max(1, Number(pageParam) || 1));
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(subcategoryParam);
+  // Fetch subCategories separately
+  const { data: subCategories = [] } = useQuery({
+    queryKey: ["subcategories-by-category", categorySlug],
+    queryFn: async () => {
+      return await client.getSubCategoriesByCategory({ slug: categorySlug });
+    },
+    staleTime: 60 * 60 * 1000 // 1 hour
+  });
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["quizzes-by-category", categorySlug, currentPage, selectedSubcategory],
@@ -50,7 +48,6 @@ export function QuizList({ categorySlug }: QuizListProps) {
     currentPage: 1,
     perPage: QUIZZES_PER_PAGE
   };
-  const subCategories = data?.category?.subCategories ?? [];
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
