@@ -1,11 +1,12 @@
+import { getRedis } from "@/lib/redis";
 import { os } from "@orpc/server";
-import redis from "@/lib/redis";
 
 export const ONE_MINUTE = 60;
 export const ONE_HOUR = 60 * ONE_MINUTE;
 export const ONE_DAY = 24 * ONE_HOUR;
 export const cacheMiddleware = ({ ttl = ONE_HOUR }: { ttl?: number }) =>
   os.middleware(async ({ context, next, path }, input, output) => {
+    const redis = getRedis();
     const cacheKey = path.join("/") + JSON.stringify(input);
 
     const cached = await redis.get(cacheKey);
