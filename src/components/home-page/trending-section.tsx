@@ -22,12 +22,6 @@ export default function TrendingSection({ quizzes }: TrendingSectionProps) {
           </div>
           <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Trending Now</h2>
         </div>
-        <Link
-          href="/quiz"
-          className="text-sm font-bold text-violet-500 flex items-center gap-1 hover:gap-2 transition-all"
-        >
-          Explore All <ArrowRight className="w-4 h-4" />
-        </Link>
       </div>
 
       <div className="flex gap-6 overflow-x-auto pb-8 no-scrollbar mask-fade-right">
