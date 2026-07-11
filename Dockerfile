@@ -1,7 +1,7 @@
 # ========================================
 # Build Stage
 # ========================================
-FROM dhi.io/node:24-alpine3.22-dev AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
@@ -21,7 +21,7 @@ RUN pnpm build
 # Stage 3: Run Next.js application
 # ============================================
 
-FROM dhi.io/node:24-alpine3.22 AS runner
+FROM node:24-alpine AS runner
 
 # Set working directory
 WORKDIR /app
