@@ -26,7 +26,6 @@ export const { POST } = serve(
           output: Output.object({
             schema: QuizDoc
           }),
-          instructions: `Strict JSON only. No markdown. No extra commentary.`,
           prompt: generateQuizPrompt({
             categoryName: selected.category.name,
             subCategoryName: selected.subCategory.name,
