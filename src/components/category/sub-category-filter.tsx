@@ -12,8 +12,6 @@ import {
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useSearchParams, usePathname } from "next/navigation";
-import Link from "next/link";
 import { memo, useState, useMemo, useCallback } from "react";
 import { Filter, ChevronDown, Check } from "lucide-react";
 import { sum, orderBy, filter } from "es-toolkit/compat";
@@ -28,32 +26,12 @@ interface SubCategory {
 interface Props {
   subCategories: SubCategory[];
   selectedSlug?: string | null;
-  onSelect?: (slug: string | null) => void;
+  onSelect: (slug: string | null) => void;
 }
 
 // Constants
 const DIALOG_PLACEHOLDER = "Search subcategories...";
 const ALL_SUBCATEGORIES_LABEL = "All Subcategories";
-
-// Custom hook for URL state management
-function useSubcategoryState(selectedSlug?: string | null) {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const currentSlug = selectedSlug ?? searchParams.get("subcategory");
-
-  const buildHref = useCallback(
-    (slug?: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (slug) params.set("subcategory", slug);
-      else params.delete("subcategory");
-      params.delete("page");
-      return `${pathname}?${params.toString()}`;
-    },
-    [searchParams, pathname],
-  );
-
-  return { currentSlug, buildHref };
-}
 
 // Main Component
 function SubCategoryFilters({
@@ -64,7 +42,7 @@ function SubCategoryFilters({
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
-  const { currentSlug, buildHref } = useSubcategoryState(selectedSlug);
+  const currentSlug = selectedSlug;
 
   // Data transformations
   const sortedItems = useMemo(() => {
@@ -92,7 +70,7 @@ function SubCategoryFilters({
 
   const handleSelect = useCallback(
     (slug: string | null) => {
-      onSelect?.(slug);
+      onSelect(slug);
       setOpen(false);
       setSearchValue("");
     },
@@ -108,21 +86,12 @@ function SubCategoryFilters({
   );
 
   const selectedName = selectedSub?.name ?? ALL_SUBCATEGORIES_LABEL;
-  const selectedCount = selectedSub?.count ?? totalCount;
 
   // Filter button content
   const buttonContent = (
     <>
       <Filter className="w-4 h-4 shrink-0" />
-      <span className="truncate font-normal">
-        {selectedName}
-      </span>
-      <Badge
-        variant={selectedSub ? "secondary" : "outline"}
-        className="ml-auto shrink-0"
-      >
-        {selectedCount}
-      </Badge>
+      <span className="truncate font-normal">{selectedName}</span>
       <ChevronDown className="w-4 h-4 ml-2 shrink-0" />
     </>
   );
@@ -131,7 +100,7 @@ function SubCategoryFilters({
     <Button
       variant={selectedSub ? "default" : "outline"}
       size="default"
-      onClick={onSelect ? () => setOpen(true) : undefined}
+      onClick={() => setOpen(true)}
       className="gap-2 w-full sm:w-auto justify-start"
     >
       {buttonContent}
@@ -144,31 +113,16 @@ function SubCategoryFilters({
         <div className="h-14 sm:h-16 flex items-center justify-between gap-3">
           {/* Filter Trigger */}
           <div className="flex-1 min-w-0">
-            {onSelect ? (
-              button
-            ) : (
-              <Link href={buildHref()} className="block">
-                {button}
-              </Link>
-            )}
+            {button}
           </div>
 
           {/* Result Count */}
-          <div className="shrink-0">
-            <p className="text-sm text-muted-foreground tabular-nums whitespace-nowrap">
-              {selectedSub ? (
-                <>
-                  <span className="font-medium text-foreground">
-                    {selectedSub.count}
-                  </span>{" "}
-                  quizzes
-                </>
-              ) : (
-                <>
-                  <span className="font-medium text-foreground">{totalCount}</span>{" "}
-                  quizzes
-                </>
-              )}
+          <div className="shrink-0 text-right">
+            <p className="text-sm text-muted-foreground whitespace-nowrap">
+              <span className="font-medium text-foreground">
+                {selectedSub?.count ?? totalCount}
+              </span>{" "}
+              quizzes
             </p>
           </div>
 
