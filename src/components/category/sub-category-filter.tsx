@@ -1,175 +1,233 @@
 "use client";
 
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
 import { useSearchParams, usePathname } from "next/navigation";
-import { memo, useState, useMemo } from "react";
+import Link from "next/link";
+import { memo, useState, useMemo, useCallback } from "react";
+import { Filter, ChevronDown, Check } from "lucide-react";
+import { sum, orderBy, filter } from "es-toolkit/compat";
 
-type Props = {
-  subCategories: { name: string; slug: string; count: number }[];
+// Types
+interface SubCategory {
+  name: string;
+  slug: string;
+  count: number;
+}
+
+interface Props {
+  subCategories: SubCategory[];
   selectedSlug?: string | null;
   onSelect?: (slug: string | null) => void;
-};
+}
 
-function SubCategoryFilters({ subCategories, selectedSlug, onSelect }: Props) {
+// Constants
+const DIALOG_PLACEHOLDER = "Search subcategories...";
+const ALL_SUBCATEGORIES_LABEL = "All Subcategories";
+
+// Custom hook for URL state management
+function useSubcategoryState(selectedSlug?: string | null) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const currentSub = onSelect ? selectedSlug : searchParams.get("subcategory");
+  const currentSlug = selectedSlug ?? searchParams.get("subcategory");
 
-  // Add search for subcategories if there are many
-  const [searchTerm, setSearchTerm] = useState("");
+  const buildHref = useCallback(
+    (slug?: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (slug) params.set("subcategory", slug);
+      else params.delete("subcategory");
+      params.delete("page");
+      return `${pathname}?${params.toString()}`;
+    },
+    [searchParams, pathname],
+  );
 
-  const filteredSubs = useMemo(() => {
-    if (!searchTerm) return subCategories;
-    return subCategories.filter((sub) =>
-      sub.name.toLowerCase().includes(searchTerm.toLowerCase())
+  return { currentSlug, buildHref };
+}
+
+// Main Component
+function SubCategoryFilters({
+  subCategories,
+  selectedSlug,
+  onSelect,
+}: Props) {
+  const [open, setOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+
+  const { currentSlug, buildHref } = useSubcategoryState(selectedSlug);
+
+  // Data transformations
+  const sortedItems = useMemo(() => {
+    return orderBy(subCategories, ["count"], ["desc"]);
+  }, [subCategories]);
+
+  const totalCount = useMemo(
+    () => sum(subCategories.map((c: SubCategory) => c.count)),
+    [subCategories],
+  );
+
+  const selectedSub = useMemo(
+    () => subCategories.find((c: SubCategory) => c.slug === currentSlug) ?? null,
+    [subCategories, currentSlug],
+  );
+
+  // Filter items by search
+  const filteredItems = useMemo(() => {
+    if (!searchValue) return sortedItems;
+    const term = searchValue.toLowerCase();
+    return filter(sortedItems, (item: SubCategory) =>
+      item.name.toLowerCase().includes(term),
     );
-  }, [subCategories, searchTerm]);
+  }, [sortedItems, searchValue]);
 
-  const showSearch = subCategories.length > 10;
+  const handleSelect = useCallback(
+    (slug: string | null) => {
+      onSelect?.(slug);
+      setOpen(false);
+      setSearchValue("");
+    },
+    [onSelect],
+  );
 
-  // Re-order: selected subcategory first (after "All")
-  const orderedSubs = [...subCategories];
-  if (currentSub) {
-    const selectedIndex = orderedSubs.findIndex((c) => c.slug === currentSub);
-    if (selectedIndex > -1) {
-      const [selected] = orderedSubs.splice(selectedIndex, 1);
-      orderedSubs.unshift(selected);
-    }
-  }
+  const handleOpenChange = useCallback(
+    (newOpen: boolean) => {
+      setOpen(newOpen);
+      if (!newOpen) setSearchValue("");
+    },
+    [],
+  );
 
-  // Build URL with updated query param
-  const buildHref = (slug?: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (slug) params.set("subcategory", slug);
-    else params.delete("subcategory");
-    // Reset page to 1 when changing subcategory
-    params.delete("page");
-    return `${pathname}?${params.toString()}`;
-  };
+  const selectedName = selectedSub?.name ?? ALL_SUBCATEGORIES_LABEL;
+  const selectedCount = selectedSub?.count ?? totalCount;
+
+  // Filter button content
+  const buttonContent = (
+    <>
+      <Filter className="w-4 h-4 shrink-0" />
+      <span className="truncate font-normal">
+        {selectedName}
+      </span>
+      <Badge
+        variant={selectedSub ? "secondary" : "outline"}
+        className="ml-auto shrink-0"
+      >
+        {selectedCount}
+      </Badge>
+      <ChevronDown className="w-4 h-4 ml-2 shrink-0" />
+    </>
+  );
+
+  const button = (
+    <Button
+      variant={selectedSub ? "default" : "outline"}
+      size="default"
+      onClick={onSelect ? () => setOpen(true) : undefined}
+      className="gap-2 w-full sm:w-auto justify-start"
+    >
+      {buttonContent}
+    </Button>
+  );
 
   return (
-    <div className="px-4 mt-6 container mx-auto">
-      {showSearch && (
-        <div className="mb-3">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder={`Search ${subCategories.length} subcategories...`}
-            className="w-full px-4 py-2 text-sm bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-      )}
-      <div
-        role="tablist"
-        aria-label="Filter by subcategory"
-        className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
-      >
-        {/* All option */}
-        {onSelect ? (
-          <button
-            onClick={() => onSelect(null)}
-            className={cn(
-              "px-4 py-2 rounded-full whitespace-nowrap cursor-pointer",
-              "inline-flex items-center gap-2",
-              "text-gray-700 dark:text-gray-300",
-              "bg-white dark:bg-gray-800",
-              "border border-gray-200/70 dark:border-gray-700 shadow-sm",
-              "transition-all duration-300 ease-out",
-              "hover:bg-linear-to-r hover:from-violet-500 hover:to-fuchsia-600 hover:text-white hover:shadow-lg",
-              "active:scale-95 focus:ring-2 focus:ring-violet-500 focus:outline-none",
-              !currentSub &&
-                "bg-linear-to-r from-violet-500 to-fuchsia-600 text-white shadow-lg"
+    <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border/50">
+      <div className="container mx-auto px-3 sm:px-4">
+        <div className="h-14 sm:h-16 flex items-center justify-between gap-3">
+          {/* Filter Trigger */}
+          <div className="flex-1 min-w-0">
+            {onSelect ? (
+              button
+            ) : (
+              <Link href={buildHref()} className="block">
+                {button}
+              </Link>
             )}
-            role="tab"
-            aria-selected={!currentSub}
-          >
-            All
-          </button>
-        ) : (
-          <Link href={buildHref()} scroll={false}>
-            <Badge
-              role="tab"
-              aria-selected={!currentSub}
-              tabIndex={0}
-              className={cn(
-                "px-4 py-2 rounded-full whitespace-nowrap cursor-pointer",
-                "inline-flex items-center gap-2",
-                "text-gray-700 dark:text-gray-300",
-                "bg-white dark:bg-gray-800",
-                "border border-gray-200/70 dark:border-gray-700 shadow-sm",
-                "transition-all duration-300 ease-out",
-                "hover:bg-linear-to-r hover:from-violet-500 hover:to-fuchsia-600 hover:text-white hover:shadow-lg",
-                "active:scale-95 focus:ring-2 focus:ring-violet-500 focus:outline-none",
-                !currentSub &&
-                  "bg-linear-to-r from-violet-500 to-fuchsia-600 text-white shadow-lg"
-              )}
-            >
-              All
-            </Badge>
-          </Link>
-        )}
-
-        {/* Subcategories */}
-        {orderedSubs.map((cat) => {
-          // Filter based on search term
-          if (searchTerm && !filteredSubs.some((s) => s.slug === cat.slug)) {
-            return null;
-          }
-
-          const content = (
-            <>
-              <span>{cat.name}</span>
-              <span className="text-xs opacity-70">({cat.count})</span>
-            </>
-          );
-
-          const badgeClassName = cn(
-            "px-4 py-2 rounded-full whitespace-nowrap cursor-pointer",
-            "inline-flex items-center gap-2",
-            "text-gray-700 dark:text-gray-300",
-            "bg-white dark:bg-gray-800",
-            "border border-gray-200/70 dark:border-gray-700 shadow-sm",
-            "transition-all duration-300 ease-out",
-            "hover:bg-gradient-to-r hover:from-violet-500 hover:to-fuchsia-600 hover:text-white hover:shadow-lg",
-            "active:scale-95 focus:ring-2 focus:ring-violet-500 focus:outline-none",
-            currentSub === cat.slug &&
-              "bg-gradient-to-r from-violet-500 to-fuchsia-600 text-white shadow-lg"
-          );
-
-          return onSelect ? (
-            <button
-              key={cat.slug}
-              onClick={() => onSelect(cat.slug)}
-              className={badgeClassName}
-              role="tab"
-              aria-selected={currentSub === cat.slug}
-            >
-              {content}
-            </button>
-          ) : (
-            <Link key={cat.slug} href={buildHref(cat.slug)} scroll={false}>
-              <Badge
-                role="tab"
-                aria-selected={currentSub === cat.slug}
-                tabIndex={0}
-                className={badgeClassName}
-              >
-                {content}
-              </Badge>
-            </Link>
-          );
-        })}
-
-        {searchTerm && filteredSubs.length === 0 && (
-          <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400" role="status" aria-live="polite">
-            No subcategories found
           </div>
-        )}
+
+          {/* Result Count */}
+          <div className="shrink-0">
+            <p className="text-sm text-muted-foreground tabular-nums whitespace-nowrap">
+              {selectedSub ? (
+                <>
+                  <span className="font-medium text-foreground">
+                    {selectedSub.count}
+                  </span>{" "}
+                  quizzes
+                </>
+              ) : (
+                <>
+                  <span className="font-medium text-foreground">{totalCount}</span>{" "}
+                  quizzes
+                </>
+              )}
+            </p>
+          </div>
+
+          {/* Command Dialog */}
+          <CommandDialog open={open} onOpenChange={handleOpenChange}>
+            <Command shouldFilter={false}>
+              <CommandInput
+                placeholder={DIALOG_PLACEHOLDER}
+                value={searchValue}
+                onValueChange={setSearchValue}
+              />
+              <CommandList>
+                <CommandEmpty>No subcategories found.</CommandEmpty>
+                <CommandGroup>
+                  <CommandItem
+                    value="all"
+                    onSelect={() => handleSelect(null)}
+                    className="cursor-pointer group"
+                  >
+                    <span className="flex-1">{ALL_SUBCATEGORIES_LABEL}</span>
+                    <Badge
+                      variant="secondary"
+                      className="group-hover:bg-primary/20 transition-colors"
+                    >
+                      {totalCount}
+                    </Badge>
+                    {!currentSlug && (
+                      <Check className="w-4 h-4 text-primary ml-2 shrink-0" />
+                    )}
+                  </CommandItem>
+                </CommandGroup>
+                <CommandSeparator />
+                <CommandGroup>
+                  {filteredItems.map((sub: SubCategory) => (
+                    <CommandItem
+                      key={sub.slug}
+                      value={sub.slug}
+                      onSelect={() => handleSelect(sub.slug)}
+                      className="cursor-pointer group py-3"
+                    >
+                      <span className="flex-1 truncate">{sub.name}</span>
+                      <Badge
+                        variant="secondary"
+                        className="group-hover:bg-primary/20 transition-colors"
+                      >
+                        {sub.count}
+                      </Badge>
+                      {currentSlug === sub.slug && (
+                        <Check className="w-4 h-4 text-primary ml-2 shrink-0" />
+                      )}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </CommandDialog>
+        </div>
       </div>
-    </div>
+    </header>
   );
 }
 
