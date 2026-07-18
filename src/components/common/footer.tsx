@@ -63,7 +63,7 @@ export default function Footer() {
             <div className="flex gap-4">
               <SocialLink icon={<GithubIcon className="w-5 h-5" />} href="#" />
               <SocialLink icon={<XIcon className="w-5 h-5" />} href="#" />
-              <SocialLink icon={<Mail className="w-5 h-5" />} href="#" />
+              <SocialLink icon={<Mail className="w-5 h-5" />} href="mailto:me@probirsarkar.com" />
             </div>
           </div>
 
