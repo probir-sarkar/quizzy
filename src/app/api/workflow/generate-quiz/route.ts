@@ -87,10 +87,5 @@ export const { POST } = serve(
         return;
       }
     });
-  },
-  {
-    failureFunction: () => {
-      throw new WorkflowNonRetryableError("Workflow execution failed");
-    }
   }
 );
