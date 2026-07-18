@@ -12,7 +12,6 @@ import {
 } from "@/app/api/workflow/generate-quiz/utils";
 import { WorkflowNonRetryableError } from "@upstash/workflow";
 
-
 export const { POST } = serve(
   async (context) => {
     const generationResult = await context.run("generate-quiz", async () => {
@@ -41,7 +40,9 @@ export const { POST } = serve(
         };
       } catch (error) {
         console.error("Quiz generation error:", error);
-        throw new WorkflowNonRetryableError(`Quiz generation failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+        throw new WorkflowNonRetryableError(
+          `Quiz generation failed: ${error instanceof Error ? error.message : "Unknown error"}`
+        );
       }
     });
 
@@ -81,12 +82,11 @@ export const { POST } = serve(
           }
         });
       } catch (error) {
-        console.error("Quiz save error:", error);
-        throw new WorkflowNonRetryableError(`Quiz save failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+        // Stop execution gracefully without error
+        await context.cancel();
+        return;
       }
     });
-
-    return { quizId: savedQuiz.id };
   },
   {
     failureFunction: () => {
