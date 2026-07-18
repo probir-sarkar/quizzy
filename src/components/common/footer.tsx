@@ -1,7 +1,9 @@
-import { Sparkles, Github, Twitter, Mail, Heart } from "lucide-react";
+import { Sparkles, Mail, Heart } from "lucide-react";
 import Link from "next/link";
 import CurrentYear from "./current-year";
 import { Suspense } from "react";
+import GithubIcon from "../icons/github-icon";
+import XIcon from "../icons/x-icon";
 
 type FooterLink = {
   label: string;
@@ -59,8 +61,8 @@ export default function Footer() {
               for curious minds.
             </p>
             <div className="flex gap-4">
-              <SocialLink icon={<Github className="w-5 h-5" />} href="#" />
-              <SocialLink icon={<Twitter className="w-5 h-5" />} href="#" />
+              <SocialLink icon={<GithubIcon className="w-5 h-5" />} href="#" />
+              <SocialLink icon={<XIcon className="w-5 h-5" />} href="#" />
               <SocialLink icon={<Mail className="w-5 h-5" />} href="#" />
             </div>
           </div>
