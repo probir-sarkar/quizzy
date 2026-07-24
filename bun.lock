@@ -5,7 +5,7 @@
     "": {
       "name": "web",
       "dependencies": {
-        "@ai-sdk/openai-compatible": "^3.0.7",
+        "@ai-sdk/openai-compatible": "^3.0.14",
         "@base-ui/react": "^1.6.0",
         "@date-fns/utc": "^2.1.1",
         "@next/third-parties": "16.2.3",
@@ -70,11 +70,11 @@
   "packages": {
     "@ai-sdk/gateway": ["@ai-sdk/gateway@4.0.15", "", { "dependencies": { "@ai-sdk/provider": "4.0.3", "@ai-sdk/provider-utils": "5.0.7", "@vercel/oidc": "3.2.0" }, "peerDependencies": { "zod": "4.4.3" } }, "sha512-JHvgCU4SR6OdjOI+8rxIF3zhIboFAkQ1vEa+QOIdkK5VyME1ONx8SbgM2YtnSY1DOsCtUyhd+EG876pYpRjopg=="],
 
-    "@ai-sdk/openai-compatible": ["@ai-sdk/openai-compatible@3.0.7", "", { "dependencies": { "@ai-sdk/provider": "4.0.3", "@ai-sdk/provider-utils": "5.0.7" }, "peerDependencies": { "zod": "4.4.3" } }, "sha512-y8RVpm8BZKNHDxlbNVt/GYmoBBqLx10m4d7bOzOnRD8V2aP3Cr6/g/bfubR4EkbW1ySrnPr62svZIeND2fdp3Q=="],
+    "@ai-sdk/openai-compatible": ["@ai-sdk/openai-compatible@3.0.14", "", { "dependencies": { "@ai-sdk/provider": "4.0.3", "@ai-sdk/provider-utils": "5.0.12" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-nUl7dBHUDTqcnuWGnEbKMwDDqL94BxRfibLwYv8uWp+kZn8Zqdxy7tUBt4sv2hpHQi+S2P6bUyqW18xmbykErw=="],
 
     "@ai-sdk/provider": ["@ai-sdk/provider@4.0.3", "", { "dependencies": { "json-schema": "0.4.0" } }, "sha512-e0CpNWJUY7OxAFAnCZkw+ri9QOHWwTs1tXP42782KFGCU07qt8NiXCrCVowyCB5dP2r5/Uls+g2oPd8kOJn9dw=="],
 
-    "@ai-sdk/provider-utils": ["@ai-sdk/provider-utils@5.0.7", "", { "dependencies": { "@ai-sdk/provider": "4.0.3", "@standard-schema/spec": "1.1.0", "@workflow/serde": "4.1.0", "eventsource-parser": "3.0.8" }, "peerDependencies": { "zod": "4.4.3" } }, "sha512-OSm5/5kdrHa11WIOo5LYgDKnxYWp5aB/wx5EXRHi0jpUGduMDeB6oht9U6p+UNNWIP3F/EqPpV8d7vdP/iRnqg=="],
+    "@ai-sdk/provider-utils": ["@ai-sdk/provider-utils@5.0.12", "", { "dependencies": { "@ai-sdk/provider": "4.0.3", "@standard-schema/spec": "^1.1.0", "@workflow/serde": "4.1.0", "eventsource-parser": "^3.0.8" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-bbhlOgHeYwrIGheLkM6fhS8hVger8uFPmcOLg+kxc9EFh7y30XYorWhthlYAgpadO3SJhFZrIcEknN7qEqEVvA=="],
 
     "@alloc/quick-lru": ["@alloc/quick-lru@5.2.0", "", {}, "sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw=="],
 
@@ -1408,6 +1408,8 @@
 
     "zustand": ["zustand@5.0.13", "", { "optionalDependencies": { "@types/react": "19.2.14", "react": "19.2.5", "use-sync-external-store": "1.6.0" } }, "sha512-efI2tVaVQPqtOh114loML/Z80Y4NP3yc+Ff0fYiZJPauNeWZeIp/bRFD7I9bfmCOYBh/PHxlglQ9+wvlwnPikQ=="],
 
+    "@ai-sdk/gateway/@ai-sdk/provider-utils": ["@ai-sdk/provider-utils@5.0.7", "", { "dependencies": { "@ai-sdk/provider": "4.0.3", "@standard-schema/spec": "1.1.0", "@workflow/serde": "4.1.0", "eventsource-parser": "3.0.8" }, "peerDependencies": { "zod": "4.4.3" } }, "sha512-OSm5/5kdrHa11WIOo5LYgDKnxYWp5aB/wx5EXRHi0jpUGduMDeB6oht9U6p+UNNWIP3F/EqPpV8d7vdP/iRnqg=="],
+
     "@babel/core/json5": ["json5@2.2.3", "", { "bin": { "json5": "lib/cli.js" } }, "sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg=="],
 
     "@eslint-community/eslint-utils/eslint-visitor-keys": ["eslint-visitor-keys@3.4.3", "", {}, "sha512-wpc+LXeiyiisxPlEkUzU6svyS1frIO3Mgxj1fdy7Pm8Ygzguax2N3Fa/D/ag1WqbOprdI+uY6wMUl8/a2G+iag=="],
@@ -1447,6 +1449,8 @@
     "@typescript-eslint/typescript-estree/semver": ["semver@7.8.0", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-AcM7dV/5ul4EekoQ29Agm5vri8JNqRyj39o0qpX6vDF2GZrtutZl5RwgD1XnZjiTAfncsJhMI48QQH3sN87YNA=="],
 
     "@typescript-eslint/visitor-keys/eslint-visitor-keys": ["eslint-visitor-keys@5.0.1", "", {}, "sha512-tD40eHxA35h0PEIZNeIjkHoDR4YjjJp34biM0mDvplBe//mB+IHCqHDGV7pxF+7MklTvighcCPPZC7ynWyjdTA=="],
+
+    "ai/@ai-sdk/provider-utils": ["@ai-sdk/provider-utils@5.0.7", "", { "dependencies": { "@ai-sdk/provider": "4.0.3", "@standard-schema/spec": "1.1.0", "@workflow/serde": "4.1.0", "eventsource-parser": "3.0.8" }, "peerDependencies": { "zod": "4.4.3" } }, "sha512-OSm5/5kdrHa11WIOo5LYgDKnxYWp5aB/wx5EXRHi0jpUGduMDeB6oht9U6p+UNNWIP3F/EqPpV8d7vdP/iRnqg=="],
 
     "cmdk/@radix-ui/react-primitive": ["@radix-ui/react-primitive@2.1.4", "", { "dependencies": { "@radix-ui/react-slot": "1.2.4" }, "optionalDependencies": { "@types/react": "19.2.14", "@types/react-dom": "19.2.3" }, "peerDependencies": { "react": "19.2.5", "react-dom": "19.2.5" } }, "sha512-9hQc4+GNVtJAIEPEqlYqW5RiYdrr8ea5XQ0ZOnD6fgru+83kqT15mq2OCcbe8KnjRZl5vF3ks69AKz3kh1jrhg=="],
 
