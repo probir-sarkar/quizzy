@@ -1,5 +1,7 @@
 // import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
+// import { createOpenAI } from '@ai-sdk/openai';
+
 
 const provider = createOpenAICompatible({
   name: "OpenRouter",
