@@ -7,7 +7,7 @@ import ShareButtons from "@/components/common/ShareButtons";
 import TelegramCTA from "@/components/common/telegram-cta";
 import QuizQuestions from "@/components/quiz-page/question-list";
 
-import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
+import BrowserStayPromoCard from "@/components/common/browserstay-promo-card";
 import { MoreQuizzesSection } from "@/components/quiz-page/more-quizzes-section";
 import { BASE_URL } from "@/lib/constants";
 import { client } from "@/lib/orpc";
@@ -68,9 +68,9 @@ async function QuizPage({ params }: Props) {
           <ShareButtons url={process.env.NEXT_PUBLIC_URL + "/quiz/" + slug} title={quiz.quizPageTitle || ""} />
         </div>
 
-        {/* Toolbox Promotion */}
+        {/* BrowserStay Promotion */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
-          <ToolboxPromoCard variant="default" />
+          <BrowserStayPromoCard variant="default" />
         </div>
 
         {/* More Quizzes - Client Component with TanStack Query */}

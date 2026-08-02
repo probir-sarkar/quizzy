@@ -4,19 +4,19 @@ import { ArrowUpRight, Shield, Zap, FileImage, Lock } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 
-interface ToolboxPromoCardProps {
+interface BrowserStayPromoCardProps {
   className?: string;
   variant?: "default" | "compact";
 }
 
 const features = [
   { icon: Shield, text: "100% Private" },
-  { icon: Zap, text: "Lightning Fast" },
+  { icon: Zap, text: "No Waiting" },
   { icon: FileImage, text: "PDF & Images" },
-  { icon: Lock, text: "No Data Uploads" }
+  { icon: Lock, text: "No Uploads" }
 ];
 
-export default function ToolboxPromoCard({ className = "", variant = "default" }: ToolboxPromoCardProps) {
+export default function BrowserStayPromoCard({ className = "", variant = "default" }: BrowserStayPromoCardProps) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -31,7 +31,7 @@ export default function ToolboxPromoCard({ className = "", variant = "default" }
   if (variant === "compact") {
     return (
       <a
-        href="https://toolbox.probir.dev/"
+        href="https://browserstay.com/"
         target="_blank"
         rel="noopener noreferrer"
         className={`block relative overflow-hidden rounded-xl border border-teal-200 dark:border-teal-800/30
@@ -45,11 +45,11 @@ export default function ToolboxPromoCard({ className = "", variant = "default" }
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-bold text-base text-slate-900 dark:text-white">Toolbox</h3>
-                <span className="text-xs text-teal-600 dark:text-teal-400 font-medium">• Privacy tools</span>
+                <h3 className="font-bold text-base text-slate-900 dark:text-white">BrowserStay</h3>
+                <span className="text-xs text-teal-600 dark:text-teal-400 font-medium">• PDF & image tools</span>
               </div>
               <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-1">
-                PDFs, images & passwords - 100% offline
+                Free, open-source PDF and image tools - 100% in your browser
               </p>
             </div>
             <div className="shrink-0">
@@ -71,7 +71,7 @@ export default function ToolboxPromoCard({ className = "", variant = "default" }
 
   return (
     <a
-      href="https://toolbox.probir.dev/"
+      href="https://browserstay.com/"
       target="_blank"
       rel="noopener noreferrer"
       className={`block relative overflow-hidden rounded-2xl border border-teal-200 dark:border-teal-800/30
@@ -90,18 +90,20 @@ export default function ToolboxPromoCard({ className = "", variant = "default" }
               </div>
               <div>
                 <h3 className="font-bold text-lg text-slate-900 dark:text-white">
-                  Toolbox
+                  BrowserStay
                 </h3>
                 <p className="text-xs text-teal-600 dark:text-teal-400 font-medium">
-                  Privacy-Powered Tools
+                  Free & Open Source
                 </p>
               </div>
             </div>
 
             <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-3">
-              Process PDFs, optimize images, and generate passwords - all in your browser with
-              <span className="font-bold text-teal-600 dark:text-teal-400"> zero uploads</span> and
-              <span className="font-bold text-teal-600 dark:text-teal-400"> complete privacy</span>.
+              BrowserStay is a free, open-source collection of PDF and image tools that run
+              entirely in your browser.
+              <span className="font-bold text-teal-600 dark:text-teal-400"> No uploads</span>,
+              <span className="font-bold text-teal-600 dark:text-teal-400"> no accounts</span>,
+              <span className="font-bold text-teal-600 dark:text-teal-400"> no servers</span>, no waiting.
             </p>
 
             <div className="flex flex-wrap gap-2">
@@ -132,7 +134,7 @@ export default function ToolboxPromoCard({ className = "", variant = "default" }
           <div className="text-xs text-slate-600 dark:text-slate-400">
             <span className="font-semibold text-teal-600 dark:text-teal-400">Free & Open Source</span>
             <span className="mx-1.5">•</span>
-            Works Offline
+            Runs in Your Browser
           </div>
           <div className="text-xs font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1 group">
             Try Now

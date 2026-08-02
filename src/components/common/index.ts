@@ -1,4 +1,4 @@
-export { default as ToolboxPromoCard } from "./toolbox-promo-card";
+export { default as BrowserStayPromoCard } from "./browserstay-promo-card";
 export { default as TelegramCTA } from "./telegram-cta";
 export { default as ShareButtons } from "./ShareButtons";
 export { default as Footer } from "./footer";

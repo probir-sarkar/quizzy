@@ -34,10 +34,10 @@ export default function Footer() {
       title: "More Projects",
       links: [
         {
-          label: "Toolbox",
-          href: "https://toolbox.probir.dev/",
+          label: "BrowserStay",
+          href: "https://browserstay.com/",
           external: true,
-          description: "Privacy-focused online tools"
+          description: "Free, open-source PDF and image tools in your browser"
         }
       ]
     }

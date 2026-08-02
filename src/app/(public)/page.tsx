@@ -4,7 +4,7 @@ import HeroSection from "@/components/home-page/hero-section";
 import QuizListing from "@/components/home-page/quiz-listing";
 
 import TrendingSection from "@/components/home-page/trending-section";
-import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
+import BrowserStayPromoCard from "@/components/common/browserstay-promo-card";
 import { client } from "@/lib/orpc";
 
 export default async function Home() {
@@ -29,9 +29,9 @@ export default async function Home() {
 
       <TrendingSection quizzes={trendingQuizzes} />
 
-      {/* Toolbox Promotion Section */}
+      {/* BrowserStay Promotion Section */}
       <div className="container mx-auto px-4 py-12">
-        <ToolboxPromoCard variant="default" />
+        <BrowserStayPromoCard variant="default" />
       </div>
 
       <CategoryFilters categories={categoriesList} />

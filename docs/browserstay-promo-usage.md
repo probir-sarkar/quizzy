@@ -1,6 +1,6 @@
-# Toolbox Promotion Card
+# BrowserStay Promotion Card
 
-A reusable component to promote the Toolbox project across your Quizzy application.
+A reusable component to promote the BrowserStay project across your Quizzy application.
 
 ## Features
 
@@ -15,12 +15,12 @@ A reusable component to promote the Toolbox project across your Quizzy applicati
 The component comes in two variants:
 
 ### Default Variant
-Full-featured promotional card with detailed information about Toolbox features.
+Full-featured promotional card with detailed information about BrowserStay features.
 
 ```tsx
-import { ToolboxPromoCard } from "@/components/common";
+import { BrowserStayPromoCard } from "@/components/common";
 
-<ToolboxPromoCard variant="default" />
+<BrowserStayPromoCard variant="default" />
 ```
 
 Best for:
@@ -32,9 +32,9 @@ Best for:
 Smaller, space-efficient version perfect for overlays and constrained spaces.
 
 ```tsx
-import { ToolboxPromoCard } from "@/components/common";
+import { BrowserStayPromoCard } from "@/components/common";
 
-<ToolboxPromoCard variant="compact" />
+<BrowserStayPromoCard variant="compact" />
 ```
 
 Best for:
@@ -45,7 +45,7 @@ Best for:
 ## Props
 
 ```tsx
-interface ToolboxPromoCardProps {
+interface BrowserStayPromoCardProps {
   className?: string;    // Additional CSS classes
   variant?: "default" | "compact";  // Card style variant
 }
@@ -55,14 +55,14 @@ interface ToolboxPromoCardProps {
 
 ### Basic Usage
 ```tsx
-import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
+import BrowserStayPromoCard from "@/components/common/browserstay-promo-card";
 
-<ToolboxPromoCard />
+<BrowserStayPromoCard />
 ```
 
 ### With Custom Styling
 ```tsx
-<ToolboxPromoCard
+<BrowserStayPromoCard
   variant="default"
   className="max-w-4xl mx-auto my-8"
 />
@@ -71,24 +71,24 @@ import ToolboxPromoCard from "@/components/common/toolbox-promo-card";
 ### In Quiz Results
 ```tsx
 <motion.div className="mt-6 max-w-2xl mx-auto">
-  <ToolboxPromoCard variant="compact" />
+  <BrowserStayPromoCard variant="compact" />
 </motion.div>
 ```
 
 ### Responsive Layout
 ```tsx
 <div className="container mx-auto px-4 py-12">
-  <ToolboxPromoCard variant="default" />
+  <BrowserStayPromoCard variant="default" />
 </div>
 ```
 
 ## Features Highlighted
 
-The card showcases these key Toolbox features:
+The card showcases these key BrowserStay features:
 - 🛡️ **100% Private**: No data uploads or tracking
-- ⚡ **Lightning Fast**: Client-side processing
+- ⚡ **No Waiting**: No servers, instant results
 - 📄 **PDF & Images**: Multiple file format support
-- 🔒 **No Data Uploads**: Everything happens in-browser
+- 🔒 **No Uploads**: Everything happens in-browser
 
 ## Customization
 
