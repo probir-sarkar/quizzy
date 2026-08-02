@@ -220,3 +220,27 @@ Key environment variables for development:
 - Monitor cache hit rates in production
 - Horoscope data uses date-based cache keys for efficient invalidation
 - Cache tags like "horoscopes" for selective cache clearing
+
+**Utility Functions (es-toolkit):**
+- Use `es-toolkit/compat` for Lodash-compatible utilities
+- Common functions: `orderBy`, `filter`, `sum`, `map`, `find`
+- Import from `es-toolkit/compat` to maintain familiar Lodash API
+- Example: `orderBy(items, ["count"], ["desc"])` for descending sort
+- Example: `filter(items, (item) => item.active)` for filtering
+- Example: `sum(items.map((item) => item.count))` for aggregation
+
+**Component Composition Patterns:**
+- Keep components simple and inline small pieces unless genuinely reused
+- Extract custom hooks only when state logic is complex or reused
+- Extract sub-components when they grow large (>50 lines) or are reused
+- Use `memo` for components that receive stable props and re-render frequently
+- Extract constants to improve maintainability
+- Use `CommandDialog` for searchable dropdown menus with shadcn/ui
+
+**When working with filter/search components:**
+1. Use shadcn `Command` components for dropdown menus
+2. Keep the component structure simple - inline small UI pieces
+3. Use `useMemo` for expensive filtering/sorting operations
+4. Use `useCallback` for stable function references
+5. Reset search state when dialog closes
+6. On mobile: ensure single-row layout with `flex-1` and `shrink-0` classes

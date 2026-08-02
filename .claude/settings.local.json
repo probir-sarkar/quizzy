@@ -27,7 +27,8 @@
       "Bash(curl -s \"http://localhost:3000/api/quiz/categories-stats\")",
       "Bash(xargs grep *)",
       "Bash(pnpm install *)",
-      "Bash(pnpm run *)"
+      "Bash(pnpm run *)",
+      "Bash(npx tsc *)"
     ],
     "deny": [],
     "ask": []

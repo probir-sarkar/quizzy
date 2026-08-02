@@ -85,18 +85,16 @@ export function QuizList({ categorySlug }: QuizListProps) {
 
   return (
     <>
-      <div className="">
-        <SubCategoryFilters
-          subCategories={subCategories.map((sc) => ({
-            name: sc.name,
-            slug: sc.slug,
-            count: sc._count?.quizzes ?? 0
-          }))}
-          selectedSlug={selectedSubcategory}
-          onSelect={handleSubcategoryChange}
-        />
-      </div>
-      <div id="quizzes" className="container mx-auto px-6 py-10">
+      <SubCategoryFilters
+        subCategories={subCategories.map((sc) => ({
+          name: sc.name,
+          slug: sc.slug,
+          count: sc._count?.quizzes ?? 0
+        }))}
+        selectedSlug={selectedSubcategory}
+        onSelect={handleSubcategoryChange}
+      />
+      <div id="quizzes" className="container mx-auto px-4 sm:px-6 py-6">
         {quizzes.length > 0 ? (
           <>
             <div className="px-4 mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 container mx-auto">
