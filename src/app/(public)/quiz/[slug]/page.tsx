@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 async function QuizPage({ params }: Props) {
   const { slug } = await params;
 
-  const quiz = await client.getQuiz({ slug });
+  const quiz = await client.getQuizDetail({ slug });
   if (!quiz) return notFound();
 
   const categorySlug = quiz.category?.slug ?? "general";

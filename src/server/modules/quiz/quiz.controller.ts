@@ -45,7 +45,7 @@ export const getQuizDetail = os
     const quiz = await QuizService.getQuiz(slug);
     return {
       ...quiz,
-      questions: quiz?.questions?.map(shuffleOptions)
+      questions: quiz?.questions?.map(shuffleOptions) || []
     };
   });
 
