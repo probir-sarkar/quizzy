@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "bun --bun next build",
-    "dev": "bun --bun next dev",
+    "build": "next build",
+    "dev": "next dev",
     "lint": "eslint",
     "prisma:generate": "prisma generate",
-    "start": "bun --bun next start"
+    "start": "next start"
   },
   "dependencies": {
     "@ai-sdk/openai": "^4.0.20",
