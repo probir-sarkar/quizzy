@@ -3,22 +3,22 @@
 
 namespace public {
   model Category {
-    id            Int           @id(map: "Category_pkey") @default(autoincrement())
+    id            Int           @id @default(autoincrement())
     name          String
     slug          String
     createdAt     Timestamp(3)  @default(now())
     quizzes       Quiz[]
     subCategories SubCategory[]
 
-    @@index([createdAt], map: "Category_createdAt_idx")
-    @@index([name], map: "Category_name_key", unique: true)
-    @@index([slug], map: "Category_slug_idx")
-    @@index([slug], map: "Category_slug_key", unique: true)
+    @@unique([name])
+    @@unique([slug])
+    @@index([createdAt])
+    @@index([slug])
     @@map("Category")
   }
 
   model Horoscope {
-    id          Int                 @id(map: "Horoscope_pkey") @default(autoincrement())
+    id          Int                 @id @default(autoincrement())
     zodiacSign  pg.enum(ZodiacSign)
     date        Timestamp(3)
     description String
@@ -28,13 +28,13 @@ namespace public {
     createdAt   Timestamp(3)        @default(now())
     updatedAt   Timestamp(3)
 
-    @@index([date], map: "Horoscope_date_idx")
-    @@index([zodiacSign, date], map: "Horoscope_zodiacSign_date_key", unique: true)
+    @@unique([zodiacSign, date])
+    @@index([date])
     @@map("Horoscope")
   }
 
   model PastEvent {
-    id          Int                    @id(map: "PastEvent_pkey") @default(autoincrement())
+    id          Int                    @id @default(autoincrement())
     month       Int
     day         Int
     year        Int
@@ -50,32 +50,32 @@ namespace public {
     updatedAt   Timestamp(3)
     eventDate   Timestamp(3)?
 
-    @@index([category], map: "PastEvent_category_idx")
-    @@index([eventDate], map: "PastEvent_eventDate_idx")
-    @@index([month, day, category], map: "PastEvent_month_day_category_idx")
-    @@index([month, day], map: "PastEvent_month_day_idx")
-    @@index([month, day, year, slug], map: "PastEvent_month_day_year_slug_key", unique: true)
-    @@index([slug], map: "PastEvent_slug_idx")
+    @@unique([month, day, year, slug])
+    @@index([category])
+    @@index([eventDate])
+    @@index([month, day, category])
+    @@index([month, day])
+    @@index([slug])
     @@map("PastEvent")
   }
 
   model SubCategory {
-    id         Int          @id(map: "SubCategory_pkey") @default(autoincrement())
+    id         Int          @id @default(autoincrement())
     name       String
     slug       String
     createdAt  Timestamp(3) @default(now())
     categoryId Int
     quizzes    Quiz[]
-    category   Category     @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade, map: "SubCategory_categoryId_fkey")
+    category   Category     @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
-    @@index([categoryId], map: "SubCategory_categoryId_idx")
-    @@index([categoryId, name], map: "SubCategory_categoryId_name_key", unique: true)
-    @@index([slug], map: "SubCategory_slug_idx")
+    @@unique([categoryId, name])
+    @@index([categoryId])
+    @@index([slug])
     @@map("SubCategory")
   }
 
   model Quiz {
-    id                  String                  @id(map: "Quiz_pkey")
+    id                  String                  @id
     quizPageTitle       String
     quizPageDescription String
     difficulty          pg.enum(QuizDifficulty)
@@ -91,51 +91,51 @@ namespace public {
     subCategoryId       Int?
     questions           Question[]
     quizTags            QuizTag[]
-    category            Category?               @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade, map: "Quiz_categoryId_fkey", index: false)
-    subCategory         SubCategory?            @relation(fields: [subCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade, map: "Quiz_subCategoryId_fkey", index: false)
+    category            Category?               @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+    subCategory         SubCategory?            @relation(fields: [subCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
-    @@index([createdAt], map: "Quiz_createdAt_idx")
-    @@index([difficulty], map: "Quiz_difficulty_idx")
-    @@index([isPublished], map: "Quiz_isPublished_idx")
-    @@index([quizPageTitle], map: "Quiz_quizPageTitle_key", unique: true)
-    @@index([slug], map: "Quiz_slug_idx")
-    @@index([slug], map: "Quiz_slug_key", unique: true)
+    @@unique([quizPageTitle])
+    @@unique([slug])
+    @@index([createdAt])
+    @@index([difficulty])
+    @@index([isPublished])
+    @@index([slug])
     @@map("Quiz")
   }
 
   model Question {
-    id           String       @id(map: "Question_pkey")
+    id           String       @id
     quizId       String
     text         String
     options      String[]?    @noCheck(elementNotNull)
     correctIndex Int
     explanation  String?
     createdAt    Timestamp(3) @default(now())
-    quiz         Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "Question_quizId_fkey")
+    quiz         Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-    @@index([quizId], map: "Question_quizId_idx")
+    @@index([quizId])
     @@map("Question")
   }
 
   model Tag {
-    id        Int          @id(map: "Tag_pkey") @default(autoincrement())
+    id        Int          @id @default(autoincrement())
     name      String
     createdAt Timestamp(3) @default(now())
     quizTags  QuizTag[]
 
-    @@index([name], map: "Tag_name_idx")
-    @@index([name], map: "Tag_name_key", unique: true)
+    @@unique([name])
+    @@index([name])
     @@map("Tag")
   }
 
   model QuizTag {
     quizId String
     tagId  Int
-    quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "QuizTag_quizId_fkey")
-    tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "QuizTag_tagId_fkey", index: false)
+    quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-    @@id([quizId, tagId], map: "QuizTag_pkey")
-    @@index([quizId], map: "QuizTag_quizId_idx")
+    @@id([quizId, tagId])
+    @@index([quizId])
     @@map("QuizTag")
   }
 

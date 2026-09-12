@@ -1,0 +1,1549 @@
+[
+  {
+    "id": "dropIndex.Category.Category_name_key",
+    "label": "Drop index \"Category_name_key\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Category_name_key",
+        "table": "Category"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Category_name_key\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_name_key\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop index \"Category_name_key\"",
+        "sql": "DROP INDEX \"public\".\"Category_name_key\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Category_name_key\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_name_key\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropIndex.Category.Category_slug_key",
+    "label": "Drop index \"Category_slug_key\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Category_slug_key",
+        "table": "Category"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Category_slug_key\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_slug_key\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop index \"Category_slug_key\"",
+        "sql": "DROP INDEX \"public\".\"Category_slug_key\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Category_slug_key\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_slug_key\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropIndex.Horoscope.Horoscope_zodiacSign_date_key",
+    "label": "Drop index \"Horoscope_zodiacSign_date_key\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Horoscope_zodiacSign_date_key",
+        "table": "Horoscope"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Horoscope_zodiacSign_date_key\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Horoscope_zodiacSign_date_key\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop index \"Horoscope_zodiacSign_date_key\"",
+        "sql": "DROP INDEX \"public\".\"Horoscope_zodiacSign_date_key\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Horoscope_zodiacSign_date_key\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Horoscope_zodiacSign_date_key\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropIndex.PastEvent.PastEvent_month_day_year_slug_key",
+    "label": "Drop index \"PastEvent_month_day_year_slug_key\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "PastEvent_month_day_year_slug_key",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"PastEvent_month_day_year_slug_key\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_month_day_year_slug_key\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop index \"PastEvent_month_day_year_slug_key\"",
+        "sql": "DROP INDEX \"public\".\"PastEvent_month_day_year_slug_key\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"PastEvent_month_day_year_slug_key\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_month_day_year_slug_key\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropIndex.Quiz.Quiz_quizPageTitle_key",
+    "label": "Drop index \"Quiz_quizPageTitle_key\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Quiz_quizPageTitle_key",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Quiz_quizPageTitle_key\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_quizPageTitle_key\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop index \"Quiz_quizPageTitle_key\"",
+        "sql": "DROP INDEX \"public\".\"Quiz_quizPageTitle_key\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Quiz_quizPageTitle_key\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_quizPageTitle_key\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropIndex.Quiz.Quiz_slug_key",
+    "label": "Drop index \"Quiz_slug_key\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Quiz_slug_key",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Quiz_slug_key\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_slug_key\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop index \"Quiz_slug_key\"",
+        "sql": "DROP INDEX \"public\".\"Quiz_slug_key\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Quiz_slug_key\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_slug_key\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropIndex.SubCategory.SubCategory_categoryId_name_key",
+    "label": "Drop index \"SubCategory_categoryId_name_key\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "SubCategory_categoryId_name_key",
+        "table": "SubCategory"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"SubCategory_categoryId_name_key\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SubCategory_categoryId_name_key\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop index \"SubCategory_categoryId_name_key\"",
+        "sql": "DROP INDEX \"public\".\"SubCategory_categoryId_name_key\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"SubCategory_categoryId_name_key\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SubCategory_categoryId_name_key\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropIndex.Tag.Tag_name_key",
+    "label": "Drop index \"Tag_name_key\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Tag_name_key",
+        "table": "Tag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Tag_name_key\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Tag_name_key\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop index \"Tag_name_key\"",
+        "sql": "DROP INDEX \"public\".\"Tag_name_key\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Tag_name_key\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Tag_name_key\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Category.Category_name_key",
+    "label": "Add unique constraint on \"Category\" (name)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Category_name_key",
+        "table": "Category"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Category_name_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Category_name_key",
+          "public",
+          "\"public\".\"Category\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Category_name_key\"",
+        "sql": "ALTER TABLE \"public\".\"Category\" ADD CONSTRAINT \"Category_name_key\" UNIQUE (\"name\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"Category_name_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Category_name_key",
+          "public",
+          "\"public\".\"Category\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Category.Category_slug_key",
+    "label": "Add unique constraint on \"Category\" (slug)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Category_slug_key",
+        "table": "Category"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Category_slug_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Category_slug_key",
+          "public",
+          "\"public\".\"Category\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Category_slug_key\"",
+        "sql": "ALTER TABLE \"public\".\"Category\" ADD CONSTRAINT \"Category_slug_key\" UNIQUE (\"slug\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"Category_slug_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Category_slug_key",
+          "public",
+          "\"public\".\"Category\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Horoscope.Horoscope_zodiacSign_date_key",
+    "label": "Add unique constraint on \"Horoscope\" (zodiacSign, date)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Horoscope_zodiacSign_date_key",
+        "table": "Horoscope"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Horoscope_zodiacSign_date_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Horoscope_zodiacSign_date_key",
+          "public",
+          "\"public\".\"Horoscope\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Horoscope_zodiacSign_date_key\"",
+        "sql": "ALTER TABLE \"public\".\"Horoscope\" ADD CONSTRAINT \"Horoscope_zodiacSign_date_key\" UNIQUE (\"zodiacSign\", \"date\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"Horoscope_zodiacSign_date_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Horoscope_zodiacSign_date_key",
+          "public",
+          "\"public\".\"Horoscope\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.PastEvent.PastEvent_month_day_year_slug_key",
+    "label": "Add unique constraint on \"PastEvent\" (month, day, year, slug)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "PastEvent_month_day_year_slug_key",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"PastEvent_month_day_year_slug_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "PastEvent_month_day_year_slug_key",
+          "public",
+          "\"public\".\"PastEvent\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"PastEvent_month_day_year_slug_key\"",
+        "sql": "ALTER TABLE \"public\".\"PastEvent\" ADD CONSTRAINT \"PastEvent_month_day_year_slug_key\" UNIQUE (\"month\", \"day\", \"year\", \"slug\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"PastEvent_month_day_year_slug_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "PastEvent_month_day_year_slug_key",
+          "public",
+          "\"public\".\"PastEvent\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Quiz.Quiz_quizPageTitle_key",
+    "label": "Add unique constraint on \"Quiz\" (quizPageTitle)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Quiz_quizPageTitle_key",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Quiz_quizPageTitle_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Quiz_quizPageTitle_key",
+          "public",
+          "\"public\".\"Quiz\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Quiz_quizPageTitle_key\"",
+        "sql": "ALTER TABLE \"public\".\"Quiz\" ADD CONSTRAINT \"Quiz_quizPageTitle_key\" UNIQUE (\"quizPageTitle\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"Quiz_quizPageTitle_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Quiz_quizPageTitle_key",
+          "public",
+          "\"public\".\"Quiz\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Quiz.Quiz_slug_key",
+    "label": "Add unique constraint on \"Quiz\" (slug)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Quiz_slug_key",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Quiz_slug_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Quiz_slug_key",
+          "public",
+          "\"public\".\"Quiz\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Quiz_slug_key\"",
+        "sql": "ALTER TABLE \"public\".\"Quiz\" ADD CONSTRAINT \"Quiz_slug_key\" UNIQUE (\"slug\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"Quiz_slug_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Quiz_slug_key",
+          "public",
+          "\"public\".\"Quiz\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.SubCategory.SubCategory_categoryId_name_key",
+    "label": "Add unique constraint on \"SubCategory\" (categoryId, name)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "SubCategory_categoryId_name_key",
+        "table": "SubCategory"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"SubCategory_categoryId_name_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "SubCategory_categoryId_name_key",
+          "public",
+          "\"public\".\"SubCategory\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"SubCategory_categoryId_name_key\"",
+        "sql": "ALTER TABLE \"public\".\"SubCategory\" ADD CONSTRAINT \"SubCategory_categoryId_name_key\" UNIQUE (\"categoryId\", \"name\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"SubCategory_categoryId_name_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "SubCategory_categoryId_name_key",
+          "public",
+          "\"public\".\"SubCategory\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Tag.Tag_name_key",
+    "label": "Add unique constraint on \"Tag\" (name)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Tag_name_key",
+        "table": "Tag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Tag_name_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Tag_name_key",
+          "public",
+          "\"public\".\"Tag\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Tag_name_key\"",
+        "sql": "ALTER TABLE \"public\".\"Tag\" ADD CONSTRAINT \"Tag_name_key\" UNIQUE (\"name\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"Tag_name_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Tag_name_key",
+          "public",
+          "\"public\".\"Tag\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Quiz.Quiz_categoryId_idx_15c304f2",
+    "label": "Create index \"Quiz_categoryId_idx_15c304f2\" on \"Quiz\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Quiz_categoryId_idx_15c304f2",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Quiz_categoryId_idx_15c304f2\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_categoryId_idx_15c304f2\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Quiz_categoryId_idx_15c304f2\"",
+        "sql": "CREATE INDEX \"Quiz_categoryId_idx_15c304f2\" ON \"public\".\"Quiz\" (\"categoryId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Quiz_categoryId_idx_15c304f2\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_categoryId_idx_15c304f2\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Quiz.Quiz_subCategoryId_idx_71e8c282",
+    "label": "Create index \"Quiz_subCategoryId_idx_71e8c282\" on \"Quiz\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Quiz_subCategoryId_idx_71e8c282",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Quiz_subCategoryId_idx_71e8c282\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_subCategoryId_idx_71e8c282\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Quiz_subCategoryId_idx_71e8c282\"",
+        "sql": "CREATE INDEX \"Quiz_subCategoryId_idx_71e8c282\" ON \"public\".\"Quiz\" (\"subCategoryId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Quiz_subCategoryId_idx_71e8c282\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_subCategoryId_idx_71e8c282\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.QuizTag.QuizTag_tagId_idx_86854244",
+    "label": "Create index \"QuizTag_tagId_idx_86854244\" on \"QuizTag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "QuizTag_tagId_idx_86854244",
+        "table": "QuizTag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"QuizTag_tagId_idx_86854244\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"QuizTag_tagId_idx_86854244\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"QuizTag_tagId_idx_86854244\"",
+        "sql": "CREATE INDEX \"QuizTag_tagId_idx_86854244\" ON \"public\".\"QuizTag\" (\"tagId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"QuizTag_tagId_idx_86854244\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"QuizTag_tagId_idx_86854244\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.Category.Category_createdAt_idx.rename",
+    "label": "Rename index \"Category_createdAt_idx\" to \"Category_createdAt_idx_9575dbd7\" on \"Category\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Category_createdAt_idx_9575dbd7",
+        "table": "Category"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Category_createdAt_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_createdAt_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"Category_createdAt_idx_9575dbd7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_createdAt_idx_9575dbd7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"Category_createdAt_idx\" to \"Category_createdAt_idx_9575dbd7\"",
+        "sql": "ALTER INDEX \"public\".\"Category_createdAt_idx\" RENAME TO \"Category_createdAt_idx_9575dbd7\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Category_createdAt_idx_9575dbd7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_createdAt_idx_9575dbd7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.Category.Category_slug_idx.rename",
+    "label": "Rename index \"Category_slug_idx\" to \"Category_slug_idx_73b7f5ce\" on \"Category\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Category_slug_idx_73b7f5ce",
+        "table": "Category"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Category_slug_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_slug_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"Category_slug_idx_73b7f5ce\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_slug_idx_73b7f5ce\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"Category_slug_idx\" to \"Category_slug_idx_73b7f5ce\"",
+        "sql": "ALTER INDEX \"public\".\"Category_slug_idx\" RENAME TO \"Category_slug_idx_73b7f5ce\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Category_slug_idx_73b7f5ce\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_slug_idx_73b7f5ce\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.Horoscope.Horoscope_date_idx.rename",
+    "label": "Rename index \"Horoscope_date_idx\" to \"Horoscope_date_idx_b4ca319c\" on \"Horoscope\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Horoscope_date_idx_b4ca319c",
+        "table": "Horoscope"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Horoscope_date_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Horoscope_date_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"Horoscope_date_idx_b4ca319c\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Horoscope_date_idx_b4ca319c\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"Horoscope_date_idx\" to \"Horoscope_date_idx_b4ca319c\"",
+        "sql": "ALTER INDEX \"public\".\"Horoscope_date_idx\" RENAME TO \"Horoscope_date_idx_b4ca319c\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Horoscope_date_idx_b4ca319c\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Horoscope_date_idx_b4ca319c\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.PastEvent.PastEvent_category_idx.rename",
+    "label": "Rename index \"PastEvent_category_idx\" to \"PastEvent_category_idx_f2600f8e\" on \"PastEvent\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "PastEvent_category_idx_f2600f8e",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"PastEvent_category_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_category_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"PastEvent_category_idx_f2600f8e\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_category_idx_f2600f8e\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"PastEvent_category_idx\" to \"PastEvent_category_idx_f2600f8e\"",
+        "sql": "ALTER INDEX \"public\".\"PastEvent_category_idx\" RENAME TO \"PastEvent_category_idx_f2600f8e\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"PastEvent_category_idx_f2600f8e\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_category_idx_f2600f8e\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.PastEvent.PastEvent_eventDate_idx.rename",
+    "label": "Rename index \"PastEvent_eventDate_idx\" to \"PastEvent_eventDate_idx_8134b017\" on \"PastEvent\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "PastEvent_eventDate_idx_8134b017",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"PastEvent_eventDate_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_eventDate_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"PastEvent_eventDate_idx_8134b017\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_eventDate_idx_8134b017\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"PastEvent_eventDate_idx\" to \"PastEvent_eventDate_idx_8134b017\"",
+        "sql": "ALTER INDEX \"public\".\"PastEvent_eventDate_idx\" RENAME TO \"PastEvent_eventDate_idx_8134b017\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"PastEvent_eventDate_idx_8134b017\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_eventDate_idx_8134b017\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.PastEvent.PastEvent_month_day_category_idx.rename",
+    "label": "Rename index \"PastEvent_month_day_category_idx\" to \"PastEvent_month_day_category_idx_c66dc670\" on \"PastEvent\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "PastEvent_month_day_category_idx_c66dc670",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"PastEvent_month_day_category_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_month_day_category_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"PastEvent_month_day_category_idx_c66dc670\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_month_day_category_idx_c66dc670\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"PastEvent_month_day_category_idx\" to \"PastEvent_month_day_category_idx_c66dc670\"",
+        "sql": "ALTER INDEX \"public\".\"PastEvent_month_day_category_idx\" RENAME TO \"PastEvent_month_day_category_idx_c66dc670\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"PastEvent_month_day_category_idx_c66dc670\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_month_day_category_idx_c66dc670\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.PastEvent.PastEvent_month_day_idx.rename",
+    "label": "Rename index \"PastEvent_month_day_idx\" to \"PastEvent_month_day_idx_44d0fed4\" on \"PastEvent\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "PastEvent_month_day_idx_44d0fed4",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"PastEvent_month_day_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_month_day_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"PastEvent_month_day_idx_44d0fed4\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_month_day_idx_44d0fed4\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"PastEvent_month_day_idx\" to \"PastEvent_month_day_idx_44d0fed4\"",
+        "sql": "ALTER INDEX \"public\".\"PastEvent_month_day_idx\" RENAME TO \"PastEvent_month_day_idx_44d0fed4\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"PastEvent_month_day_idx_44d0fed4\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_month_day_idx_44d0fed4\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.PastEvent.PastEvent_slug_idx.rename",
+    "label": "Rename index \"PastEvent_slug_idx\" to \"PastEvent_slug_idx_73b7f5ce\" on \"PastEvent\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "PastEvent_slug_idx_73b7f5ce",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"PastEvent_slug_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_slug_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"PastEvent_slug_idx_73b7f5ce\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_slug_idx_73b7f5ce\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"PastEvent_slug_idx\" to \"PastEvent_slug_idx_73b7f5ce\"",
+        "sql": "ALTER INDEX \"public\".\"PastEvent_slug_idx\" RENAME TO \"PastEvent_slug_idx_73b7f5ce\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"PastEvent_slug_idx_73b7f5ce\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_slug_idx_73b7f5ce\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.Question.Question_quizId_idx.rename",
+    "label": "Rename index \"Question_quizId_idx\" to \"Question_quizId_idx_c721979c\" on \"Question\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Question_quizId_idx_c721979c",
+        "table": "Question"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Question_quizId_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Question_quizId_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"Question_quizId_idx_c721979c\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Question_quizId_idx_c721979c\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"Question_quizId_idx\" to \"Question_quizId_idx_c721979c\"",
+        "sql": "ALTER INDEX \"public\".\"Question_quizId_idx\" RENAME TO \"Question_quizId_idx_c721979c\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Question_quizId_idx_c721979c\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Question_quizId_idx_c721979c\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.QuizTag.QuizTag_quizId_idx.rename",
+    "label": "Rename index \"QuizTag_quizId_idx\" to \"QuizTag_quizId_idx_c721979c\" on \"QuizTag\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "QuizTag_quizId_idx_c721979c",
+        "table": "QuizTag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"QuizTag_quizId_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"QuizTag_quizId_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"QuizTag_quizId_idx_c721979c\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"QuizTag_quizId_idx_c721979c\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"QuizTag_quizId_idx\" to \"QuizTag_quizId_idx_c721979c\"",
+        "sql": "ALTER INDEX \"public\".\"QuizTag_quizId_idx\" RENAME TO \"QuizTag_quizId_idx_c721979c\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"QuizTag_quizId_idx_c721979c\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"QuizTag_quizId_idx_c721979c\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.Quiz.Quiz_createdAt_idx.rename",
+    "label": "Rename index \"Quiz_createdAt_idx\" to \"Quiz_createdAt_idx_9575dbd7\" on \"Quiz\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Quiz_createdAt_idx_9575dbd7",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Quiz_createdAt_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_createdAt_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"Quiz_createdAt_idx_9575dbd7\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_createdAt_idx_9575dbd7\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"Quiz_createdAt_idx\" to \"Quiz_createdAt_idx_9575dbd7\"",
+        "sql": "ALTER INDEX \"public\".\"Quiz_createdAt_idx\" RENAME TO \"Quiz_createdAt_idx_9575dbd7\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Quiz_createdAt_idx_9575dbd7\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_createdAt_idx_9575dbd7\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.Quiz.Quiz_difficulty_idx.rename",
+    "label": "Rename index \"Quiz_difficulty_idx\" to \"Quiz_difficulty_idx_ab7b4a75\" on \"Quiz\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Quiz_difficulty_idx_ab7b4a75",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Quiz_difficulty_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_difficulty_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"Quiz_difficulty_idx_ab7b4a75\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_difficulty_idx_ab7b4a75\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"Quiz_difficulty_idx\" to \"Quiz_difficulty_idx_ab7b4a75\"",
+        "sql": "ALTER INDEX \"public\".\"Quiz_difficulty_idx\" RENAME TO \"Quiz_difficulty_idx_ab7b4a75\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Quiz_difficulty_idx_ab7b4a75\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_difficulty_idx_ab7b4a75\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.Quiz.Quiz_isPublished_idx.rename",
+    "label": "Rename index \"Quiz_isPublished_idx\" to \"Quiz_isPublished_idx_d7ee5985\" on \"Quiz\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Quiz_isPublished_idx_d7ee5985",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Quiz_isPublished_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_isPublished_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"Quiz_isPublished_idx_d7ee5985\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_isPublished_idx_d7ee5985\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"Quiz_isPublished_idx\" to \"Quiz_isPublished_idx_d7ee5985\"",
+        "sql": "ALTER INDEX \"public\".\"Quiz_isPublished_idx\" RENAME TO \"Quiz_isPublished_idx_d7ee5985\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Quiz_isPublished_idx_d7ee5985\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_isPublished_idx_d7ee5985\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.Quiz.Quiz_slug_idx.rename",
+    "label": "Rename index \"Quiz_slug_idx\" to \"Quiz_slug_idx_73b7f5ce\" on \"Quiz\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Quiz_slug_idx_73b7f5ce",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Quiz_slug_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_slug_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"Quiz_slug_idx_73b7f5ce\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_slug_idx_73b7f5ce\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"Quiz_slug_idx\" to \"Quiz_slug_idx_73b7f5ce\"",
+        "sql": "ALTER INDEX \"public\".\"Quiz_slug_idx\" RENAME TO \"Quiz_slug_idx_73b7f5ce\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Quiz_slug_idx_73b7f5ce\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_slug_idx_73b7f5ce\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.SubCategory.SubCategory_categoryId_idx.rename",
+    "label": "Rename index \"SubCategory_categoryId_idx\" to \"SubCategory_categoryId_idx_15c304f2\" on \"SubCategory\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "SubCategory_categoryId_idx_15c304f2",
+        "table": "SubCategory"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"SubCategory_categoryId_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SubCategory_categoryId_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"SubCategory_categoryId_idx_15c304f2\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SubCategory_categoryId_idx_15c304f2\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"SubCategory_categoryId_idx\" to \"SubCategory_categoryId_idx_15c304f2\"",
+        "sql": "ALTER INDEX \"public\".\"SubCategory_categoryId_idx\" RENAME TO \"SubCategory_categoryId_idx_15c304f2\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"SubCategory_categoryId_idx_15c304f2\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SubCategory_categoryId_idx_15c304f2\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.SubCategory.SubCategory_slug_idx.rename",
+    "label": "Rename index \"SubCategory_slug_idx\" to \"SubCategory_slug_idx_73b7f5ce\" on \"SubCategory\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "SubCategory_slug_idx_73b7f5ce",
+        "table": "SubCategory"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"SubCategory_slug_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SubCategory_slug_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"SubCategory_slug_idx_73b7f5ce\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SubCategory_slug_idx_73b7f5ce\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"SubCategory_slug_idx\" to \"SubCategory_slug_idx_73b7f5ce\"",
+        "sql": "ALTER INDEX \"public\".\"SubCategory_slug_idx\" RENAME TO \"SubCategory_slug_idx_73b7f5ce\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"SubCategory_slug_idx_73b7f5ce\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SubCategory_slug_idx_73b7f5ce\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.public.Tag.Tag_name_idx.rename",
+    "label": "Rename index \"Tag_name_idx\" to \"Tag_name_idx_ce87e6ba\" on \"Tag\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Tag_name_idx_ce87e6ba",
+        "table": "Tag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Tag_name_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Tag_name_idx\""
+        ]
+      },
+      {
+        "description": "ensure index \"Tag_name_idx_ce87e6ba\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Tag_name_idx_ce87e6ba\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "rename index \"Tag_name_idx\" to \"Tag_name_idx_ce87e6ba\"",
+        "sql": "ALTER INDEX \"public\".\"Tag_name_idx\" RENAME TO \"Tag_name_idx_ce87e6ba\"",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Tag_name_idx_ce87e6ba\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Tag_name_idx_ce87e6ba\""
+        ]
+      }
+    ]
+  }
+]
