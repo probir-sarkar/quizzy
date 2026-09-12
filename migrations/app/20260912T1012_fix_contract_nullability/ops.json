@@ -1,0 +1,215 @@
+[
+  {
+    "id": "dropDefault.PastEvent.sourceUrls",
+    "label": "Drop default on \"PastEvent\".\"sourceUrls\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "sourceUrls",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"sourceUrls\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "PastEvent",
+          "sourceUrls"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop default on \"sourceUrls\"",
+        "sql": "ALTER TABLE \"public\".\"PastEvent\" ALTER COLUMN \"sourceUrls\" DROP DEFAULT"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"sourceUrls\" has no default",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"column_default\" IS NULL)) AS \"result\"",
+        "params": [
+          "public",
+          "PastEvent",
+          "sourceUrls"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropDefault.PastEvent.tags",
+    "label": "Drop default on \"PastEvent\".\"tags\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "tags",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"tags\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "PastEvent",
+          "tags"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop default on \"tags\"",
+        "sql": "ALTER TABLE \"public\".\"PastEvent\" ALTER COLUMN \"tags\" DROP DEFAULT"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"tags\" has no default",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"column_default\" IS NULL)) AS \"result\"",
+        "params": [
+          "public",
+          "PastEvent",
+          "tags"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "alterNullability.dropNotNull.PastEvent.sourceUrls",
+    "label": "Drop NOT NULL on \"PastEvent\".\"sourceUrls\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "sourceUrls",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"sourceUrls\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "PastEvent",
+          "sourceUrls"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop NOT NULL on \"sourceUrls\"",
+        "sql": "ALTER TABLE \"public\".\"PastEvent\" ALTER COLUMN \"sourceUrls\" DROP NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"sourceUrls\" is nullable",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "PastEvent",
+          "sourceUrls",
+          "YES"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "alterNullability.dropNotNull.PastEvent.tags",
+    "label": "Drop NOT NULL on \"PastEvent\".\"tags\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "tags",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"tags\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "PastEvent",
+          "tags"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop NOT NULL on \"tags\"",
+        "sql": "ALTER TABLE \"public\".\"PastEvent\" ALTER COLUMN \"tags\" DROP NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"tags\" is nullable",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "PastEvent",
+          "tags",
+          "YES"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "alterNullability.dropNotNull.Question.options",
+    "label": "Drop NOT NULL on \"Question\".\"options\"",
+    "operationClass": "widening",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "options",
+        "table": "Question"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"options\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Question",
+          "options"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop NOT NULL on \"options\"",
+        "sql": "ALTER TABLE \"public\".\"Question\" ALTER COLUMN \"options\" DROP NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"options\" is nullable",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Question",
+          "options",
+          "YES"
+        ]
+      }
+    ]
+  }
+]
