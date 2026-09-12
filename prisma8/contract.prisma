@@ -1,0 +1,186 @@
+// use prisma-next
+// Contract inferred from the live database schema. Edit as needed, then run `prisma contract emit`.
+
+namespace public {
+  model Category {
+    id            Int           @id(map: "Category_pkey") @default(autoincrement())
+    name          String
+    slug          String
+    createdAt     Timestamp(3)  @default(now())
+    quizzes       Quiz[]
+    subCategories SubCategory[]
+
+    @@index([createdAt], map: "Category_createdAt_idx")
+    @@index([name], map: "Category_name_key", unique: true)
+    @@index([slug], map: "Category_slug_idx")
+    @@index([slug], map: "Category_slug_key", unique: true)
+  }
+
+  model Horoscope {
+    id          Int                 @id(map: "Horoscope_pkey") @default(autoincrement())
+    zodiacSign  pg.enum(ZodiacSign)
+    date        Timestamp(3)
+    description String
+    luckyColor  String?
+    luckyNumber Int?
+    mood        String?
+    createdAt   Timestamp(3)        @default(now())
+    updatedAt   Timestamp(3)
+
+    @@index([date], map: "Horoscope_date_idx")
+    @@index([zodiacSign, date], map: "Horoscope_zodiacSign_date_key", unique: true)
+  }
+
+  model PastEvent {
+    id          Int                    @id(map: "PastEvent_pkey") @default(autoincrement())
+    month       Int
+    day         Int
+    year        Int
+    title       String
+    slug        String
+    description String
+    category    pg.enum(EventCategory)
+    tags        String[]               @default(dbgenerated("ARRAY[]::text[]")) @noCheck(elementNotNull)
+    sourceUrls  String[]               @default(dbgenerated("ARRAY[]::text[]")) @noCheck(elementNotNull)
+    metadata    Jsonb?
+    isPublished Boolean                @default(true)
+    createdAt   Timestamp(3)           @default(now())
+    updatedAt   Timestamp(3)
+    eventDate   Timestamp(3)?
+
+    @@index([category], map: "PastEvent_category_idx")
+    @@index([eventDate], map: "PastEvent_eventDate_idx")
+    @@index([month, day, category], map: "PastEvent_month_day_category_idx")
+    @@index([month, day], map: "PastEvent_month_day_idx")
+    @@index([month, day, year, slug], map: "PastEvent_month_day_year_slug_key", unique: true)
+    @@index([slug], map: "PastEvent_slug_idx")
+  }
+
+  model PrismaMigrations {
+    id                VarChar(36)  @id(map: "_prisma_migrations_pkey")
+    checksum          VarChar(64)
+    finishedAt        Timestamptz? @map("finished_at")
+    migrationName     VarChar(255) @map("migration_name")
+    logs              String?
+    rolledBackAt      Timestamptz? @map("rolled_back_at")
+    startedAt         Timestamptz  @default(now()) @map("started_at")
+    appliedStepsCount Int          @default(0) @map("applied_steps_count")
+
+    @@map("_prisma_migrations")
+  }
+
+  model SubCategory {
+    id         Int          @id(map: "SubCategory_pkey") @default(autoincrement())
+    name       String
+    slug       String
+    createdAt  Timestamp(3) @default(now())
+    categoryId Int
+    quizzes    Quiz[]
+    category   Category     @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade, map: "SubCategory_categoryId_fkey")
+
+    @@index([categoryId], map: "SubCategory_categoryId_idx")
+    @@index([categoryId, name], map: "SubCategory_categoryId_name_key", unique: true)
+    @@index([slug], map: "SubCategory_slug_idx")
+  }
+
+  model Quiz {
+    id                  String                  @id(map: "Quiz_pkey")
+    quizPageTitle       String
+    quizPageDescription String
+    difficulty          pg.enum(QuizDifficulty)
+    title               String
+    description         String
+    slug                String
+    isPublished         Boolean                 @default(false)
+    publishedAt         Timestamp(3)?
+    views               Int                     @default(0)
+    categoryId          Int?
+    createdAt           Timestamp(3)            @default(now())
+    updatedAt           Timestamp(3)
+    subCategoryId       Int?
+    questions           Question[]
+    quizTags            QuizTag[]
+    category            Category?               @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade, map: "Quiz_categoryId_fkey", index: false)
+    subCategory         SubCategory?            @relation(fields: [subCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade, map: "Quiz_subCategoryId_fkey", index: false)
+
+    @@index([createdAt], map: "Quiz_createdAt_idx")
+    @@index([difficulty], map: "Quiz_difficulty_idx")
+    @@index([isPublished], map: "Quiz_isPublished_idx")
+    @@index([quizPageTitle], map: "Quiz_quizPageTitle_key", unique: true)
+    @@index([slug], map: "Quiz_slug_idx")
+    @@index([slug], map: "Quiz_slug_key", unique: true)
+  }
+
+  model Question {
+    id           String       @id(map: "Question_pkey")
+    quizId       String
+    text         String
+    options      String[]     @noCheck(elementNotNull)
+    correctIndex Int
+    explanation  String?
+    createdAt    Timestamp(3) @default(now())
+    quiz         Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "Question_quizId_fkey")
+
+    @@index([quizId], map: "Question_quizId_idx")
+  }
+
+  model Tag {
+    id        Int          @id(map: "Tag_pkey") @default(autoincrement())
+    name      String
+    createdAt Timestamp(3) @default(now())
+    quizTags  QuizTag[]
+
+    @@index([name], map: "Tag_name_idx")
+    @@index([name], map: "Tag_name_key", unique: true)
+  }
+
+  model QuizTag {
+    quizId String
+    tagId  Int
+    quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "QuizTag_quizId_fkey")
+    tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "QuizTag_tagId_fkey", index: false)
+
+    @@id([quizId, tagId], map: "QuizTag_pkey")
+    @@index([quizId], map: "QuizTag_quizId_idx")
+  }
+
+  native_enum EventCategory {
+    war = "war"
+    discovery = "discovery"
+    politics = "politics"
+    science = "science"
+    art = "art"
+    sports = "sports"
+    technology = "technology"
+    medicine = "medicine"
+    exploration = "exploration"
+    literature = "literature"
+    music = "music"
+    economy = "economy"
+    religion = "religion"
+    disaster = "disaster"
+    revolution = "revolution"
+    invention = "invention"
+  }
+
+  native_enum QuizDifficulty {
+    easy = "easy"
+    medium = "medium"
+    hard = "hard"
+  }
+
+  native_enum ZodiacSign {
+    ARIES = "ARIES"
+    TAURUS = "TAURUS"
+    GEMINI = "GEMINI"
+    CANCER = "CANCER"
+    LEO = "LEO"
+    VIRGO = "VIRGO"
+    LIBRA = "LIBRA"
+    SCORPIO = "SCORPIO"
+    SAGITTARIUS = "SAGITTARIUS"
+    CAPRICORN = "CAPRICORN"
+    AQUARIUS = "AQUARIUS"
+    PISCES = "PISCES"
+  }
+}
