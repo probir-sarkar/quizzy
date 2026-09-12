@@ -21,7 +21,6 @@ ENV NODE_ENV=production
 # Generate Prisma clients (v7 and v8 side-by-side)
 RUN pnpm exec prisma7 generate
 RUN pnpm exec prisma contract emit
-RUN pnpm exec prisma generate
 
 # Build Next.js application (standalone output mode)
 RUN pnpm build
