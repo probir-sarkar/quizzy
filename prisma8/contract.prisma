@@ -1,5 +1,6 @@
 // use prisma-next
 // Contract inferred from the live database schema. Edit as needed, then run `prisma contract emit`.
+
 namespace public {
   model Category {
     id            Int           @id(map: "Category_pkey") @default(autoincrement())
@@ -13,6 +14,7 @@ namespace public {
     @@index([name], map: "Category_name_key", unique: true)
     @@index([slug], map: "Category_slug_idx")
     @@index([slug], map: "Category_slug_key", unique: true)
+    @@map("Category")
   }
 
   model Horoscope {
@@ -28,6 +30,7 @@ namespace public {
 
     @@index([date], map: "Horoscope_date_idx")
     @@index([zodiacSign, date], map: "Horoscope_zodiacSign_date_key", unique: true)
+    @@map("Horoscope")
   }
 
   model PastEvent {
@@ -39,8 +42,8 @@ namespace public {
     slug        String
     description String
     category    pg.enum(EventCategory)
-    tags        String[]               @default(dbgenerated("ARRAY[]::text[]")) @noCheck(elementNotNull)
-    sourceUrls  String[]               @default(dbgenerated("ARRAY[]::text[]")) @noCheck(elementNotNull)
+    tags        String[]               @default([]) @noCheck(elementNotNull)
+    sourceUrls  String[]               @default([]) @noCheck(elementNotNull)
     metadata    Jsonb?
     isPublished Boolean                @default(true)
     createdAt   Timestamp(3)           @default(now())
@@ -53,6 +56,7 @@ namespace public {
     @@index([month, day], map: "PastEvent_month_day_idx")
     @@index([month, day, year, slug], map: "PastEvent_month_day_year_slug_key", unique: true)
     @@index([slug], map: "PastEvent_slug_idx")
+    @@map("PastEvent")
   }
 
   model SubCategory {
@@ -62,11 +66,12 @@ namespace public {
     createdAt  Timestamp(3) @default(now())
     categoryId Int
     quizzes    Quiz[]
-    category   Category     @relation(fields:[categoryId], references:[id], onDelete: Restrict, onUpdate: Cascade, map: "SubCategory_categoryId_fkey")
+    category   Category     @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade, map: "SubCategory_categoryId_fkey")
 
     @@index([categoryId], map: "SubCategory_categoryId_idx")
     @@index([categoryId, name], map: "SubCategory_categoryId_name_key", unique: true)
     @@index([slug], map: "SubCategory_slug_idx")
+    @@map("SubCategory")
   }
 
   model Quiz {
@@ -86,8 +91,8 @@ namespace public {
     subCategoryId       Int?
     questions           Question[]
     quizTags            QuizTag[]
-    category            Category?               @relation(fields:[categoryId], references:[id], onDelete: SetNull, onUpdate: Cascade, map: "Quiz_categoryId_fkey", index: false)
-    subCategory         SubCategory?            @relation(fields:[subCategoryId], references:[id], onDelete: SetNull, onUpdate: Cascade, map: "Quiz_subCategoryId_fkey", index: false)
+    category            Category?               @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade, map: "Quiz_categoryId_fkey", index: false)
+    subCategory         SubCategory?            @relation(fields: [subCategoryId], references: [id], onDelete: SetNull, onUpdate: Cascade, map: "Quiz_subCategoryId_fkey", index: false)
 
     @@index([createdAt], map: "Quiz_createdAt_idx")
     @@index([difficulty], map: "Quiz_difficulty_idx")
@@ -95,6 +100,7 @@ namespace public {
     @@index([quizPageTitle], map: "Quiz_quizPageTitle_key", unique: true)
     @@index([slug], map: "Quiz_slug_idx")
     @@index([slug], map: "Quiz_slug_key", unique: true)
+    @@map("Quiz")
   }
 
   model Question {
@@ -105,9 +111,10 @@ namespace public {
     correctIndex Int
     explanation  String?
     createdAt    Timestamp(3) @default(now())
-    quiz         Quiz         @relation(fields:[quizId], references:[id], onDelete: Cascade, onUpdate: Cascade, map: "Question_quizId_fkey")
+    quiz         Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "Question_quizId_fkey")
 
     @@index([quizId], map: "Question_quizId_idx")
+    @@map("Question")
   }
 
   model Tag {
@@ -118,16 +125,18 @@ namespace public {
 
     @@index([name], map: "Tag_name_idx")
     @@index([name], map: "Tag_name_key", unique: true)
+    @@map("Tag")
   }
 
   model QuizTag {
     quizId String
     tagId  Int
-    quiz   Quiz   @relation(fields:[quizId], references:[id], onDelete: Cascade, onUpdate: Cascade, map: "QuizTag_quizId_fkey")
-    tag    Tag    @relation(fields:[tagId], references:[id], onDelete: Cascade, onUpdate: Cascade, map: "QuizTag_tagId_fkey", index: false)
+    quiz   Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "QuizTag_quizId_fkey")
+    tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "QuizTag_tagId_fkey", index: false)
 
     @@id([quizId, tagId], map: "QuizTag_pkey")
     @@index([quizId], map: "QuizTag_quizId_idx")
+    @@map("QuizTag")
   }
 
   native_enum EventCategory {
