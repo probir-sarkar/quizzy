@@ -7,9 +7,9 @@
     "dev": "next dev",
     "lint": "eslint",
     "prisma7:generate": "prisma7 generate",
-    "prisma7:migrate": "prisma7 migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:contract:emit": "prisma contract emit",
+    "prisma:migrate": "prisma db migrate --advance-ref db",
     "start": "next start"
   },
   "dependencies": {

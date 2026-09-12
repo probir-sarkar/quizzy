@@ -42,8 +42,8 @@ namespace public {
     slug        String
     description String
     category    pg.enum(EventCategory)
-    tags        String[]               @default([]) @noCheck(elementNotNull)
-    sourceUrls  String[]               @default([]) @noCheck(elementNotNull)
+    tags        String[]?              @noCheck(elementNotNull)
+    sourceUrls  String[]?              @noCheck(elementNotNull)
     metadata    Jsonb?
     isPublished Boolean                @default(true)
     createdAt   Timestamp(3)           @default(now())
@@ -107,7 +107,7 @@ namespace public {
     id           String       @id(map: "Question_pkey")
     quizId       String
     text         String
-    options      String[]     @noCheck(elementNotNull)
+    options      String[]?    @noCheck(elementNotNull)
     correctIndex Int
     explanation  String?
     createdAt    Timestamp(3) @default(now())

@@ -1,0 +1,1624 @@
+[
+  {
+    "id": "schema.public",
+    "label": "Create schema \"public\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Create schema \"public\"",
+        "sql": "CREATE SCHEMA IF NOT EXISTS \"public\"",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "createNativeEnumType.EventCategory",
+    "label": "Create enum type \"EventCategory\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "type",
+        "name": "EventCategory"
+      }
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "create enum type \"EventCategory\"",
+        "sql": "CREATE TYPE \"public\".\"EventCategory\" AS ENUM ('war', 'discovery', 'politics', 'science', 'art', 'sports', 'technology', 'medicine', 'exploration', 'literature', 'music', 'economy', 'religion', 'disaster', 'revolution', 'invention')",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "createNativeEnumType.QuizDifficulty",
+    "label": "Create enum type \"QuizDifficulty\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "type",
+        "name": "QuizDifficulty"
+      }
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "create enum type \"QuizDifficulty\"",
+        "sql": "CREATE TYPE \"public\".\"QuizDifficulty\" AS ENUM ('easy', 'medium', 'hard')",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "createNativeEnumType.ZodiacSign",
+    "label": "Create enum type \"ZodiacSign\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "type",
+        "name": "ZodiacSign"
+      }
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "create enum type \"ZodiacSign\"",
+        "sql": "CREATE TYPE \"public\".\"ZodiacSign\" AS ENUM ('ARIES', 'TAURUS', 'GEMINI', 'CANCER', 'LEO', 'VIRGO', 'LIBRA', 'SCORPIO', 'SAGITTARIUS', 'CAPRICORN', 'AQUARIUS', 'PISCES')",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "table.Category",
+    "label": "Create table \"Category\"",
+    "summary": "Creates table \"Category\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Category"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Category\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Category\"",
+        "sql": "CREATE TABLE \"public\".\"Category\" (\n  \"createdAt\" timestamp(3) DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  \"slug\" text NOT NULL,\n  CONSTRAINT \"Category_pkey\" PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Category\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Horoscope",
+    "label": "Create table \"Horoscope\"",
+    "summary": "Creates table \"Horoscope\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Horoscope"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Horoscope\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Horoscope\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Horoscope\"",
+        "sql": "CREATE TABLE \"public\".\"Horoscope\" (\n  \"createdAt\" timestamp(3) DEFAULT (now()) NOT NULL,\n  \"date\" timestamp(3) NOT NULL,\n  \"description\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"luckyColor\" text,\n  \"luckyNumber\" int4,\n  \"mood\" text,\n  \"updatedAt\" timestamp(3) NOT NULL,\n  \"zodiacSign\" \"ZodiacSign\" NOT NULL,\n  CONSTRAINT \"Horoscope_pkey\" PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Horoscope\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Horoscope\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.PastEvent",
+    "label": "Create table \"PastEvent\"",
+    "summary": "Creates table \"PastEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"PastEvent\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"PastEvent\"",
+        "sql": "CREATE TABLE \"public\".\"PastEvent\" (\n  \"category\" \"EventCategory\" NOT NULL,\n  \"createdAt\" timestamp(3) DEFAULT (now()) NOT NULL,\n  \"day\" int4 NOT NULL,\n  \"description\" text NOT NULL,\n  \"eventDate\" timestamp(3),\n  \"id\" SERIAL NOT NULL,\n  \"isPublished\" bool DEFAULT true NOT NULL,\n  \"metadata\" jsonb,\n  \"month\" int4 NOT NULL,\n  \"slug\" text NOT NULL,\n  \"sourceUrls\" text[] DEFAULT '{}' NOT NULL,\n  \"tags\" text[] DEFAULT '{}' NOT NULL,\n  \"title\" text NOT NULL,\n  \"updatedAt\" timestamp(3) NOT NULL,\n  \"year\" int4 NOT NULL,\n  CONSTRAINT \"PastEvent_pkey\" PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"PastEvent\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Question",
+    "label": "Create table \"Question\"",
+    "summary": "Creates table \"Question\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Question"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Question\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Question\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Question\"",
+        "sql": "CREATE TABLE \"public\".\"Question\" (\n  \"correctIndex\" int4 NOT NULL,\n  \"createdAt\" timestamp(3) DEFAULT (now()) NOT NULL,\n  \"explanation\" text,\n  \"id\" text NOT NULL,\n  \"options\" text[] NOT NULL,\n  \"quizId\" text NOT NULL,\n  \"text\" text NOT NULL,\n  CONSTRAINT \"Question_pkey\" PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Question\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Question\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Quiz",
+    "label": "Create table \"Quiz\"",
+    "summary": "Creates table \"Quiz\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Quiz\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Quiz\"",
+        "sql": "CREATE TABLE \"public\".\"Quiz\" (\n  \"categoryId\" int4,\n  \"createdAt\" timestamp(3) DEFAULT (now()) NOT NULL,\n  \"description\" text NOT NULL,\n  \"difficulty\" \"QuizDifficulty\" NOT NULL,\n  \"id\" text NOT NULL,\n  \"isPublished\" bool DEFAULT false NOT NULL,\n  \"publishedAt\" timestamp(3),\n  \"quizPageDescription\" text NOT NULL,\n  \"quizPageTitle\" text NOT NULL,\n  \"slug\" text NOT NULL,\n  \"subCategoryId\" int4,\n  \"title\" text NOT NULL,\n  \"updatedAt\" timestamp(3) NOT NULL,\n  \"views\" int4 DEFAULT 0 NOT NULL,\n  CONSTRAINT \"Quiz_pkey\" PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Quiz\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.QuizTag",
+    "label": "Create table \"QuizTag\"",
+    "summary": "Creates table \"QuizTag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "QuizTag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"QuizTag\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"QuizTag\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"QuizTag\"",
+        "sql": "CREATE TABLE \"public\".\"QuizTag\" (\n  \"quizId\" text NOT NULL,\n  \"tagId\" int4 NOT NULL,\n  CONSTRAINT \"QuizTag_pkey\" PRIMARY KEY (\"quizId\", \"tagId\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"QuizTag\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"QuizTag\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.SubCategory",
+    "label": "Create table \"SubCategory\"",
+    "summary": "Creates table \"SubCategory\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "SubCategory"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"SubCategory\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SubCategory\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"SubCategory\"",
+        "sql": "CREATE TABLE \"public\".\"SubCategory\" (\n  \"categoryId\" int4 NOT NULL,\n  \"createdAt\" timestamp(3) DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  \"slug\" text NOT NULL,\n  CONSTRAINT \"SubCategory_pkey\" PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"SubCategory\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SubCategory\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Tag",
+    "label": "Create table \"Tag\"",
+    "summary": "Creates table \"Tag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Tag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Tag\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Tag\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Tag\"",
+        "sql": "CREATE TABLE \"public\".\"Tag\" (\n  \"createdAt\" timestamp(3) DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  CONSTRAINT \"Tag_pkey\" PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Tag\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Tag\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Category.Category_createdAt_idx",
+    "label": "Create index \"Category_createdAt_idx\" on \"Category\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Category_createdAt_idx",
+        "table": "Category"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Category_createdAt_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_createdAt_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Category_createdAt_idx\"",
+        "sql": "CREATE INDEX \"Category_createdAt_idx\" ON \"public\".\"Category\" (\"createdAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Category_createdAt_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_createdAt_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Category.Category_name_key",
+    "label": "Create index \"Category_name_key\" on \"Category\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Category_name_key",
+        "table": "Category"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Category_name_key\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_name_key\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Category_name_key\"",
+        "sql": "CREATE UNIQUE INDEX \"Category_name_key\" ON \"public\".\"Category\" (\"name\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Category_name_key\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_name_key\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Category.Category_slug_idx",
+    "label": "Create index \"Category_slug_idx\" on \"Category\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Category_slug_idx",
+        "table": "Category"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Category_slug_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_slug_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Category_slug_idx\"",
+        "sql": "CREATE INDEX \"Category_slug_idx\" ON \"public\".\"Category\" (\"slug\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Category_slug_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_slug_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Category.Category_slug_key",
+    "label": "Create index \"Category_slug_key\" on \"Category\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Category_slug_key",
+        "table": "Category"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Category_slug_key\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_slug_key\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Category_slug_key\"",
+        "sql": "CREATE UNIQUE INDEX \"Category_slug_key\" ON \"public\".\"Category\" (\"slug\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Category_slug_key\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Category_slug_key\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Horoscope.Horoscope_date_idx",
+    "label": "Create index \"Horoscope_date_idx\" on \"Horoscope\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Horoscope_date_idx",
+        "table": "Horoscope"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Horoscope_date_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Horoscope_date_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Horoscope_date_idx\"",
+        "sql": "CREATE INDEX \"Horoscope_date_idx\" ON \"public\".\"Horoscope\" (\"date\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Horoscope_date_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Horoscope_date_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Horoscope.Horoscope_zodiacSign_date_key",
+    "label": "Create index \"Horoscope_zodiacSign_date_key\" on \"Horoscope\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Horoscope_zodiacSign_date_key",
+        "table": "Horoscope"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Horoscope_zodiacSign_date_key\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Horoscope_zodiacSign_date_key\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Horoscope_zodiacSign_date_key\"",
+        "sql": "CREATE UNIQUE INDEX \"Horoscope_zodiacSign_date_key\" ON \"public\".\"Horoscope\" (\"zodiacSign\", \"date\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Horoscope_zodiacSign_date_key\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Horoscope_zodiacSign_date_key\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.PastEvent.PastEvent_category_idx",
+    "label": "Create index \"PastEvent_category_idx\" on \"PastEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "PastEvent_category_idx",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"PastEvent_category_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_category_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"PastEvent_category_idx\"",
+        "sql": "CREATE INDEX \"PastEvent_category_idx\" ON \"public\".\"PastEvent\" (\"category\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"PastEvent_category_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_category_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.PastEvent.PastEvent_eventDate_idx",
+    "label": "Create index \"PastEvent_eventDate_idx\" on \"PastEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "PastEvent_eventDate_idx",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"PastEvent_eventDate_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_eventDate_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"PastEvent_eventDate_idx\"",
+        "sql": "CREATE INDEX \"PastEvent_eventDate_idx\" ON \"public\".\"PastEvent\" (\"eventDate\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"PastEvent_eventDate_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_eventDate_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.PastEvent.PastEvent_month_day_category_idx",
+    "label": "Create index \"PastEvent_month_day_category_idx\" on \"PastEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "PastEvent_month_day_category_idx",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"PastEvent_month_day_category_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_month_day_category_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"PastEvent_month_day_category_idx\"",
+        "sql": "CREATE INDEX \"PastEvent_month_day_category_idx\" ON \"public\".\"PastEvent\" (\"month\", \"day\", \"category\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"PastEvent_month_day_category_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_month_day_category_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.PastEvent.PastEvent_month_day_idx",
+    "label": "Create index \"PastEvent_month_day_idx\" on \"PastEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "PastEvent_month_day_idx",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"PastEvent_month_day_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_month_day_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"PastEvent_month_day_idx\"",
+        "sql": "CREATE INDEX \"PastEvent_month_day_idx\" ON \"public\".\"PastEvent\" (\"month\", \"day\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"PastEvent_month_day_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_month_day_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.PastEvent.PastEvent_month_day_year_slug_key",
+    "label": "Create index \"PastEvent_month_day_year_slug_key\" on \"PastEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "PastEvent_month_day_year_slug_key",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"PastEvent_month_day_year_slug_key\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_month_day_year_slug_key\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"PastEvent_month_day_year_slug_key\"",
+        "sql": "CREATE UNIQUE INDEX \"PastEvent_month_day_year_slug_key\" ON \"public\".\"PastEvent\" (\"month\", \"day\", \"year\", \"slug\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"PastEvent_month_day_year_slug_key\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_month_day_year_slug_key\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.PastEvent.PastEvent_slug_idx",
+    "label": "Create index \"PastEvent_slug_idx\" on \"PastEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "PastEvent_slug_idx",
+        "table": "PastEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"PastEvent_slug_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_slug_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"PastEvent_slug_idx\"",
+        "sql": "CREATE INDEX \"PastEvent_slug_idx\" ON \"public\".\"PastEvent\" (\"slug\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"PastEvent_slug_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"PastEvent_slug_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Question.Question_quizId_idx",
+    "label": "Create index \"Question_quizId_idx\" on \"Question\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Question_quizId_idx",
+        "table": "Question"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Question_quizId_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Question_quizId_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Question_quizId_idx\"",
+        "sql": "CREATE INDEX \"Question_quizId_idx\" ON \"public\".\"Question\" (\"quizId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Question_quizId_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Question_quizId_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Quiz.Quiz_createdAt_idx",
+    "label": "Create index \"Quiz_createdAt_idx\" on \"Quiz\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Quiz_createdAt_idx",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Quiz_createdAt_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_createdAt_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Quiz_createdAt_idx\"",
+        "sql": "CREATE INDEX \"Quiz_createdAt_idx\" ON \"public\".\"Quiz\" (\"createdAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Quiz_createdAt_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_createdAt_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Quiz.Quiz_difficulty_idx",
+    "label": "Create index \"Quiz_difficulty_idx\" on \"Quiz\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Quiz_difficulty_idx",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Quiz_difficulty_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_difficulty_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Quiz_difficulty_idx\"",
+        "sql": "CREATE INDEX \"Quiz_difficulty_idx\" ON \"public\".\"Quiz\" (\"difficulty\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Quiz_difficulty_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_difficulty_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Quiz.Quiz_isPublished_idx",
+    "label": "Create index \"Quiz_isPublished_idx\" on \"Quiz\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Quiz_isPublished_idx",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Quiz_isPublished_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_isPublished_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Quiz_isPublished_idx\"",
+        "sql": "CREATE INDEX \"Quiz_isPublished_idx\" ON \"public\".\"Quiz\" (\"isPublished\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Quiz_isPublished_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_isPublished_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Quiz.Quiz_quizPageTitle_key",
+    "label": "Create index \"Quiz_quizPageTitle_key\" on \"Quiz\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Quiz_quizPageTitle_key",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Quiz_quizPageTitle_key\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_quizPageTitle_key\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Quiz_quizPageTitle_key\"",
+        "sql": "CREATE UNIQUE INDEX \"Quiz_quizPageTitle_key\" ON \"public\".\"Quiz\" (\"quizPageTitle\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Quiz_quizPageTitle_key\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_quizPageTitle_key\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Quiz.Quiz_slug_idx",
+    "label": "Create index \"Quiz_slug_idx\" on \"Quiz\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Quiz_slug_idx",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Quiz_slug_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_slug_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Quiz_slug_idx\"",
+        "sql": "CREATE INDEX \"Quiz_slug_idx\" ON \"public\".\"Quiz\" (\"slug\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Quiz_slug_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_slug_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Quiz.Quiz_slug_key",
+    "label": "Create index \"Quiz_slug_key\" on \"Quiz\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Quiz_slug_key",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Quiz_slug_key\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_slug_key\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Quiz_slug_key\"",
+        "sql": "CREATE UNIQUE INDEX \"Quiz_slug_key\" ON \"public\".\"Quiz\" (\"slug\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Quiz_slug_key\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Quiz_slug_key\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.QuizTag.QuizTag_quizId_idx",
+    "label": "Create index \"QuizTag_quizId_idx\" on \"QuizTag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "QuizTag_quizId_idx",
+        "table": "QuizTag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"QuizTag_quizId_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"QuizTag_quizId_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"QuizTag_quizId_idx\"",
+        "sql": "CREATE INDEX \"QuizTag_quizId_idx\" ON \"public\".\"QuizTag\" (\"quizId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"QuizTag_quizId_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"QuizTag_quizId_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.SubCategory.SubCategory_categoryId_idx",
+    "label": "Create index \"SubCategory_categoryId_idx\" on \"SubCategory\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "SubCategory_categoryId_idx",
+        "table": "SubCategory"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"SubCategory_categoryId_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SubCategory_categoryId_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"SubCategory_categoryId_idx\"",
+        "sql": "CREATE INDEX \"SubCategory_categoryId_idx\" ON \"public\".\"SubCategory\" (\"categoryId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"SubCategory_categoryId_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SubCategory_categoryId_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.SubCategory.SubCategory_categoryId_name_key",
+    "label": "Create index \"SubCategory_categoryId_name_key\" on \"SubCategory\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "SubCategory_categoryId_name_key",
+        "table": "SubCategory"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"SubCategory_categoryId_name_key\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SubCategory_categoryId_name_key\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"SubCategory_categoryId_name_key\"",
+        "sql": "CREATE UNIQUE INDEX \"SubCategory_categoryId_name_key\" ON \"public\".\"SubCategory\" (\"categoryId\", \"name\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"SubCategory_categoryId_name_key\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SubCategory_categoryId_name_key\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.SubCategory.SubCategory_slug_idx",
+    "label": "Create index \"SubCategory_slug_idx\" on \"SubCategory\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "SubCategory_slug_idx",
+        "table": "SubCategory"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"SubCategory_slug_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SubCategory_slug_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"SubCategory_slug_idx\"",
+        "sql": "CREATE INDEX \"SubCategory_slug_idx\" ON \"public\".\"SubCategory\" (\"slug\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"SubCategory_slug_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SubCategory_slug_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Tag.Tag_name_idx",
+    "label": "Create index \"Tag_name_idx\" on \"Tag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Tag_name_idx",
+        "table": "Tag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Tag_name_idx\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Tag_name_idx\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Tag_name_idx\"",
+        "sql": "CREATE INDEX \"Tag_name_idx\" ON \"public\".\"Tag\" (\"name\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Tag_name_idx\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Tag_name_idx\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Tag.Tag_name_key",
+    "label": "Create index \"Tag_name_key\" on \"Tag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Tag_name_key",
+        "table": "Tag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Tag_name_key\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Tag_name_key\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Tag_name_key\"",
+        "sql": "CREATE UNIQUE INDEX \"Tag_name_key\" ON \"public\".\"Tag\" (\"name\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Tag_name_key\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Tag_name_key\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Question.Question_quizId_fkey",
+    "label": "Add foreign key \"Question_quizId_fkey\" on \"Question\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Question_quizId_fkey",
+        "table": "Question"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Question_quizId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Question_quizId_fkey",
+          "public",
+          "\"public\".\"Question\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Question_quizId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Question\"\nADD CONSTRAINT \"Question_quizId_fkey\"\nFOREIGN KEY (\"quizId\")\nREFERENCES \"public\".\"Quiz\" (\"id\")\nON DELETE CASCADE\nON UPDATE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Question_quizId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Question_quizId_fkey",
+          "public",
+          "\"public\".\"Question\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Quiz.Quiz_categoryId_fkey",
+    "label": "Add foreign key \"Quiz_categoryId_fkey\" on \"Quiz\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Quiz_categoryId_fkey",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Quiz_categoryId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Quiz_categoryId_fkey",
+          "public",
+          "\"public\".\"Quiz\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Quiz_categoryId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Quiz\"\nADD CONSTRAINT \"Quiz_categoryId_fkey\"\nFOREIGN KEY (\"categoryId\")\nREFERENCES \"public\".\"Category\" (\"id\")\nON DELETE SET NULL\nON UPDATE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Quiz_categoryId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Quiz_categoryId_fkey",
+          "public",
+          "\"public\".\"Quiz\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Quiz.Quiz_subCategoryId_fkey",
+    "label": "Add foreign key \"Quiz_subCategoryId_fkey\" on \"Quiz\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Quiz_subCategoryId_fkey",
+        "table": "Quiz"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Quiz_subCategoryId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Quiz_subCategoryId_fkey",
+          "public",
+          "\"public\".\"Quiz\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Quiz_subCategoryId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Quiz\"\nADD CONSTRAINT \"Quiz_subCategoryId_fkey\"\nFOREIGN KEY (\"subCategoryId\")\nREFERENCES \"public\".\"SubCategory\" (\"id\")\nON DELETE SET NULL\nON UPDATE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Quiz_subCategoryId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Quiz_subCategoryId_fkey",
+          "public",
+          "\"public\".\"Quiz\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.QuizTag.QuizTag_quizId_fkey",
+    "label": "Add foreign key \"QuizTag_quizId_fkey\" on \"QuizTag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "QuizTag_quizId_fkey",
+        "table": "QuizTag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"QuizTag_quizId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "QuizTag_quizId_fkey",
+          "public",
+          "\"public\".\"QuizTag\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"QuizTag_quizId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"QuizTag\"\nADD CONSTRAINT \"QuizTag_quizId_fkey\"\nFOREIGN KEY (\"quizId\")\nREFERENCES \"public\".\"Quiz\" (\"id\")\nON DELETE CASCADE\nON UPDATE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"QuizTag_quizId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "QuizTag_quizId_fkey",
+          "public",
+          "\"public\".\"QuizTag\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.QuizTag.QuizTag_tagId_fkey",
+    "label": "Add foreign key \"QuizTag_tagId_fkey\" on \"QuizTag\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "QuizTag_tagId_fkey",
+        "table": "QuizTag"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"QuizTag_tagId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "QuizTag_tagId_fkey",
+          "public",
+          "\"public\".\"QuizTag\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"QuizTag_tagId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"QuizTag\"\nADD CONSTRAINT \"QuizTag_tagId_fkey\"\nFOREIGN KEY (\"tagId\")\nREFERENCES \"public\".\"Tag\" (\"id\")\nON DELETE CASCADE\nON UPDATE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"QuizTag_tagId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "QuizTag_tagId_fkey",
+          "public",
+          "\"public\".\"QuizTag\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.SubCategory.SubCategory_categoryId_fkey",
+    "label": "Add foreign key \"SubCategory_categoryId_fkey\" on \"SubCategory\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "SubCategory_categoryId_fkey",
+        "table": "SubCategory"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"SubCategory_categoryId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "SubCategory_categoryId_fkey",
+          "public",
+          "\"public\".\"SubCategory\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"SubCategory_categoryId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"SubCategory\"\nADD CONSTRAINT \"SubCategory_categoryId_fkey\"\nFOREIGN KEY (\"categoryId\")\nREFERENCES \"public\".\"Category\" (\"id\")\nON DELETE RESTRICT\nON UPDATE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"SubCategory_categoryId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "SubCategory_categoryId_fkey",
+          "public",
+          "\"public\".\"SubCategory\""
+        ]
+      }
+    ]
+  }
+]

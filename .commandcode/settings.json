@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Shell(pnpm:*)"
+      "Shell(pnpm:*)",
+      "Shell(git:*)"
     ],
     "deny": [],
     "defaultMode": "default"
