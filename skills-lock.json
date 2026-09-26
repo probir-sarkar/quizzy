@@ -1,11 +1,11 @@
 {
   "version": 1,
   "skills": {
-    "migrate-ai-sdk-v6-to-v7": {
-      "source": "vercel/ai",
+    "prisma-postgres": {
+      "source": "prisma/skills",
       "sourceType": "github",
-      "skillPath": "skills/migrate-ai-sdk-v6-to-v7/SKILL.md",
-      "computedHash": "92a68769c5a82e6bd35cb8fe13537a80f6341742306d6a23c52afb6c1f7b5ab9"
+      "skillPath": "prisma-postgres/SKILL.md",
+      "computedHash": "0422727e18019add9208b86ce862964025acc011ff31fba1d59a01b836bd6272"
     }
   }
 }
