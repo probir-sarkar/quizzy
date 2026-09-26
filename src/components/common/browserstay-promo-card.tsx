@@ -2,7 +2,7 @@
 
 import { ArrowUpRight, Shield, Zap, FileImage, Lock } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useState, useEffect } from "react";
+import { useSyncExternalStore } from "react";
 
 interface BrowserStayPromoCardProps {
   className?: string;
@@ -18,11 +18,12 @@ const features = [
 
 export default function BrowserStayPromoCard({ className = "", variant = "default" }: BrowserStayPromoCardProps) {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // Hydration-safe "is client" check (server snapshot false, client true)
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   if (!mounted) return null;
 

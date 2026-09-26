@@ -74,7 +74,7 @@ export default function Image() {
             color: "rgba(255,255,255,0.9)",
           }}
         >
-          Sharpen your skills with today's challenge
+          Sharpen your skills with today&#39;s challenge
         </div>
 
         {/* Badge */}

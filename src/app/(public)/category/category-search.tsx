@@ -1,7 +1,7 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export default function CategorySearch({ initialSearch = "" }: { initialSearch?: string }) {
@@ -10,10 +10,14 @@ export default function CategorySearch({ initialSearch = "" }: { initialSearch?:
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [isSearching, setIsSearching] = useState(false);
   const searchTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const [lastInitialSearch, setLastInitialSearch] = useState(initialSearch);
 
-  useEffect(() => {
+  // Reset the local field when the URL-provided prop changes (render-phase
+  // state adjustment per the React docs, instead of a setState-in-effect).
+  if (lastInitialSearch !== initialSearch) {
+    setLastInitialSearch(initialSearch);
     setSearchTerm(initialSearch);
-  }, [initialSearch]);
+  }
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
