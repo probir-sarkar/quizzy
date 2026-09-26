@@ -2,18 +2,20 @@ import type { RouterClient } from '@orpc/server'
 import { RPCLink } from '@orpc/client/fetch'
 import { createORPCClient } from '@orpc/client'
 import { router } from '@/server/router';
+import { BASE_URL } from '@/lib/constants';
 
 declare global {
   var $client: RouterClient<typeof router> | undefined
 }
 
 const link = new RPCLink({
-  url: () => {
-    if (typeof window === 'undefined') {
-      throw new Error('RPCLink is not allowed on the server side.')
+  url: `${typeof window !== 'undefined' ? window.location.origin : BASE_URL}/rpc`,
+  headers: async () => {
+    if (typeof window !== 'undefined') {
+      return {}
     }
-
-    return `${window.location.origin}/rpc`
+    const { headers } = await import('next/headers')
+    return await headers()
   },
 })
 
