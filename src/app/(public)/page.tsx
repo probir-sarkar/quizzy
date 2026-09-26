@@ -4,6 +4,7 @@ import HeroSection from "@/components/home-page/hero-section";
 import QuizListing from "@/components/home-page/quiz-listing";
 
 import TrendingSection from "@/components/home-page/trending-section";
+import PrintRoom from "@/components/home-page/print-room";
 import BrowserStayPromoCard from "@/components/common/browserstay-promo-card";
 import { client } from "@/lib/orpc";
 
@@ -27,6 +28,8 @@ export default async function Home() {
       />
 
       <TrendingSection quizzes={trendingQuizzes} />
+
+      <PrintRoom />
 
       {/* BrowserStay Promotion Section */}
       <div className="mx-auto max-w-[1400px] px-4 pt-16 sm:px-6">
