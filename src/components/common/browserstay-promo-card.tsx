@@ -1,8 +1,6 @@
 "use client";
 
-import { ArrowUpRight, Shield, Zap, FileImage, Lock } from "lucide-react";
-import { useTheme } from "next-themes";
-import { useSyncExternalStore } from "react";
+import { ArrowUpRight, ShieldCheck, Zap, FileImage, Lock } from "lucide-react";
 
 interface BrowserStayPromoCardProps {
   className?: string;
@@ -10,62 +8,36 @@ interface BrowserStayPromoCardProps {
 }
 
 const features = [
-  { icon: Shield, text: "100% Private" },
+  { icon: ShieldCheck, text: "100% Private" },
   { icon: Zap, text: "No Waiting" },
   { icon: FileImage, text: "PDF & Images" },
   { icon: Lock, text: "No Uploads" }
 ];
 
 export default function BrowserStayPromoCard({ className = "", variant = "default" }: BrowserStayPromoCardProps) {
-  const { resolvedTheme } = useTheme();
-  // Hydration-safe "is client" check (server snapshot false, client true)
-  const mounted = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false
-  );
-
-  if (!mounted) return null;
-
-  const isDark = resolvedTheme === "dark";
-
   if (variant === "compact") {
     return (
       <a
         href="https://browserstay.com/"
         target="_blank"
         rel="noopener noreferrer"
-        className={`block relative overflow-hidden rounded-xl border border-teal-200 dark:border-teal-800/30
-          bg-linear-to-br from-teal-50 to-teal-100 dark:from-teal-950/50 dark:to-teal-900/30
-          hover:shadow-xl hover:shadow-teal-500/10 transition-all duration-300 ${className}`}
+        className={`pop-hover flex items-center gap-4 border-2 border-foreground bg-card p-4 shadow-pop [--pop:var(--pop-amber)] ${className}`}
       >
-        <div className="p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-linear-to-br from-teal-500 to-teal-600 flex items-center justify-center shadow-lg shadow-teal-500/20 shrink-0">
-              <Zap className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-bold text-base text-slate-900 dark:text-white">BrowserStay</h3>
-                <span className="text-xs text-teal-600 dark:text-teal-400 font-medium">• PDF & image tools</span>
-              </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-1">
-                Free, open-source PDF and image tools - 100% in your browser
-              </p>
-            </div>
-            <div className="shrink-0">
-              <div className="w-8 h-8 rounded-lg bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center
-                hover:bg-teal-500 hover:text-white transition-colors">
-                <ArrowUpRight className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Gradient overlay for dark mode */}
-        {isDark && (
-          <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-teal-600/5 pointer-events-none" />
-        )}
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center border-2 border-foreground bg-amber-300 text-foreground">
+          <Zap className="h-5 w-5" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="mb-0.5 flex items-center gap-2">
+            <span className="font-sans text-base font-black uppercase tracking-tight">BrowserStay</span>
+            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+              PDF &amp; image tools
+            </span>
+          </span>
+          <span className="block truncate font-sans text-xs text-muted-foreground">
+            Free, open-source PDF and image tools — 100% in your browser
+          </span>
+        </span>
+        <ArrowUpRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
       </a>
     );
   }
@@ -75,78 +47,46 @@ export default function BrowserStayPromoCard({ className = "", variant = "defaul
       href="https://browserstay.com/"
       target="_blank"
       rel="noopener noreferrer"
-      className={`block relative overflow-hidden rounded-2xl border border-teal-200 dark:border-teal-800/30
-        bg-linear-to-br from-teal-50 to-teal-100 dark:from-teal-950/50 dark:to-teal-900/30
-        hover:shadow-xl hover:shadow-teal-500/10 transition-all duration-300 ${className}`}
+      className={`pop-hover group block border-2 border-foreground bg-card shadow-pop [--pop:var(--pop-amber)] [--pop-x:8px] [--pop-y:8px] ${className}`}
     >
-      {/* Background gradient effect */}
-      <div className="absolute inset-0 bg-linear-to-br from-teal-500/5 via-teal-600/5 to-teal-700/5 opacity-0 hover:opacity-100 transition-opacity duration-500" />
+      <div className="flex items-center justify-between border-b-2 border-dotted border-foreground/40 px-5 py-2.5 sm:px-6">
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+          Sponsored — from the same maker
+        </span>
+        <span className="bg-halftone hidden h-4 w-24 text-foreground/40 sm:block" aria-hidden />
+      </div>
 
-      <div className="relative p-5 md:p-6">
-        <div className="flex items-start gap-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-10 h-10 rounded-xl bg-linear-to-br from-teal-500 to-teal-600 flex items-center justify-center shadow-lg shadow-teal-500/20">
-                <Zap className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h3 className="font-bold text-lg text-slate-900 dark:text-white">
-                  BrowserStay
-                </h3>
-                <p className="text-xs text-teal-600 dark:text-teal-400 font-medium">
-                  Free & Open Source
-                </p>
-              </div>
-            </div>
-
-            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed mb-3">
-              BrowserStay is a free, open-source collection of PDF and image tools that run
-              entirely in your browser.
-              <span className="font-bold text-teal-600 dark:text-teal-400"> No uploads</span>,
-              <span className="font-bold text-teal-600 dark:text-teal-400"> no accounts</span>,
-              <span className="font-bold text-teal-600 dark:text-teal-400"> no servers</span>, no waiting.
+      <div className="p-5 sm:p-6">
+        <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-start">
+          <div className="max-w-xl">
+            <h3 className="font-sans text-2xl font-black uppercase tracking-tight sm:text-3xl">
+              BrowserStay <span className="align-super text-sm">↗</span>
+            </h3>
+            <p className="mt-2 font-sans text-sm leading-relaxed text-muted-foreground sm:text-base">
+              A free, open-source collection of PDF and image tools that run entirely in your browser.{" "}
+              <span className="font-bold text-foreground">No uploads, no accounts, no servers</span> — nothing ever
+              leaves your machine.
             </p>
 
-            <div className="flex flex-wrap gap-2">
-              {features.map((feature, i) => (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {features.map((feature) => (
                 <span
-                  key={i}
-                  className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full
-                    bg-white dark:bg-teal-950/50 border border-teal-200 dark:border-teal-800/30
-                    text-slate-700 dark:text-slate-300"
+                  key={feature.text}
+                  className="inline-flex items-center gap-1.5 rounded-full border-2 border-foreground px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.14em]"
                 >
-                  <feature.icon className="w-3 h-3 text-teal-500 dark:text-teal-400" />
+                  <feature.icon className="h-3 w-3" />
                   {feature.text}
                 </span>
               ))}
             </div>
           </div>
 
-          <div className="shrink-0">
-            <div className="w-10 h-10 rounded-xl bg-linear-to-br from-teal-500 to-teal-600
-              flex items-center justify-center shadow-lg hover:shadow-xl transition-all">
-              <ArrowUpRight className="w-5 h-5 text-white" />
-            </div>
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="flex items-center justify-between pt-3 mt-3 border-t border-teal-200/50 dark:border-teal-800/20">
-          <div className="text-xs text-slate-600 dark:text-slate-400">
-            <span className="font-semibold text-teal-600 dark:text-teal-400">Free & Open Source</span>
-            <span className="mx-1.5">•</span>
-            Runs in Your Browser
-          </div>
-          <div className="text-xs font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1 group">
-            Try Now
-            <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-          </div>
+          <span className="pop-hover inline-flex shrink-0 items-center gap-2 border-2 border-foreground bg-foreground px-5 py-3 font-mono text-xs font-bold uppercase tracking-[0.16em] text-background shadow-pop [--pop:var(--pop-cyan)] [--pop-x:4px] [--pop-y:4px]">
+            Try It Now
+            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </span>
         </div>
       </div>
-
-      {/* Decorative gradient orbs */}
-      <div className="absolute -top-10 -right-10 w-20 h-20 bg-teal-500/10 rounded-full blur-2xl pointer-events-none" />
-      <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-teal-600/10 rounded-full blur-2xl pointer-events-none" />
     </a>
   );
 }

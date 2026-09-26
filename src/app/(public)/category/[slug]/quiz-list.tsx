@@ -7,6 +7,7 @@ import SubCategoryFilters from "@/components/category/sub-category-filter";
 import { calculatePaginationWindow } from "@/lib/pagination-utils";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem } from "@/components/ui/pagination";
 import { client } from "@/lib/orpc";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
 
 const QUIZZES_PER_PAGE = 12;
 const PAGINATION_WINDOW_SIZE = 5;
@@ -62,10 +63,10 @@ export function QuizList({ categorySlug }: QuizListProps) {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-6 py-10">
-        <div className="px-4 mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 container mx-auto">
+      <div className="mx-auto max-w-[1400px] px-4 py-14 sm:px-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="h-48 bg-gray-200 dark:bg-gray-800 rounded-xl animate-pulse" />
+            <div key={i} className="h-56 animate-pulse border-2 border-foreground/30" />
           ))}
         </div>
       </div>
@@ -74,10 +75,12 @@ export function QuizList({ categorySlug }: QuizListProps) {
 
   if (error) {
     return (
-      <div className="container mx-auto px-6 py-10">
-        <div className="text-center py-20">
-          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">Failed to load quizzes</h3>
-          <p className="text-gray-500 dark:text-gray-400">Please try again later</p>
+      <div className="mx-auto max-w-[1400px] px-4 py-14 sm:px-6">
+        <div className="border-2 border-dashed border-foreground/40 py-20 text-center">
+          <h3 className="font-sans text-2xl font-black uppercase tracking-tight">Failed to load quizzes</h3>
+          <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            Please try again later
+          </p>
         </div>
       </div>
     );
@@ -94,25 +97,27 @@ export function QuizList({ categorySlug }: QuizListProps) {
         selectedSlug={selectedSubcategory}
         onSelect={handleSubcategoryChange}
       />
-      <div id="quizzes" className="container mx-auto px-4 sm:px-6 py-6">
+      <div id="quizzes" className="mx-auto max-w-[1400px] px-4 py-12 sm:px-6">
         {quizzes.length > 0 ? (
           <>
-            <div className="px-4 mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 container mx-auto">
+            <Stagger gap={0.03} className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
               {quizzes.map((q, i) => (
-                <QuizCard key={q.id} index={i} quiz={q} />
+                <StaggerItem key={q.id} className="h-full">
+                  <QuizCard quiz={q} index={i} />
+                </StaggerItem>
               ))}
-            </div>
+            </Stagger>
 
             {/* Pagination */}
             {meta.totalPages > 1 && (
-              <div className="mt-10 flex justify-center">
+              <div className="mt-12 flex justify-center">
                 <Pagination>
                   <PaginationContent>
                     {currentPage > 1 && (
                       <PaginationItem>
                         <button
                           onClick={() => handlePageChange(currentPage - 1)}
-                          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
+                          className="cursor-pointer border-2 border-foreground bg-background px-4 py-2 font-mono text-xs font-bold uppercase tracking-[0.14em] transition-colors hover:bg-foreground hover:text-background"
                         >
                           Previous
                         </button>
@@ -126,10 +131,11 @@ export function QuizList({ categorySlug }: QuizListProps) {
                           <PaginationItem key={pageNum}>
                             <button
                               onClick={() => handlePageChange(pageNum)}
-                              className={`inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-9 px-4 py-2 ${
+                              aria-current={isActive ? "page" : undefined}
+                              className={`h-10 w-10 cursor-pointer border-2 font-mono text-sm font-bold tabular-nums transition-all ${
                                 isActive
-                                  ? "bg-primary text-primary-foreground shadow hover:bg-primary/90"
-                                  : "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground"
+                                  ? "border-foreground bg-foreground text-background shadow-pop [--pop:var(--pop-lime)] [--pop-x:3px] [--pop-y:3px]"
+                                  : "border-foreground bg-background hover:bg-foreground hover:text-background"
                               }`}
                             >
                               {pageNum}
@@ -156,7 +162,7 @@ export function QuizList({ categorySlug }: QuizListProps) {
                       <PaginationItem>
                         <button
                           onClick={() => handlePageChange(currentPage + 1)}
-                          className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
+                          className="cursor-pointer border-2 border-foreground bg-background px-4 py-2 font-mono text-xs font-bold uppercase tracking-[0.14em] transition-colors hover:bg-foreground hover:text-background"
                         >
                           Next
                         </button>
@@ -168,9 +174,11 @@ export function QuizList({ categorySlug }: QuizListProps) {
             )}
           </>
         ) : (
-          <div className="text-center py-20">
-            <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">No quizzes found</h3>
-            <p className="text-gray-500 dark:text-gray-400">Try selecting a different subcategory</p>
+          <div className="border-2 border-dashed border-foreground/40 py-20 text-center">
+            <h3 className="font-sans text-2xl font-black uppercase tracking-tight">No quizzes found</h3>
+            <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+              Try selecting a different sub-topic
+            </p>
           </div>
         )}
       </div>

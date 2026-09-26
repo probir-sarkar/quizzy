@@ -90,9 +90,9 @@ function SubCategoryFilters({
   // Filter button content
   const buttonContent = (
     <>
-      <Filter className="w-4 h-4 shrink-0" />
-      <span className="truncate font-normal">{selectedName}</span>
-      <ChevronDown className="w-4 h-4 ml-2 shrink-0" />
+      <Filter className="h-4 w-4 shrink-0" />
+      <span className="truncate font-mono text-xs font-bold uppercase tracking-[0.14em]">{selectedName}</span>
+      <ChevronDown className="ml-2 h-4 w-4 shrink-0" />
     </>
   );
 
@@ -101,15 +101,15 @@ function SubCategoryFilters({
       variant={selectedSub ? "default" : "outline"}
       size="default"
       onClick={() => setOpen(true)}
-      className="gap-2 w-full sm:w-auto justify-start"
+      className="h-11 w-full justify-start gap-2 rounded-none border-2 border-foreground px-4 sm:w-auto"
     >
       {buttonContent}
     </Button>
   );
 
   return (
-    <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border/50">
-      <div className="container mx-auto px-3 sm:px-4">
+    <header className="sticky top-16 z-10 border-b-2 border-foreground bg-background/90 backdrop-blur-md">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
         <div className="h-14 sm:h-16 flex items-center justify-between gap-3">
           {/* Filter Trigger */}
           <div className="flex-1 min-w-0">

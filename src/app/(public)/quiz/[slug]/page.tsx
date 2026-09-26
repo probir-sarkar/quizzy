@@ -52,7 +52,7 @@ async function QuizPage({ params }: Props) {
 
   return (
     <>
-      <section className="bg-gray-50 dark:bg-slate-950">
+      <section>
         <QuizPageHero
           quiz={quiz}
           breadcrumbs={[

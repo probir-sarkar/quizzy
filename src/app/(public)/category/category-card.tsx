@@ -1,5 +1,14 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+
+const POP_CYCLE = [
+  "var(--pop-violet)",
+  "var(--pop-lime)",
+  "var(--pop-cyan)",
+  "var(--pop-rose)",
+  "var(--pop-amber)",
+  "var(--pop-blue)"
+];
 
 interface CategoryCardProps {
   category: {
@@ -21,30 +30,31 @@ export function CategoryCard({ category }: CategoryCardProps) {
     <Link
       href={`/category/${category.slug}`}
       prefetch
-      className="group block rounded-xl border border-gray-200/60 dark:border-gray-800/60 bg-linear-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-950/50 p-4 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300"
+      className="pop-hover group flex items-center justify-between gap-4 border-2 border-foreground bg-card p-5 shadow-pop [--pop-x:6px] [--pop-y:6px]"
+      style={{ "--pop": POP_CYCLE[category.id % POP_CYCLE.length] } as React.CSSProperties}
     >
-      <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-gray-900 dark:text-gray-50 group-hover:text-fuchsia-600 dark:group-hover:text-fuchsia-400 transition-colors">
-          {category.name}
-        </h3>
-        <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-fuchsia-600 dark:group-hover:text-fuchsia-400 group-hover:translate-x-0.5 transition-all" />
+      <div className="min-w-0">
+        <h3 className="truncate font-sans text-xl font-black uppercase tracking-tight">{category.name}</h3>
+        <p className="mt-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+          {quizCount} quiz{quizCount !== 1 ? "zes" : ""}
+          {subCategoryCount > 0 && ` · ${subCategoryCount} sub-topics`}
+        </p>
       </div>
-      <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-        {quizCount} quiz{quizCount !== 1 ? "zes" : ""}
-        {subCategoryCount > 0 && ` · ${subCategoryCount} subcategories`}
-      </p>
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center border-2 border-foreground transition-all duration-200 group-hover:rotate-45 group-hover:bg-foreground group-hover:text-background">
+        <ArrowUpRight className="h-4 w-4" />
+      </span>
     </Link>
   );
 }
 
 export function CategoryCardSkeleton() {
   return (
-    <div className="rounded-xl border border-gray-200/60 dark:border-gray-800/60 bg-gray-100 dark:bg-gray-900 p-4">
-      <div className="flex items-center justify-between mb-2">
-        <div className="h-5 w-32 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
-        <div className="h-4 w-4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+    <div className="flex items-center justify-between gap-4 border-2 border-foreground/30 p-5">
+      <div className="min-w-0">
+        <div className="h-6 w-32 animate-pulse bg-muted" />
+        <div className="mt-2 h-3 w-24 animate-pulse bg-muted" />
       </div>
-      <div className="h-3 w-24 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+      <div className="h-10 w-10 shrink-0 animate-pulse bg-muted" />
     </div>
   );
 }

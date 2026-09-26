@@ -1,12 +1,13 @@
 "use client";
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { Info, Trophy, RotateCcw } from "lucide-react";
+import { Info, RotateCcw } from "lucide-react";
+import { motion } from "motion/react";
 
-import { calculateQuizScore, getQuizScoreMessage, getQuizScoreColor } from "@/lib/quiz-utils";
+import { calculateQuizScore, getQuizScoreMessage } from "@/lib/quiz-utils";
 import { cn } from "@/lib/utils";
 import { AnswerButton } from "./quiz-answer-button";
+import { Reveal } from "@/components/motion/reveal";
 import type { QuestionDto as QuestionType } from "@/server/quiz";
-
 
 type AnswersState = Record<number, number>;
 
@@ -44,71 +45,86 @@ export default function QuizQuestions({ questions }: { questions: QuestionType[]
   }, []);
 
   return (
-    <div id="questions" className="mx-auto max-w-7xl pb-8">
-      <div className="px-4 sm:px-6 py-6 md:py-10">
-        <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Quiz Questions</h2>
-        <p className="text-gray-600 dark:text-gray-300">Answer all questions below and test your knowledge.</p>
+    <div id="questions" className="mx-auto max-w-[1400px]">
+      <div className="px-4 pt-12 sm:px-6">
+        <Reveal>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <h2 className="font-sans text-3xl font-black uppercase tracking-tight sm:text-5xl">The Questions</h2>
+            <p className="font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+              {answeredCount} / {totalQuestions} answered
+            </p>
+          </div>
+          <p className="mt-2 font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+            Answer every one — the press will grade you at the end
+          </p>
+        </Reveal>
       </div>
-      <ol className="max-w-4xl pl-4 sm:pl-7 pr-4 sm:pr-6 space-y-5 sm:space-y-6">
+
+      <ol className="max-w-5xl space-y-10 px-4 pt-10 sm:px-6">
         {questions.map((q, i) => (
           <li key={q.id}>
-            <QuestionCard
-              q={q}
-              index={i}
-              selected={answers[i]}
-              onAnswer={handleAnswer}
-              totalQuestions={totalQuestions}
-            />
+            <Reveal y={20}>
+              <QuestionCard
+                q={q}
+                index={i}
+                selected={answers[i]}
+                onAnswer={handleAnswer}
+                totalQuestions={totalQuestions}
+              />
+            </Reveal>
           </li>
         ))}
       </ol>
 
-      {/* Progress bar after last question - transforms to results when complete */}
-      <div id="quiz-results" className="max-w-4xl pl-4 sm:pl-7 pr-4 sm:pr-6 mt-5 sm:mt-6">
+      {/* Results / progress — aligned with the question column */}
+      <div id="quiz-results" className="max-w-5xl px-4 pt-10 sm:px-6">
         {isComplete ? (
-          // Results display when complete
-          <div className="rounded-2xl border border-white/10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] p-5 sm:p-6 space-y-4">
-            <div className="text-center">
-              <Trophy className="w-8 h-8 text-green-500 mx-auto mb-2" />
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Quiz Complete!</h3>
-              <p className={cn("text-sm font-medium", getQuizScoreColor(percentage))}>
+          <motion.div
+            initial={{ opacity: 0, y: 24, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="border-2 border-foreground bg-card shadow-pop [--pop:var(--pop-lime)] [--pop-x:8px] [--pop-y:8px]"
+          >
+            <div className="border-b-2 border-dotted border-foreground/40 px-6 py-3 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+              Final verdict
+            </div>
+            <div className="p-6 text-center sm:p-10">
+              <p className="font-sans text-7xl font-black tracking-tight tabular-nums sm:text-8xl">{percentage}%</p>
+              <p className="mt-2 font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
                 {getQuizScoreMessage(percentage)}
               </p>
-            </div>
 
-            <div className="grid grid-cols-3 gap-3 text-center">
-              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 border border-green-200 dark:border-green-700/30">
-                <div className="text-2xl font-bold text-green-700 dark:text-green-300">{correct}</div>
-                <div className="text-xs text-green-600 dark:text-green-400">Correct</div>
+              <div className="mx-auto mt-6 grid max-w-md grid-cols-2 divide-x-2 divide-dotted divide-foreground/40 border-2 border-foreground">
+                <div className="p-4">
+                  <div className="font-sans text-3xl font-black tabular-nums">{correct}</div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Right</div>
+                </div>
+                <div className="p-4">
+                  <div className="font-sans text-3xl font-black tabular-nums">{totalQuestions - correct}</div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Wrong</div>
+                </div>
               </div>
-              <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-3 border border-red-200 dark:border-red-700/30">
-                <div className="text-2xl font-bold text-red-700 dark:text-red-300">{totalQuestions - correct}</div>
-                <div className="text-xs text-red-600 dark:text-red-400">Incorrect</div>
-              </div>
-              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                <div className="text-2xl font-bold text-gray-900 dark:text-white">{percentage}%</div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">Score</div>
-              </div>
-            </div>
 
-            <button
-              onClick={handleReset}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg transition-colors"
-            >
-              <RotateCcw className="w-4 h-4" />
-              Try Again
-            </button>
-          </div>
+              <button
+                onClick={handleReset}
+                className="pop-hover mt-8 inline-flex cursor-pointer items-center justify-center gap-2 border-2 border-foreground bg-foreground px-8 py-3.5 font-mono text-xs font-bold uppercase tracking-[0.16em] text-background shadow-pop [--pop:var(--pop-violet)]"
+              >
+                <RotateCcw className="h-4 w-4" />
+                Run It Back
+              </button>
+            </div>
+          </motion.div>
         ) : (
-          // Progress bar when in progress
-          <div className="rounded-2xl border border-white/10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] p-5 sm:p-6">
-            <div className="flex items-center gap-3 mb-3">
-              <Trophy className="w-5 h-5 text-violet-500" />
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Your Progress: {progress}%</span>
+          <div className="sticky bottom-4 border-2 border-foreground bg-card p-5 shadow-pop [--pop:var(--pop-cyan)] [--pop-x:6px] [--pop-y:6px] sm:p-6">
+            <div className="mb-3 flex items-center justify-between">
+              <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                Your progress
+              </span>
+              <span className="font-sans text-xl font-black tabular-nums">{progress}%</span>
             </div>
-            <div className="relative w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div className="h-4 w-full border-2 border-foreground">
               <div
-                className="h-full rounded-full transition-all duration-500 ease-out bg-linear-to-r from-violet-500 to-fuchsia-500"
+                className="h-full bg-foreground transition-all duration-500 ease-out"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -133,42 +149,68 @@ function QuestionCard({
   totalQuestions: number;
 }) {
   const isAnswered = selected !== undefined;
+  const number = String(index + 1).padStart(2, "0");
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] p-5 sm:p-6">
-      <div className="flex items-center gap-2 mb-3">
-        <span className="text-xs font-semibold text-violet-600 dark:text-violet-400">
-          Question {index + 1} of {totalQuestions}
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">
+      {/* Giant index — exam-paper margin number */}
+      <div className="flex items-start gap-3 md:col-span-2 md:flex-col md:items-start">
+        <span
+          className={cn(
+            "font-sans text-5xl font-black leading-none tracking-tighter tabular-nums transition-colors duration-300 sm:text-6xl",
+            isAnswered ? "text-foreground/25" : "text-foreground"
+          )}
+        >
+          {number}
+        </span>
+        <span className="mt-1 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground md:mt-2">
+          of {String(totalQuestions).padStart(2, "0")}
+          {isAnswered && <span className="ml-2 text-foreground">✓ locked</span>}
         </span>
       </div>
 
-      <h2 className="text-base sm:text-lg font-medium text-slate-900 dark:text-white mb-3 sm:mb-4 leading-snug wrap-break-word">
-        {q.text}
-      </h2>
+      {/* Question body */}
+      <article
+        className={cn(
+          "border-2 border-foreground bg-card md:col-span-10",
+          !isAnswered && "shadow-pop [--pop:var(--pop-violet)]"
+        )}
+      >
+        <div className="p-5 sm:p-7">
+          <h3 className="font-sans text-xl font-black leading-snug wrap-break-word sm:text-2xl">{q.text}</h3>
 
-      <fieldset className="space-y-2">
-        <legend className="sr-only">Question {index + 1}</legend>
-        {q.options.map((opt, i) => (
-          <AnswerButton
-            key={`${q.id}-${opt}`}
-            text={opt}
-            isPicked={selected === i}
-            isCorrect={i === q.correctIndex}
-            answered={isAnswered}
-            disabled={isAnswered}
-            onClick={() => !isAnswered && onAnswer?.(index, i)}
-          />
-        ))}
-      </fieldset>
+          <fieldset className="mt-5 grid grid-cols-1 gap-2.5 lg:grid-cols-2">
+            <legend className="sr-only">Question {index + 1}</legend>
+            {q.options.map((opt, i) => (
+              <AnswerButton
+                key={`${q.id}-${opt}`}
+                text={opt}
+                isPicked={selected === i}
+                isCorrect={i === q.correctIndex}
+                answered={isAnswered}
+                disabled={isAnswered}
+                onClick={() => !isAnswered && onAnswer?.(index, i)}
+              />
+            ))}
+          </fieldset>
 
-      {isAnswered && q.explanation && (
-        <div className="mt-3 sm:mt-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-white/5 px-3 sm:px-4 py-3 text-sm text-gray-700 dark:text-gray-200">
-          <div className="flex items-start gap-2">
-            <Info className="w-4 h-4 mt-0.5 text-blue-500 dark:text-blue-400 shrink-0" />
-            <span>{q.explanation}</span>
-          </div>
+          {isAnswered && q.explanation && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              transition={{ duration: 0.35 }}
+              className="mt-5 overflow-hidden"
+            >
+              <div className="border-2 border-dashed border-foreground/50 px-4 py-3 font-sans text-sm leading-relaxed text-muted-foreground">
+                <div className="flex items-start gap-2">
+                  <Info className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>{q.explanation}</span>
+                </div>
+              </div>
+            </motion.div>
+          )}
         </div>
-      )}
+      </article>
     </div>
   );
 }

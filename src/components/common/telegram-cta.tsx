@@ -8,25 +8,30 @@ type Props = {
 };
 const TelegramCTA = ({ className = "" }: Props) => {
   return (
-    <div className={cn("mt-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl p-4 shadow-lg", className)}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="bg-white rounded-full p-2">
-            <Send className="w-5 h-5 text-purple-500" />
-          </div>
-          <div>
-            <p className="text-white font-semibold text-sm">Never miss a quiz!</p>
-            <p className="text-white/80 text-xs">Daily challenges on Telegram</p>
-          </div>
+    <div
+      className={cn(
+        "pop-hover mt-10 flex items-center justify-between gap-4 border-2 border-foreground bg-card p-4 shadow-pop [--pop:var(--pop-cyan)] [--pop-x:6px] [--pop-y:6px] sm:p-5",
+        className
+      )}
+    >
+      <div className="flex items-center gap-4">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-foreground bg-cyan-300 text-foreground">
+          <Send className="h-5 w-5" />
+        </span>
+        <div>
+          <p className="font-sans text-base font-black uppercase tracking-tight">Never miss a quiz</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            Daily challenges on Telegram
+          </p>
         </div>
-        <Link
-          href={TELEGRAM_CHANNEL_URL}
-          target="_blank"
-          className="bg-white text-purple-600 font-bold py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors text-sm whitespace-nowrap"
-        >
-          Join Now
-        </Link>
       </div>
+      <Link
+        href={TELEGRAM_CHANNEL_URL}
+        target="_blank"
+        className="pop-hover shrink-0 border-2 border-foreground bg-foreground px-4 py-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-background shadow-pop [--pop:var(--pop-rose)] [--pop-x:3px] [--pop-y:3px]"
+      >
+        Join Now
+      </Link>
     </div>
   );
 };

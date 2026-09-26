@@ -1,5 +1,10 @@
 "use client";
-import { Trophy, Sparkles, BookOpen, Layers } from "lucide-react";
+
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
+import { ArrowDownRight } from "lucide-react";
+import { CountUp } from "@/components/motion/count-up";
+import Marquee from "@/components/common/marquee";
 
 interface HeroSectionProps {
   totalQuizzes?: number;
@@ -7,84 +12,157 @@ interface HeroSectionProps {
   totalSubCategories?: number;
 }
 
+const TICKER_ITEMS = [
+  "General Knowledge",
+  "Science",
+  "Movies",
+  "Music",
+  "History",
+  "Sports",
+  "Geography",
+  "Literature",
+  "Technology",
+  "Food",
+  "Mythology",
+  "Video Games"
+];
+
 const HeroSection = ({ totalQuizzes = 0, totalCategories = 0, totalSubCategories = 0 }: HeroSectionProps) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] });
+
+  // Tracking parallax — the headline drifts up slowly while the specimen card
+  // sinks and straightens out. Subtle on purpose.
+  const headlineY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : -48]);
+  const cardY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : 56]);
+  const cardRotate = useTransform(scrollYProgress, [0, 1], [3, reduce ? 3 : -1.5]);
+
   return (
-    <div className="relative min-h-[500px] flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
-      {/* Dynamic Background Layers */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-[40%] -left-[10%] w-[70%] h-[70%] rounded-full bg-violet-400/30 dark:bg-violet-600/20 blur-[120px] animate-pulse" />
-        <div className="absolute -bottom-[30%] -right-[10%] w-[60%] h-[60%] rounded-full bg-fuchsia-400/30 dark:bg-fuchsia-600/20 blur-[120px] animate-pulse [animation-delay:2s]" />
-        <div className="absolute top-[20%] left-[30%] w-[40%] h-[40%] rounded-full bg-blue-400/20 dark:bg-blue-600/10 blur-[100px] animate-pulse [animation-delay:4s]" />
-      </div>
+    <section ref={sectionRef} className="relative overflow-hidden border-b-2 border-foreground">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 px-4 pt-32 pb-14 sm:px-6 md:pt-40 lg:grid-cols-12 lg:gap-6">
+        {/* Headline */}
+        <motion.div style={{ y: headlineY }} className="lg:col-span-8">
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-6 font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground"
+          >
+            Issue Nº 001 — The trivia broadsheet
+          </motion.p>
 
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
-
-      <div className="relative z-10 container mx-auto px-4 pt-32 pb-20">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/40 dark:bg-white/5 border border-slate-200 dark:border-white/10 backdrop-blur-md mb-8 shadow-sm">
-            <Sparkles className="w-4 h-4 text-fuchsia-600 dark:text-fuchsia-400" />
-            <span className="text-sm font-medium text-fuchsia-700 dark:text-fuchsia-200/80">
-              Ultimate Quiz Experience
-            </span>
-          </div>
-
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
-            Master Your{" "}
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-violet-600 via-fuchsia-600 to-pink-600 dark:from-violet-400 dark:via-fuchsia-400 dark:to-pink-400">
-              Knowledge
-            </span>
+          <h1 className="font-sans font-black uppercase leading-[0.86] tracking-[-0.03em]">
+            <motion.span
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
+              className="block text-[17vw] sm:text-[13vw] lg:text-[8.5rem] xl:text-[10rem]"
+            >
+              Know
+            </motion.span>
+            <motion.span
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+              className="block text-[17vw] sm:text-[13vw] lg:text-[8.5rem] xl:text-[10rem]"
+            >
+              <span className="font-mono font-bold normal-case italic tracking-tight">it</span> all
+              <span className="text-muted-foreground/60">?</span>
+            </motion.span>
           </h1>
 
-          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-            Explore thousands of curated quizzes. Challenge yourself across diverse topics and track your journey to
-            mastery.
-          </p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.35 }}
+            className="mt-7 max-w-md font-sans text-base leading-relaxed text-muted-foreground sm:text-lg"
+          >
+            Thousands of hand-written questions, zero AI slop. Pick a category, keep honest score, and argue
+            about the answers afterwards.
+          </motion.p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
-            <StatCard
-              icon={<Layers className="w-5 h-5 text-violet-600 dark:text-violet-400" />}
-              label="Categories"
-              value={`${totalCategories}+`}
-            />
-            <StatCard
-              icon={<BookOpen className="w-5 h-5 text-fuchsia-600 dark:text-fuchsia-400" />}
-              label="Sub-topics"
-              value={`${totalSubCategories}+`}
-            />
-            <StatCard
-              icon={<Trophy className="w-5 h-5 text-amber-600 dark:text-amber-400" />}
-              label="Quizzes"
-              value={`${totalQuizzes}+`}
-            />
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
+            className="mt-8 flex flex-wrap items-center gap-4"
+          >
+            <a
+              href="#trending"
+              className="pop-hover inline-flex items-center gap-2 border-2 border-foreground bg-foreground px-6 py-3.5 font-mono text-xs font-bold uppercase tracking-[0.16em] text-background shadow-pop [--pop:var(--pop-lime)]"
+            >
+              Start Playing
+              <ArrowDownRight className="h-4 w-4" />
+            </a>
+            <a
+              href="#categories"
+              className="pop-hover inline-flex items-center gap-2 border-2 border-foreground bg-background px-6 py-3.5 font-mono text-xs font-bold uppercase tracking-[0.16em] shadow-pop [--pop:var(--pop-violet)] hover:bg-foreground hover:text-background"
+            >
+              Browse Categories
+            </a>
+          </motion.div>
+        </motion.div>
+
+        {/* Specimen card — typographic object instead of a stock photo */}
+        <motion.div style={{ y: cardY }} className="flex items-center justify-center lg:col-span-4">
+          <motion.figure
+            initial={{ opacity: 0, rotate: 8, scale: 0.9 }}
+            animate={{ opacity: 1, rotate: 3, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            style={{ rotate: cardRotate }}
+            className="relative w-64 border-2 border-foreground bg-card p-5 shadow-pop select-none [--pop:var(--pop-violet)] [--pop-x:10px] [--pop-y:10px] sm:w-72"
+          >
+            <figcaption className="mb-3 flex items-center justify-between font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+              <span>Fig. 01</span>
+              <span>Your brain</span>
+            </figcaption>
+            <div className="flex items-center justify-center border-2 border-dashed border-foreground/40 py-10">
+              <span className="font-sans text-[9rem] leading-none font-black">?</span>
+            </div>
+            <div className="mt-4 flex items-end justify-between">
+              <p className="font-mono text-[10px] leading-relaxed uppercase tracking-[0.2em] text-muted-foreground">
+                Input:
+                <br />
+                Curiosity
+              </p>
+              <span className="bg-halftone text-foreground/50 h-10 w-16" aria-hidden />
+            </div>
+          </motion.figure>
+        </motion.div>
+      </div>
+
+      {/* Stats strip */}
+      <div className="border-t-2 border-foreground">
+        <div className="mx-auto grid max-w-[1400px] grid-cols-1 divide-y-2 divide-dotted divide-foreground/40 border-foreground sm:grid-cols-3 sm:divide-x-2 sm:divide-y-0">
+          <HeroStat label="Quizzes in the archive" value={totalQuizzes} />
+          <HeroStat label="Categories" value={totalCategories} />
+          <HeroStat label="Sub-topics" value={totalSubCategories} />
         </div>
       </div>
-    </div>
+
+      {/* Ticker */}
+      <Marquee duration={48} className="border-t-2 border-foreground bg-foreground py-3 text-background">
+        {TICKER_ITEMS.map((item) => (
+          <span key={item} className="mx-5 flex items-center gap-10 font-mono text-xs font-bold uppercase tracking-[0.3em]">
+            {item}
+            <span aria-hidden className="text-base leading-none">✷</span>
+          </span>
+        ))}
+      </Marquee>
+    </section>
   );
 };
 
-const StatCard = ({
-  icon,
-  label,
-  value
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-}) => (
-  <div className="group relative p-6 rounded-2xl bg-white/60 dark:bg-white/5 border border-slate-200 dark:border-white/10 backdrop-blur-xl hover:bg-white/80 dark:hover:bg-white/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden shadow-sm dark:shadow-none">
-    <div className="absolute inset-0 bg-linear-to-br from-violet-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-    <div className="relative flex flex-col items-center gap-3 text-center">
-      <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900/50 border border-slate-100 dark:border-white/5 shadow-inner">
-        {icon}
-      </div>
-      <div>
-        <div className="text-2xl font-bold text-slate-900 dark:text-white mb-0.5 tracking-tight">{value}</div>
-        <div className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-widest">{label}</div>
-      </div>
+function HeroStat({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="flex items-baseline justify-center gap-3 px-6 py-6 sm:flex-col sm:items-start sm:gap-1">
+      <CountUp value={value} suffix="+" className="font-sans text-4xl font-black tracking-tight tabular-nums sm:text-5xl" />
+      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+        {label}
+      </span>
     </div>
-  </div>
-);
+  );
+}
 
 export default HeroSection;

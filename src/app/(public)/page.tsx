@@ -16,7 +16,6 @@ export default async function Home() {
 
   // Extract some trending quizzes (e.g., first quiz from each category)
   const trendingQuizzes = data.flatMap((cat) => cat.quizzes.slice(0, 1)).slice(0, 6);
-  if (!stats) return null;
 
   return (
     <div>
@@ -30,13 +29,13 @@ export default async function Home() {
       <TrendingSection quizzes={trendingQuizzes} />
 
       {/* BrowserStay Promotion Section */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="mx-auto max-w-[1400px] px-4 pt-16 sm:px-6">
         <BrowserStayPromoCard variant="default" />
       </div>
 
       <CategoryFilters categories={categoriesList} />
       {data.map((cat) => (
-        <section key={cat.slug} id={cat.slug} className="container mx-auto pt-16">
+        <section key={cat.slug} id={cat.slug} className="mx-auto max-w-[1400px] px-4 pt-20 sm:px-6">
           {/* Title */}
           <SectionHeader id={cat.slug} title={cat.name} />
           <QuizListing quizzes={cat.quizzes} />

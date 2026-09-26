@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
+import { ChevronLeft, ChevronRight, RotateCcw, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useRouter, usePathname } from "next/navigation";
@@ -69,58 +69,49 @@ export function DatePickerClient({
   const handleNextDay = () => navigateToDate(nextDay.month, nextDay.day);
   const handleToday = () => router.push(pathname);
 
-  return (
-    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
-      {/* Navigation Controls */}
-      <div className="flex items-center gap-2 justify-center sm:justify-start">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handlePrevDay}
-          className="p-0 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 h-10 w-10 rounded-lg transition-all"
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </Button>
+  const stepButton =
+    "flex h-11 w-11 cursor-pointer items-center justify-center border-2 border-foreground bg-background transition-colors hover:bg-foreground hover:text-background";
 
-        <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-700/30">
-          <Calendar className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-          <span className="font-medium text-slate-900 dark:text-white text-sm">{formattedDate}</span>
+  return (
+    <div className="flex w-full flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:items-center">
+      {/* Navigation Controls */}
+      <div className="flex items-center justify-center gap-2 sm:justify-start">
+        <button type="button" onClick={handlePrevDay} aria-label="Previous day" className={stepButton}>
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+
+        <div className="flex items-center gap-2 border-2 border-foreground bg-card px-3.5 py-2.5">
+          <Calendar className="h-4 w-4" aria-hidden />
+          <span className="font-mono text-xs font-bold uppercase tracking-[0.14em]">{formattedDate}</span>
         </div>
 
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleNextDay}
-          className="p-0 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 h-10 w-10 rounded-lg transition-all"
-        >
-          <ChevronRight className="w-4 h-4" />
-        </Button>
+        <button type="button" onClick={handleNextDay} aria-label="Next day" className={stepButton}>
+          <ChevronRight className="h-4 w-4" />
+        </button>
       </div>
 
       {/* Month & Day Selectors */}
-      <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
+      <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
         <Select value={selectedMonth.toString()} onValueChange={handleMonthChange}>
-          <SelectTrigger className="h-10 w-20 sm:w-24 text-xs sm:text-sm bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600">
+          <SelectTrigger className="h-11 w-24 border-2 border-foreground font-mono text-xs font-bold uppercase tracking-[0.1em]">
             <SelectValue placeholder="Month" />
           </SelectTrigger>
           <SelectContent className="max-h-60">
             {monthNames.map((name, index) => (
-              <SelectItem key={name} value={(index + 1).toString()} className="text-xs sm:text-sm">
-                <div className="flex items-center gap-2">
-                  <span>{name.slice(0, 3)}</span>
-                </div>
+              <SelectItem key={name} value={(index + 1).toString()} className="font-mono text-xs uppercase">
+                {name.slice(0, 3)}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
         <Select value={selectedDay.toString()} onValueChange={handleDayChange}>
-          <SelectTrigger className="h-10 w-20 sm:w-24 text-xs sm:text-sm bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600">
+          <SelectTrigger className="h-11 w-20 border-2 border-foreground font-mono text-xs font-bold">
             <SelectValue placeholder="Day" />
           </SelectTrigger>
           <SelectContent className="max-h-60">
             {Array.from({ length: getDaysInMonth(selectedMonth) }, (_, i) => i + 1).map((day) => (
-              <SelectItem key={day} value={day.toString()} className="text-xs sm:text-sm">
+              <SelectItem key={day} value={day.toString()} className="font-mono text-xs">
                 Day {day}
               </SelectItem>
             ))}
@@ -131,10 +122,10 @@ export function DatePickerClient({
           variant={selectedMonth === today.getMonth() + 1 && selectedDay === today.getDate() ? "default" : "outline"}
           size="sm"
           onClick={handleToday}
-          className="h-9 px-3 text-xs sm:text-sm font-medium transition-all shadow-sm"
+          className="h-11 cursor-pointer border-2 border-foreground px-3 font-mono text-xs font-bold uppercase tracking-[0.14em]"
         >
           <div className="flex items-center gap-2">
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="h-4 w-4" />
             <span className="hidden sm:inline">Today</span>
             <span className="sm:hidden">Now</span>
           </div>

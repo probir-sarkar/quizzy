@@ -1,15 +1,15 @@
-import { Sparkles, Mail, Heart } from "lucide-react";
+import { Mail } from "lucide-react";
 import Link from "next/link";
 import CurrentYear from "./current-year";
 import { Suspense } from "react";
 import GithubIcon from "../icons/github-icon";
 import XIcon from "../icons/x-icon";
+import { Reveal } from "@/components/motion/reveal";
 
 type FooterLink = {
   label: string;
   href: string;
   external?: boolean;
-  description?: string;
 };
 
 export default function Footer() {
@@ -38,41 +38,48 @@ export default function Footer() {
         {
           label: "BrowserStay",
           href: "https://browserstay.com/",
-          external: true,
-          description: "Free, open-source PDF and image tools in your browser"
+          external: true
         }
       ]
     }
   ];
 
   return (
-    <footer className="relative mt-32 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-950 px-6 py-16 transition-colors duration-500">
-      <div className="container mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-          <div className="col-span-1 md:col-span-2 space-y-6">
-            <Link href="/" className="flex items-center gap-2 group w-fit">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-violet-500/20">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <span className="font-bold text-xl tracking-tight text-slate-900 dark:text-white">Quiz Zone</span>
-            </Link>
-            <p className="text-slate-600 dark:text-slate-400 max-w-sm leading-relaxed">
-              Elevate your knowledge journey with curated quizzes across thousands of topics. The ultimate destination
-              for curious minds.
+    <footer className="mt-24 border-t-2 border-foreground bg-background">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
+        {/* Giant wordmark */}
+        <Reveal y={40} className="overflow-hidden py-10 sm:py-14">
+          <p
+            aria-hidden
+            className="select-none text-center font-sans text-[19vw] leading-[0.82] font-black tracking-[-0.05em] uppercase sm:text-[17vw]"
+          >
+            Quizzy
+          </p>
+          <p className="mt-4 text-center font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-muted-foreground sm:text-xs">
+            An AI-free quiz broadsheet — est. by curious minds
+          </p>
+        </Reveal>
+
+        {/* Link columns */}
+        <div className="rule-dotted grid grid-cols-2 gap-x-6 gap-y-10 py-10 sm:grid-cols-4">
+          <div className="col-span-2 space-y-5">
+            <p className="max-w-sm font-sans text-sm leading-relaxed text-muted-foreground">
+              Thousands of hand-curated questions across every topic we could think of — no AI slop, no sign-up,
+              no nonsense. Pick a category, keep score, argue about the answers.
             </p>
-            <div className="flex gap-4">
-              <SocialLink icon={<GithubIcon className="w-5 h-5" />} href="#" />
-              <SocialLink icon={<XIcon className="w-5 h-5" />} href="#" />
-              <SocialLink icon={<Mail className="w-5 h-5" />} href="mailto:me@probirsarkar.com" />
+            <div className="flex gap-3">
+              <SocialLink icon={<GithubIcon className="h-4 w-4" />} href="#" label="GitHub" />
+              <SocialLink icon={<XIcon className="h-4 w-4" />} href="#" label="X" />
+              <SocialLink icon={<Mail className="h-4 w-4" />} href="mailto:me@probirsarkar.com" label="Email" />
             </div>
           </div>
 
           {footerLinks.map((section) => (
-            <div key={section.title} className="space-y-6">
-              <h4 className="text-sm font-bold uppercase tracking-widest text-slate-900 dark:text-white">
+            <nav key={section.title} aria-label={section.title} className="space-y-4">
+              <h4 className="font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
                 {section.title}
               </h4>
-              <ul className="space-y-4">
+              <ul className="space-y-2.5">
                 {section.links.map((link) => (
                   <li key={link.label}>
                     {link.external ? (
@@ -80,52 +87,41 @@ export default function Footer() {
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-slate-600 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors text-sm font-medium"
+                        className="font-sans text-sm font-bold underline-offset-4 hover:underline"
                       >
-                        {link.label}
+                        {link.label} ↗
                       </a>
                     ) : (
-                      <Link
-                        href={link.href}
-                        className="text-slate-600 dark:text-slate-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors text-sm font-medium"
-                      >
+                      <Link href={link.href} className="font-sans text-sm font-bold underline-offset-4 hover:underline">
                         {link.label}
                       </Link>
-                    )}
-                    {link.description && (
-                      <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">{link.description}</p>
                     )}
                   </li>
                 ))}
               </ul>
-            </div>
+            </nav>
           ))}
         </div>
 
-        <div className="pt-8 border-t border-slate-200 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="text-slate-500 text-sm">
-            ©{" "}
-            <Suspense fallback="2026">
-              {" "}
-              <CurrentYear />
-            </Suspense>{" "}
-            Quiz Zone. All rights reserved.
+        {/* Colophon bar */}
+        <div className="flex flex-col items-center justify-between gap-3 border-t-2 border-foreground py-5 sm:flex-row">
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            © <Suspense fallback="2026"><CurrentYear /></Suspense> Quizzy. All rights reserved.
           </p>
-          <div className="flex items-center gap-1.5 text-slate-500 text-sm font-medium">
-            <span>Made with</span>
-            <Heart className="w-4 h-4 text-rose-500 animate-pulse fill-rose-500" />
-            <span>for knowledge seekers</span>
-          </div>
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            Set in Archivo &amp; Space Mono
+          </p>
         </div>
       </div>
     </footer>
   );
 }
 
-const SocialLink = ({ icon, href }: { icon: React.ReactNode; href: string }) => (
+const SocialLink = ({ icon, href, label }: { icon: React.ReactNode; href: string; label: string }) => (
   <Link
     href={href}
-    className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-violet-600 dark:hover:text-white hover:border-violet-200 dark:hover:border-white/20 transition-all duration-300 shadow-sm dark:shadow-none"
+    aria-label={label}
+    className="pop-hover flex h-10 w-10 items-center justify-center border-2 border-foreground bg-background shadow-pop [--pop:var(--pop-cyan)] [--pop-x:3px] [--pop-y:3px] hover:bg-foreground hover:text-background"
   >
     {icon}
   </Link>

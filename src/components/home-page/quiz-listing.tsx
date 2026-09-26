@@ -1,12 +1,18 @@
 import type { QuizCardDto as QuizCardType } from "@/server/quiz";
 import { QuizCard } from "./quiz-card";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
 
 export default function QuizListing({ quizzes }: { quizzes: QuizCardType[] }) {
   return (
-    <div className="px-4 my-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 container mx-auto">
+    <Stagger
+      gap={0.04}
+      className="grid grid-cols-1 gap-6 pb-16 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+    >
       {quizzes.map((quiz, i) => (
-        <QuizCard key={quiz.id} quiz={quiz} index={i} />
+        <StaggerItem key={quiz.id} className="h-full">
+          <QuizCard quiz={quiz} index={i} />
+        </StaggerItem>
       ))}
-    </div>
+    </Stagger>
   );
 }

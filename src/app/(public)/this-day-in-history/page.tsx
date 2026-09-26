@@ -1,146 +1,58 @@
 import { DatePickerClient } from "@/components/this-day-in-history/date-picker-client";
-import {
-  Calendar,
-  Sparkles,
-  ExternalLink,
-  Globe,
-  Clock,
-  Hash,
-  History,
-  Star,
-  ChevronRight,
-  CalendarDays,
-  BookOpen
-} from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+import Image from "next/image";
 import { client } from "@/lib/orpc";
+import { Reveal } from "@/components/motion/reveal";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 };
 
 const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December"
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
 ];
 
-const getCategoryData = (category: string) => {
-  const categoryData = {
-    war: {
-      color: "text-red-600 dark:text-red-400",
-      bg: "bg-red-50 dark:bg-red-900/20",
-      icon: "⚔️",
-      label: "War & Conflict"
-    },
-    discovery: {
-      color: "text-emerald-600 dark:text-emerald-400",
-      bg: "bg-emerald-50 dark:bg-emerald-900/20",
-      icon: "🔍",
-      label: "Discovery"
-    },
-    politics: {
-      color: "text-blue-600 dark:text-blue-400",
-      bg: "bg-blue-50 dark:bg-blue-900/20",
-      icon: "🏛️",
-      label: "Politics"
-    },
-    science: {
-      color: "text-purple-600 dark:text-purple-400",
-      bg: "bg-purple-50 dark:bg-purple-900/20",
-      icon: "🔬",
-      label: "Science"
-    },
-    art: {
-      color: "text-pink-600 dark:text-pink-400",
-      bg: "bg-pink-50 dark:bg-pink-900/20",
-      icon: "🎨",
-      label: "Art & Culture"
-    },
-    sports: {
-      color: "text-orange-600 dark:text-orange-400",
-      bg: "bg-orange-50 dark:bg-orange-900/20",
-      icon: "⚽",
-      label: "Sports"
-    },
-    technology: {
-      color: "text-cyan-600 dark:text-cyan-400",
-      bg: "bg-cyan-50 dark:bg-cyan-900/20",
-      icon: "💻",
-      label: "Technology"
-    },
-    medicine: {
-      color: "text-green-600 dark:text-green-400",
-      bg: "bg-green-50 dark:bg-green-900/20",
-      icon: "🏥",
-      label: "Medicine"
-    },
-    exploration: {
-      color: "text-indigo-600 dark:text-indigo-400",
-      bg: "bg-indigo-50 dark:bg-indigo-900/20",
-      icon: "🗺️",
-      label: "Exploration"
-    },
-    literature: {
-      color: "text-yellow-600 dark:text-yellow-400",
-      bg: "bg-yellow-50 dark:bg-yellow-900/20",
-      icon: "📚",
-      label: "Literature"
-    },
-    music: {
-      color: "text-violet-600 dark:text-violet-400",
-      bg: "bg-violet-50 dark:bg-violet-900/20",
-      icon: "🎵",
-      label: "Music"
-    },
-    economy: {
-      color: "text-amber-600 dark:text-amber-400",
-      bg: "bg-amber-50 dark:bg-amber-900/20",
-      icon: "💰",
-      label: "Economy"
-    },
-    religion: {
-      color: "text-slate-600 dark:text-slate-400",
-      bg: "bg-slate-50 dark:bg-slate-900/20",
-      icon: "⛪",
-      label: "Religion"
-    },
-    disaster: {
-      color: "text-rose-600 dark:text-rose-400",
-      bg: "bg-rose-50 dark:bg-rose-900/20",
-      icon: "🌪️",
-      label: "Disaster"
-    },
-    revolution: {
-      color: "text-orange-600 dark:text-orange-400",
-      bg: "bg-orange-50 dark:bg-orange-900/20",
-      icon: "✊",
-      label: "Revolution"
-    },
-    invention: {
-      color: "text-teal-600 dark:text-teal-400",
-      bg: "bg-teal-50 dark:bg-teal-900/20",
-      icon: "💡",
-      label: "Invention"
-    }
-  };
-  return (
-    categoryData[category as keyof typeof categoryData] || {
-      color: "text-slate-600 dark:text-slate-400",
-      bg: "bg-slate-50 dark:bg-slate-900/20",
-      icon: "📌",
-      label: category
-    }
-  );
+const CATEGORY_LABELS: Record<string, string> = {
+  war: "War & Conflict",
+  discovery: "Discovery",
+  politics: "Politics",
+  science: "Science",
+  art: "Art & Culture",
+  sports: "Sports",
+  technology: "Technology",
+  medicine: "Medicine",
+  exploration: "Exploration",
+  literature: "Literature",
+  music: "Music",
+  economy: "Economy",
+  religion: "Religion",
+  disaster: "Disaster",
+  revolution: "Revolution",
+  invention: "Invention"
 };
+
+const CATEGORY_CHIP: Record<string, string> = {
+  war: "bg-rose-300",
+  discovery: "bg-lime-300",
+  politics: "bg-blue-300",
+  science: "bg-violet-300",
+  art: "bg-amber-300",
+  sports: "bg-amber-300",
+  technology: "bg-cyan-300",
+  medicine: "bg-lime-300",
+  exploration: "bg-blue-300",
+  literature: "bg-violet-300",
+  music: "bg-rose-300",
+  economy: "bg-amber-300",
+  religion: "bg-cyan-300",
+  disaster: "bg-rose-300",
+  revolution: "bg-lime-300",
+  invention: "bg-cyan-300"
+};
+
+const chipFor = (category: string) => CATEGORY_CHIP[category] ?? "bg-muted";
 
 export default async function ThisDayInHistoryPage({ searchParams }: Props) {
   const { month, day } = await searchParams;
@@ -159,204 +71,158 @@ export default async function ThisDayInHistoryPage({ searchParams }: Props) {
   const today = new Date();
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-blue-900/20 dark:to-indigo-900/20">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 pt-32 pb-8 sm:pb-12">
-        {/* Enhanced Header */}
-        <div className="text-center mb-6 sm:mb-8">
-          <div className="inline-flex items-center gap-2 bg-linear-to-r from-blue-500 via-purple-500 to-indigo-600 text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-4 sm:mb-6 shadow-lg">
-            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
-            <span>Historical Time Machine</span>
-            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
-          </div>
-
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-3 sm:mb-4 leading-tight">
-            This Day in History
-          </h1>
-
-          <p className="text-sm sm:text-base lg:text-lg text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed">
-            Journey through time and explore remarkable historical events that shaped our world on {formattedDate}
-          </p>
-        </div>
-
-        {/* Compact Stats Bar */}
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-3 sm:mb-4">
-          <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm">
-            <CalendarDays className="w-4 h-4 text-blue-500" />
-            <span className="text-sm font-medium text-slate-900 dark:text-white">{formattedDate}</span>
-          </div>
-          <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm">
-            <History className="w-4 h-4 text-purple-500" />
-            <span className="text-sm font-medium text-slate-900 dark:text-white">{eventsList.length} events</span>
-          </div>
-          {eventsList.length > 0 && (
-            <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm">
-              <BookOpen className="w-4 h-4 text-emerald-500" />
-              <span className="text-sm font-medium text-slate-900 dark:text-white">
-                {new Set(eventsList.map((e) => e.category)).size} categories
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Enhanced Date Picker */}
-        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700/50 p-4 sm:p-6 mb-4 sm:mb-6">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="text-center lg:text-left">
-              <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-1">📅 {formattedDate}</h2>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-                Navigate through historical events
+    <div className="min-h-screen">
+      {/* Hero */}
+      <section className="border-b-2 border-foreground">
+        <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-10 px-4 pt-28 pb-12 sm:px-6 md:pt-36 lg:grid-cols-12">
+          <div className="lg:col-span-8">
+            <Reveal y={12}>
+              <p className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+                The archive — {formattedDate}
               </p>
-            </div>
-            <div className="w-full lg:w-auto">
-              <DatePickerClient
-                selectedMonth={selectedMonth}
-                selectedDay={selectedDay}
-                formattedDate={formattedDate}
-                monthNames={monthNames}
-                today={today}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Enhanced Events List */}
-        {eventsList.length === 0 ? (
-          <div className="text-center py-12 sm:py-16">
-            <div className="relative inline-block mb-6">
-              <div className="text-6xl sm:text-7xl opacity-20">📚</div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <CalendarDays className="w-6 h-6 sm:w-8 sm:h-8 text-slate-400" />
+            </Reveal>
+            <Reveal delay={0.05}>
+              <h1 className="mt-4 max-w-5xl font-sans text-5xl font-black uppercase leading-[0.88] tracking-[-0.02em] sm:text-7xl lg:text-8xl">
+                This day <span className="font-mono text-[0.5em] font-bold italic tracking-tight">in</span> history
+              </h1>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p className="mt-6 max-w-xl font-sans text-base leading-relaxed text-muted-foreground sm:text-lg">
+                Remarkable events pulled from the archive for {formattedDate}. Some changed the world, some just made
+                the papers — all of them happened on this date.
+              </p>
+            </Reveal>
+            <Reveal delay={0.15}>
+              <div className="rule-dotted mt-8 flex flex-wrap gap-x-12 gap-y-4 pt-6 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+                <span>
+                  <strong className="mr-2 font-sans text-2xl font-black tracking-tight text-foreground tabular-nums">
+                    {eventsList.length}
+                  </strong>
+                  events filed
+                </span>
+                {eventsList.length > 0 && (
+                  <span>
+                    <strong className="mr-2 font-sans text-2xl font-black tracking-tight text-foreground tabular-nums">
+                      {new Set(eventsList.map((e) => e.category)).size}
+                    </strong>
+                    categories
+                  </span>
+                )}
               </div>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-200 mb-3">No Events Found</h2>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
-              No historical events are recorded for {formattedDate}. Try exploring a different date to discover
-              fascinating moments from history!
+            </Reveal>
+          </div>
+
+          {/* Newspaper plate */}
+          <Reveal delay={0.1} className="hidden justify-center lg:col-span-4 lg:flex">
+            <figure className="pop-hover relative w-72 rotate-2 border-2 border-foreground bg-card p-3 shadow-pop [--pop:var(--pop-amber)] [--pop-x:10px] [--pop-y:10px] xl:w-80">
+              <Image
+                src="/images/newspapers.jpg"
+                alt="Stack of folded vintage newspapers"
+                width={1573}
+                height={1073}
+                className="border border-foreground/40 grayscale"
+              />
+              <figcaption className="flex items-center justify-between px-1 pt-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+                <span>Fig. 01</span>
+                <span>The morning papers</span>
+              </figcaption>
+            </figure>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Date picker */}
+      <section className="border-b-2 border-foreground bg-muted/40">
+        <div className="mx-auto flex max-w-[1400px] flex-col justify-between gap-4 px-4 py-5 sm:px-6 lg:flex-row lg:items-center">
+          <p className="font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+            Turn the pages of the calendar
+          </p>
+          <DatePickerClient
+            selectedMonth={selectedMonth}
+            selectedDay={selectedDay}
+            formattedDate={formattedDate}
+            monthNames={monthNames}
+            today={today}
+          />
+        </div>
+      </section>
+
+      {/* Events timeline */}
+      <section className="mx-auto max-w-[1400px] px-4 py-14 sm:px-6">
+        {eventsList.length === 0 ? (
+          <div className="border-2 border-dashed border-foreground/40 py-20 text-center">
+            <h2 className="font-sans text-3xl font-black uppercase tracking-tight">Nothing in the file</h2>
+            <p className="mx-auto mt-3 max-w-md font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              No events recorded for {formattedDate}. Pick another date — history was busy elsewhere.
             </p>
           </div>
         ) : (
-          <div className="space-y-4 sm:space-y-6">
-            <div className="grid gap-4 sm:gap-6">
-              {eventsList.map((event) => {
-                const categoryData = getCategoryData(event.category);
-                return (
-                  <div
-                    key={event.id}
-                    className="group relative bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200/50 dark:border-slate-700/50 overflow-hidden hover:shadow-xl transition-shadow duration-200"
-                  >
-                    {/* Accent Border */}
-                    <div className={`absolute left-0 top-0 bottom-0 w-1 ${categoryData.bg}`} />
-
-                    {/* Event Content */}
-                    <div className="p-4 sm:p-6 lg:p-7">
-                      <div className="flex flex-col gap-4">
-                        {/* Header Row */}
-                        <div className="flex flex-col gap-3">
-                          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                            <div className="flex-1 min-w-0">
-                              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900 dark:text-white leading-tight mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                {event.title}
-                              </h3>
-                              <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                                <div className="flex items-center gap-1">
-                                  <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                                  <span className="font-medium">
-                                    {event.year < 0 ? `${Math.abs(event.year)} BCE` : `${event.year} CE`}
-                                  </span>
-                                </div>
-                                {event.sourceUrls && event.sourceUrls.length > 0 && (
-                                  <div className="flex items-center gap-1">
-                                    <Globe className="w-3 h-3 sm:w-4 sm:h-4" />
-                                    <span>
-                                      {event.sourceUrls.length} source{event.sourceUrls.length === 1 ? "" : "s"}
-                                    </span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-
-                            <div
-                              className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full ${categoryData.bg} ${categoryData.color} text-xs font-semibold whitespace-nowrap shadow-md border border-white/30 dark:border-slate-600/50 backdrop-blur-sm self-start shrink-0`}
-                            >
-                              <span className="text-sm sm:text-base leading-none">{categoryData.icon}</span>
-                              <span className="max-w-[80px] sm:max-w-[120px] truncate">{categoryData.label}</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Description */}
-                        <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed">
-                          {event.description}
-                        </p>
-
-                        {/* Tags */}
-                        {event.tags && event.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                            {event.tags.slice(0, 6).map((tag, tagIndex) => (
-                              <span
-                                key={tagIndex}
-                                className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors border border-slate-200 dark:border-slate-600"
-                              >
-                                <Hash className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0" />
-                                <span className="truncate max-w-[100px] sm:max-w-[120px]">{tag}</span>
-                              </span>
-                            ))}
-                            {event.tags.length > 6 && (
-                              <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs rounded-full border border-slate-200 dark:border-slate-600">
-                                <Hash className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0" />+{event.tags.length - 6}
-                              </span>
-                            )}
-                          </div>
-                        )}
-
-                        {/* Action Row */}
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-700">
-                          <div className="flex items-center gap-2">
-                            <div className="flex -space-x-1">
-                              {[...Array(3)].map((_, i) => (
-                                <div
-                                  key={i}
-                                  className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 border border-white dark:border-slate-800"
-                                />
-                              ))}
-                            </div>
-                            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                              Historical significance
-                            </span>
-                          </div>
-
-                          {event.sourceUrls && event.sourceUrls.length > 0 && (
-                            <a
-                              href={event.sourceUrls[0]}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-xs sm:text-sm font-semibold rounded-full transition-all duration-200 shadow-md hover:shadow-lg w-full sm:w-auto justify-center"
-                            >
-                              <span>Explore Source</span>
-                              <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+          <Stagger gap={0.05} className="border-t-2 border-foreground">
+            {eventsList.map((event) => (
+              <StaggerItem key={event.id}>
+                <article className="grid grid-cols-1 gap-4 border-b-2 border-dotted border-foreground/40 py-8 md:grid-cols-12 md:gap-8">
+                  {/* Year */}
+                  <div className="md:col-span-2">
+                    <p className="font-sans text-4xl font-black tracking-tight tabular-nums sm:text-5xl">
+                      {event.year < 0 ? `${Math.abs(event.year)}` : event.year}
+                    </p>
+                    <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+                      {event.year < 0 ? "BCE" : "CE"}
+                    </p>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
 
-        {/* Footer CTA */}
-        {eventsList.length > 0 && (
-          <div className="mt-8 sm:mt-12 text-center">
-            <div className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm px-4 py-2 rounded-full border border-slate-200/50 dark:border-slate-700/50">
-              <Star className="w-4 h-4 text-yellow-500" />
-              <span>Discover more historical moments by exploring different dates</span>
-              <ChevronRight className="w-4 h-4" />
-            </div>
-          </div>
+                  {/* Content */}
+                  <div className="min-w-0 md:col-span-10">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span className="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em]">
+                        <span aria-hidden className={`inline-block h-2.5 w-2.5 border border-foreground ${chipFor(event.category)}`} />
+                        {CATEGORY_LABELS[event.category] ?? event.category}
+                      </span>
+                    </div>
+
+                    <h3 className="mt-2 font-sans text-xl font-black uppercase leading-tight tracking-tight sm:text-2xl lg:text-3xl">
+                      {event.title}
+                    </h3>
+                    <p className="mt-2 max-w-3xl font-sans text-sm leading-relaxed text-muted-foreground sm:text-base">
+                      {event.description}
+                    </p>
+
+                    {event.tags && event.tags.length > 0 && (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {event.tags.slice(0, 6).map((tag, tagIndex) => (
+                          <span
+                            key={tagIndex}
+                            className="rounded-full border-2 border-foreground/70 px-3 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                        {event.tags.length > 6 && (
+                          <span className="rounded-full border-2 border-foreground/70 px-3 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                            +{event.tags.length - 6}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {event.sourceUrls && event.sourceUrls.length > 0 && (
+                      <a
+                        href={event.sourceUrls[0]}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group mt-4 inline-flex items-center gap-2 border-2 border-foreground bg-background px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.14em] transition-colors hover:bg-foreground hover:text-background"
+                      >
+                        Read the source
+                        <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      </a>
+                    )}
+                  </div>
+                </article>
+              </StaggerItem>
+            ))}
+          </Stagger>
         )}
-      </div>
+      </section>
     </div>
   );
 }
