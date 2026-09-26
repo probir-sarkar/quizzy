@@ -1,8 +1,8 @@
 import { os } from "@orpc/server";
 import { z } from "zod";
-import { isoDate } from "@/server/dto/common";
+import { isoDate } from "./common";
 import { db } from "@/lib/prisma";
-import { cacheMiddleware, ONE_DAY } from "../middleware/cache.middleware";
+import { cacheMiddleware, ONE_DAY } from "./cache.middleware";
 
 const categoryWithCountsSchema = z.object({
   id: z.number(),

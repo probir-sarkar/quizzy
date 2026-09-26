@@ -1,5 +1,5 @@
 "use client";
-import type { QuestionDto as QuestionType } from "@/server/modules/quiz/dto/quiz.schema";
+import type { QuestionDto as QuestionType } from "@/server/quiz";
 import { useState } from "react";
 
 function QuestionCard({ q, index }: { q: QuestionType; index: number }) {

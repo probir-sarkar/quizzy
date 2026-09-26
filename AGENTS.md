@@ -18,7 +18,7 @@ AI-free quiz site: categories → sub-categories → quizzes → questions, plus
 - **Package manager: pnpm** (single Next.js app at the repo root — there is no `apps/` monorepo)
 - **Database:** PostgreSQL via **Prisma 8 (Prisma Next)**, contract-first — author `prisma/contract.prisma`, then run `pnpm prisma:contract:emit`; artifacts land in `src/generated/prisma8` (committed)
 - **API layer:** oRPC router (`src/server/router.ts`) served at `/rpc`; server components call it in-process via `client` from `src/lib/orpc.ts`
-- **Caching:** Redis-backed oRPC cache middleware (`src/server/middleware/cache.middleware.ts`); bypassed in dev, JSON-round-trips output on every path
+- **Caching:** Redis-backed oRPC cache middleware (`src/server/cache.ts`); bypassed in dev, JSON-round-trips output on every path
 
 ## Commands
 
@@ -38,5 +38,5 @@ node --run prisma/seed.ts   # or: pnpm exec tsx prisma/seed.ts
 - `Temporal` values cannot cross the Server → Client Component boundary — the cache middleware JSON-round-trips oRPC output for this reason; keep new procedures behind it (or return plain data).
 - The contract was inferred from the live DB: `Quiz.id`, `Question.id` and `updatedAt` have **no defaults** — supply them (e.g. `randomUUID()`) on create.
 - N:M relations are not supported by the ORM lane. Quiz↔Tag goes through the `QuizTag` junction relation (`quizTags` → `tag` includes), and writes create junction rows explicitly.
-- Server-side result shapes are kept v7-compatible (`_count.questions`, `tags[].tag.name`) via explicit mapping in `src/server/modules/quiz/quiz.service.ts` — components depend on those shapes.
+- Server-side result shapes are kept v7-compatible (`_count.questions`, `tags[].tag.name`) via explicit mapping in `src/server/quiz.ts` — components depend on those shapes.
 - Enums (`ZodiacSign`, `QuizDifficulty`, `EventCategory`) live in `src/lib/enums.ts` — Prisma 8 generates no enum objects.

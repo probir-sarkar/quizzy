@@ -5,7 +5,7 @@ import { Info, Trophy, RotateCcw } from "lucide-react";
 import { calculateQuizScore, getQuizScoreMessage, getQuizScoreColor } from "@/lib/quiz-utils";
 import { cn } from "@/lib/utils";
 import { AnswerButton } from "./quiz-answer-button";
-import type { QuestionDto as QuestionType } from "@/server/modules/quiz/dto/quiz.schema";
+import type { QuestionDto as QuestionType } from "@/server/quiz";
 
 
 type AnswersState = Record<number, number>;

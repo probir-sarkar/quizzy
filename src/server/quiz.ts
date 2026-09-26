@@ -1,12 +1,205 @@
 import { db } from "@/lib/prisma";
 import { or } from "@prisma/orm-postgres/orm-client";
 import { shuffle } from "es-toolkit/array";
-import * as D from "./dto/quiz.schema";
+import { os } from "@orpc/server";
+import { z } from "zod";
+import { QuizDifficulty } from "@/lib/enums";
+import { isoDate } from "./common";
+import { cacheMiddleware, ONE_DAY, ONE_HOUR } from "./cache.middleware";
 
-export type GetQuizzesByCategoryOpts = D.GetQuizzesByCategoryDto;
+// ---------------------------------------------------------------------------
+// Schemas
+// ---------------------------------------------------------------------------
 
-export const DEFAULT_PER_PAGE = 12;
-export function shuffleOptions(question: D.QuestionDto): D.QuestionDto {
+const slugSchema = z.string();
+
+const paginationSchema = z.object({
+  page: z.number().optional(),
+  perPage: z.number().optional()
+});
+
+const getQuizSchema = z.object({
+  slug: slugSchema
+});
+
+const getQuizzesByCategorySchema = z.object({
+  categorySlug: slugSchema,
+  subCategorySlug: slugSchema.optional().nullable(),
+  ...paginationSchema.shape
+});
+
+export type GetQuizzesByCategoryDto = z.infer<typeof getQuizzesByCategorySchema>;
+
+const categoryRowSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  slug: z.string(),
+  createdAt: isoDate
+});
+
+const subCategoryRowSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  slug: z.string(),
+  createdAt: isoDate
+});
+
+const subCategoryWithCountSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  slug: z.string(),
+  _count: z.object({ quizzes: z.number() })
+});
+
+const subCategoryRowWithCountSchema = subCategoryRowSchema.extend({
+  _count: z.object({ quizzes: z.number() })
+});
+
+const questionRowSchema = z.object({
+  id: z.string(),
+  quizId: z.string(),
+  text: z.string(),
+  options: z.array(z.string()),
+  correctIndex: z.number(),
+  explanation: z.string().nullable()
+});
+
+const tagRowSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  createdAt: isoDate
+});
+
+const quizTagRowSchema = z.object({
+  quizId: z.string(),
+  tagId: z.number(),
+  tag: tagRowSchema
+});
+
+const quizTagSummaryRowSchema = z.object({
+  quizId: z.string(),
+  tagId: z.number(),
+  tag: z.object({ id: z.number(), name: z.string() })
+});
+
+const quizRowSchema = z.object({
+  id: z.string(),
+  quizPageTitle: z.string(),
+  quizPageDescription: z.string(),
+  difficulty: z.enum(QuizDifficulty),
+  title: z.string(),
+  description: z.string(),
+  slug: z.string(),
+  isPublished: z.boolean(),
+  publishedAt: isoDate.nullable(),
+  views: z.number(),
+  categoryId: z.number().nullable(),
+  subCategoryId: z.number().nullable(),
+  createdAt: isoDate,
+  updatedAt: isoDate
+});
+
+const quizWithQuestionCountSchema = quizRowSchema.extend({
+  category: categoryRowSchema.nullable(),
+  _count: z.object({ questions: z.number() })
+});
+
+// The detail select fetches neither createdAt nor updatedAt — keep the
+// payload lean and mirror that here.
+const quizDetailSchema = quizRowSchema
+  .omit({ createdAt: true, updatedAt: true })
+  .extend({
+  category: z
+    .object({ id: z.number(), name: z.string(), slug: z.string() })
+    .nullable(),
+  questions: z.array(questionRowSchema),
+  tags: z.array(quizTagSummaryRowSchema)
+});
+
+const quizDetailWithCountSchema = quizDetailSchema.extend({
+  _count: z.object({ questions: z.number() })
+});
+
+const categoryWithQuizzesSchema = categoryRowSchema.extend({
+  quizzes: z.array(quizWithQuestionCountSchema)
+});
+
+const categoryWithSubCategoriesSchema = categoryRowSchema.extend({
+  subCategories: z.array(subCategoryRowWithCountSchema),
+  _count: z.object({ quizzes: z.number() })
+});
+
+// Output: getHomePageData
+const homePageDataOutputSchema = z.object({
+  stats: z.object({
+    totalQuizzes: z.number(),
+    totalCategories: z.number(),
+    totalSubCategories: z.number()
+  }),
+  homePageData: z.array(categoryWithQuizzesSchema),
+  categories: z.array(categoryRowSchema)
+});
+
+// Output: getQuizCategoryInfo
+const categoryInfoOutputSchema = categoryWithSubCategoriesSchema.nullable();
+
+// Output: getSubCategoriesByCategory
+const subCategoriesByCategoryOutputSchema = z.array(subCategoryWithCountSchema);
+
+// Output: getQuizzesByCategory
+const quizzesByCategoryOutputSchema = z.object({
+  items: z.array(
+    quizRowSchema.extend({
+      category: categoryRowSchema.nullable(),
+      subCategory: subCategoryRowSchema.nullable(),
+      tags: z.array(quizTagRowSchema),
+      _count: z.object({ questions: z.number() })
+    })
+  ),
+  category: categoryWithSubCategoriesSchema.nullable(),
+  meta: z.object({
+    total: z.number(),
+    totalPages: z.number(),
+    currentPage: z.number(),
+    perPage: z.number()
+  })
+});
+
+// Output: getQuizDetail / getQuiz
+const quizDetailOutputSchema = quizDetailWithCountSchema.nullable();
+
+// Output: getMoreQuizzes
+const moreQuizzesOutputSchema = z.array(quizWithQuestionCountSchema);
+
+// Output: getQuizMetadata
+const quizMetadataOutputSchema = z
+  .object({
+    title: z.string(),
+    description: z.string(),
+    quizPageTitle: z.string(),
+    quizPageDescription: z.string(),
+    category: z
+      .object({ id: z.number(), name: z.string(), slug: z.string() })
+      .nullable(),
+    tags: z.array(quizTagSummaryRowSchema)
+  })
+  .nullable();
+
+// ---------------------------------------------------------------------------
+// Derived types — single source of truth for quiz data crossing the API
+// ---------------------------------------------------------------------------
+
+export type QuestionDto = z.infer<typeof questionRowSchema>;
+export type QuizCardDto = z.infer<typeof quizWithQuestionCountSchema>;
+export type QuizDetailDto = z.infer<typeof quizDetailWithCountSchema>;
+
+// ---------------------------------------------------------------------------
+// Data access
+// ---------------------------------------------------------------------------
+
+const DEFAULT_PER_PAGE = 12;
+
+export function shuffleOptions(question: QuestionDto): QuestionDto {
   const optionsWithIndex = question.options.map((text, index) => ({
     text,
     index
@@ -111,7 +304,7 @@ export abstract class QuizService {
     page = 1,
     perPage = DEFAULT_PER_PAGE,
     subCategorySlug = null
-  }: GetQuizzesByCategoryOpts) {
+  }: GetQuizzesByCategoryDto) {
     const actualPage = page ?? 1;
     const actualPerPage = perPage ?? DEFAULT_PER_PAGE;
     const skip = (actualPage - 1) * actualPerPage;
@@ -293,3 +486,82 @@ export abstract class QuizService {
     };
   }
 }
+
+// ---------------------------------------------------------------------------
+// Procedures
+// ---------------------------------------------------------------------------
+
+export const getHomePageData = os
+  .use(
+    cacheMiddleware({
+      ttl: ONE_HOUR
+    })
+  )
+  .output(homePageDataOutputSchema)
+  .handler(async () => {
+    const [stats, homePageData, categories] = await Promise.all([
+      QuizService.getHomePageStats(),
+      QuizService.getHomePageData(),
+      QuizService.getCategories()
+    ]);
+
+    return { stats, homePageData, categories };
+  });
+
+export const getQuizCategoryInfo = os
+  .input(getQuizSchema)
+  .output(categoryInfoOutputSchema)
+  .handler(async ({ input: { slug } }) => {
+    return await QuizService.getCategoryInfo(slug);
+  });
+
+export const getSubCategoriesByCategory = os
+  .use(cacheMiddleware({ ttl: ONE_HOUR }))
+  .input(getQuizSchema)
+  .output(subCategoriesByCategoryOutputSchema)
+  .handler(async ({ input: { slug } }) => {
+    return await QuizService.getSubCategoriesByCategory(slug);
+  });
+
+export const getQuizzesByCategory = os
+  .input(getQuizzesByCategorySchema)
+  .output(quizzesByCategoryOutputSchema)
+  .handler(async ({ input }) => {
+    return await QuizService.getQuizzesByCategory(input);
+  });
+
+export const getQuizDetail = os
+  .use(cacheMiddleware({ ttl: ONE_DAY }))
+  .input(getQuizSchema)
+  .output(quizDetailOutputSchema)
+  .handler(async ({ input: { slug } }) => {
+    const quiz = await QuizService.getQuiz(slug);
+    if (!quiz) return null;
+    return {
+      ...quiz,
+      questions: quiz.questions.map(shuffleOptions)
+    };
+  });
+
+export const getMoreQuizzes = os
+  .input(getQuizSchema)
+  .output(moreQuizzesOutputSchema)
+  .handler(async ({ input: { slug } }) => {
+    return await QuizService.getMoreQuizzes(slug);
+  });
+
+export const getQuizMetadata = os
+  .use(cacheMiddleware({ ttl: ONE_HOUR }))
+  .input(getQuizSchema)
+  .output(quizMetadataOutputSchema)
+  .handler(async ({ input: { slug } }) => {
+    return await QuizService.getQuizForMetadata(slug);
+  });
+
+export const getQuiz = os
+  .use(cacheMiddleware({ ttl: ONE_HOUR }))
+  .input(getQuizSchema)
+  .output(quizDetailOutputSchema)
+  .handler(async ({ input: { slug } }) => {
+    return await QuizService.getQuiz(slug);
+  });

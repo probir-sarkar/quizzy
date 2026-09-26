@@ -1,6 +1,6 @@
 import { Target } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import type { QuizCardDto as QuizCardType } from "@/server/modules/quiz/dto/quiz.schema";
+import type { QuizCardDto as QuizCardType } from "@/server/quiz";
 import Link from "next/link";
 import { getCardGradient } from "@/lib/visual-utils";
 

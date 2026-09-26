@@ -1,4 +1,4 @@
-import type { QuizCardDto as QuizCardType } from "@/server/modules/quiz/dto/quiz.schema";
+import type { QuizCardDto as QuizCardType } from "@/server/quiz";
 import { QuizCard } from "./quiz-card";
 
 export default function QuizListing({ quizzes }: { quizzes: QuizCardType[] }) {

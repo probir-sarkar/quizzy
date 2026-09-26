@@ -1,4 +1,3 @@
-// Quiz Module
 import {
   getQuizCategoryInfo,
   getSubCategoriesByCategory,
@@ -8,31 +7,27 @@ import {
   getQuizMetadata,
   getQuiz,
   getHomePageData
-} from "@/server/modules/quiz/quiz.controller";
-
-// Horoscope Module
-import { getAllHoroscopesForDate } from "@/server/modules/horoscope/horoscope.controller";
-
-// Past Event Module
-import { getPastEventsByMonthDay } from "@/server/modules/past-event/past-event.controller";
-import { getAllCategoriesWithStats, getCategoryCounts } from "./modules/category";
+} from "./quiz";
+import { getAllHoroscopesForDate } from "./horoscope";
+import { getPastEventsByMonthDay } from "./past-event";
+import { getAllCategoriesWithStats, getCategoryCounts } from "./category";
 
 // Aggregate all routes
 export const router = {
   // Quiz routes
-
   getQuizCategoryInfo,
   getSubCategoriesByCategory,
   getQuizzesByCategory,
-  getAllCategoriesWithStats,
   getQuizDetail,
   getMoreQuizzes,
   getQuizMetadata,
   getQuiz,
   getHomePageData,
+  getAllCategoriesWithStats,
+  getCategoryCounts,
+
   // Horoscope routes
   getAllHoroscopesForDate,
-  getCategoryCounts,
 
   // Past event routes
   getPastEventsByMonthDay

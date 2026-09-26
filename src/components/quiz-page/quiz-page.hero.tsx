@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 import { BreadcrumbItem } from "../common/Breadcrumbs";
 import Breadcrumbs from "../common/Breadcrumbs";
-import type { QuizDetailDto } from "@/server/modules/quiz/dto/quiz.schema";
+import type { QuizDetailDto } from "@/server/quiz";
 
 type QuizPageHeroProps = QuizDetailDto;
 
