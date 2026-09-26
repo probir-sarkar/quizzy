@@ -54,7 +54,7 @@ async function QuizPage({ params }: Props) {
     <>
       <section className="bg-gray-50 dark:bg-slate-950">
         <QuizPageHero
-          quiz={quiz as any}
+          quiz={quiz}
           breadcrumbs={[
             { label: "Categories", href: "/category" },
             { label: categoryName, href: `/category/${categorySlug}` },

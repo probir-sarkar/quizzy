@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils";
 
 import { BreadcrumbItem } from "../common/Breadcrumbs";
 import Breadcrumbs from "../common/Breadcrumbs";
-import { QuizPageType } from "@/server/modules/quiz/quiz.service";
+import type { QuizDetailDto } from "@/server/modules/quiz/dto/quiz.schema";
 
-type QuizPageHeroProps = Omit<QuizPageType, 'createdAt' | 'updatedAt'>;
+type QuizPageHeroProps = QuizDetailDto;
 
 export default function QuizHero({ quiz, breadcrumbs }: { quiz: QuizPageHeroProps; breadcrumbs: BreadcrumbItem[] }) {
   if (!quiz) return null;

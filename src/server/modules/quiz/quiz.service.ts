@@ -3,22 +3,10 @@ import { or } from "@prisma/orm-postgres/orm-client";
 import { shuffle } from "es-toolkit/array";
 import * as D from "./dto/quiz.schema";
 
-export type HomePageData = Awaited<ReturnType<typeof QuizService.getHomePageData>>;
-export type QuizCard = HomePageData[number]["quizzes"][number];
-
-// quiz page type without null
-export type QuizPageType = NonNullable<Awaited<ReturnType<typeof QuizService.getQuiz>>>;
-
-// question type helper
-export type QuestionType = QuizPageType["questions"][number];
-
-export type CategoriesWithStatsData = Awaited<ReturnType<typeof QuizService.getCategoriesWithStats>>;
-export type CategoryWithStats = CategoriesWithStatsData["items"][number];
-
 export type GetQuizzesByCategoryOpts = D.GetQuizzesByCategoryDto;
 
 export const DEFAULT_PER_PAGE = 12;
-export function shuffleOptions(question: QuestionType): QuestionType {
+export function shuffleOptions(question: D.QuestionDto): D.QuestionDto {
   const optionsWithIndex = question.options.map((text, index) => ({
     text,
     index
@@ -34,10 +22,10 @@ export function shuffleOptions(question: QuestionType): QuestionType {
 }
 
 // Map an include()'d questions count reducer onto the v7-style `_count` shape
-const withQuestionCount = <T extends { questions: number }>(quiz: T) => ({
-  ...quiz,
-  _count: { questions: quiz.questions }
-});
+const withQuestionCount = <T extends { questions: number }>(quiz: T) => {
+  const { questions, ...rest } = quiz;
+  return { ...rest, _count: { questions } };
+};
 
 // Map quizTags (with their tag) onto the v7-style `tags` array shape
 const toTagRows = <TTag>(quizTags: Array<{ quizId: string; tagId: number; tag: TTag }>) =>
@@ -91,12 +79,14 @@ export abstract class QuizService {
 
     if (!category) return null;
 
+    const { quizzes: quizCount, subCategories: subRows, ...categoryFields } = category;
+
     return {
-      ...category,
-      subCategories: category.subCategories
-        .map((sub) => ({ ...sub, _count: { quizzes: sub.quizzes } }))
+      ...categoryFields,
+      subCategories: subRows
+        .map(({ quizzes, ...sub }) => ({ ...sub, _count: { quizzes } }))
         .sort((a, b) => b._count.quizzes - a._count.quizzes),
-      _count: { quizzes: category.quizzes }
+      _count: { quizzes: quizCount }
     };
   }
 
@@ -112,7 +102,7 @@ export abstract class QuizService {
     if (!category) return [];
 
     return category.subCategories
-      .map((sub) => ({ id: sub.id, name: sub.name, slug: sub.slug, _count: { quizzes: sub.quizzes } }))
+      .map(({ quizzes, ...sub }) => ({ ...sub, _count: { quizzes } }))
       .sort((a, b) => b._count.quizzes - a._count.quizzes);
   }
 
@@ -179,96 +169,24 @@ export abstract class QuizService {
     const totalPages = Math.max(1, Math.ceil(totals.count / actualPerPage));
 
     return {
-      items: items.map((quiz) => ({
-        ...quiz,
-        tags: toTagRows(quiz.quizTags),
-        _count: { questions: quiz.questions }
-      })),
-      category: {
-        ...category,
-        subCategories: category.subCategories.map((sub) => ({
-          ...sub,
-          _count: { quizzes: sub.quizzes }
-        })),
-        _count: { quizzes: category.quizzes }
-      },
+      items: items.map((quiz) => {
+        const { quizTags, questions, ...quizFields } = quiz;
+        return {
+          ...quizFields,
+          tags: toTagRows(quizTags),
+          _count: { questions }
+        };
+      }),
+      category: (() => {
+        const { quizzes: quizCount, subCategories: subRows, ...categoryFields } = category;
+        return {
+          ...categoryFields,
+          subCategories: subRows.map(({ quizzes, ...sub }) => ({ ...sub, _count: { quizzes } })),
+          _count: { quizzes: quizCount }
+        };
+      })(),
       meta: {
         total: totals.count,
-        totalPages,
-        currentPage: actualPage,
-        perPage: actualPerPage
-      }
-    };
-  }
-
-  static async getCategoriesStats() {
-    const [categoryTotals, subCategoryTotals] = await Promise.all([
-      db.orm.public.Category.aggregate((agg) => ({ count: agg.count() })),
-      db.orm.public.SubCategory.aggregate((agg) => ({ count: agg.count() }))
-    ]);
-
-    return {
-      totalCategories: categoryTotals.count,
-      totalSubcategories: subCategoryTotals.count
-    };
-  }
-
-  static async getAllCategoriesWithStats() {
-    const categories = await db.orm.public.Category
-      .include("quizzes", (quizzes) => quizzes.count())
-      .include("subCategories", (subCategories) => subCategories.count())
-      .orderBy((cat) => cat.name.asc())
-      .all();
-
-    const result = categories.map((cat) => ({
-      ...cat,
-      _count: {
-        quizzes: cat.quizzes,
-        subCategories: cat.subCategories
-      }
-    }));
-
-    const totalCategories = result.length;
-    const totalSubcategories = result.reduce((sum, cat) => sum + (cat._count.subCategories ?? 0), 0);
-
-    return {
-      categories: result,
-      totalCategories,
-      totalSubcategories
-    };
-  }
-
-  static async getCategoriesWithStats({ page = 1, perPage = 12 } = {}) {
-    const actualPage = page ?? 1;
-    const actualPerPage = perPage ?? 12;
-    const skip = (actualPage - 1) * actualPerPage;
-
-    const [items, categoryTotals, subCategoryTotals] = await Promise.all([
-      db.orm.public.Category
-        .offset(skip)
-        .limit(actualPerPage)
-        .include("subCategories", (subCategories) => subCategories)
-        .include("quizzes", (quizzes) => quizzes.count())
-        .all(),
-      db.orm.public.Category.aggregate((agg) => ({ count: agg.count() })),
-      db.orm.public.SubCategory.aggregate((agg) => ({ count: agg.count() }))
-    ]);
-
-    const totalCategories = categoryTotals.count;
-    const totalSubcategories = subCategoryTotals.count;
-    const totalPages = Math.max(1, Math.ceil(totalCategories / actualPerPage));
-
-    return {
-      items: items.map((cat) => ({
-        ...cat,
-        _count: {
-          quizzes: cat.quizzes,
-          subCategories: cat.subCategories.length
-        }
-      })),
-      meta: {
-        totalCategories,
-        totalSubcategories,
         totalPages,
         currentPage: actualPage,
         perPage: actualPerPage
@@ -308,13 +226,15 @@ export abstract class QuizService {
 
     if (!quiz) return null;
 
+    const { quizTags, ...quizFields } = quiz;
+
     return {
-      ...quiz,
+      ...quizFields,
       questions: quiz.questions.map((question) => ({
         ...question,
-        options: question.options ?? []
+        options: [...(question.options ?? [])]
       })),
-      tags: toTagRows(quiz.quizTags)
+      tags: toTagRows(quizTags)
     };
   };
 

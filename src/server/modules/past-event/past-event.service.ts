@@ -15,8 +15,8 @@ export abstract class PastEventService {
 
       const events = rows.map((event) => ({
         ...event,
-        tags: event.tags ?? [],
-        sourceUrls: event.sourceUrls ?? []
+        tags: [...(event.tags ?? [])],
+        sourceUrls: [...(event.sourceUrls ?? [])]
       }))
 
       return { events, month: selectedMonth, day: selectedDay }
