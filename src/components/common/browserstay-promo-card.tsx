@@ -34,7 +34,7 @@ export default function BrowserStayPromoCard({ className = "", variant = "defaul
             </span>
           </span>
           <span className="block truncate font-sans text-xs text-muted-foreground">
-            Free, open-source PDF and image tools — 100% in your browser
+            Free, private PDF and image tools — 100% in your browser
           </span>
         </span>
         <ArrowUpRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
@@ -63,8 +63,8 @@ export default function BrowserStayPromoCard({ className = "", variant = "defaul
               BrowserStay <span className="align-super text-sm">↗</span>
             </h3>
             <p className="mt-2 font-sans text-sm leading-relaxed text-muted-foreground sm:text-base">
-              A free, open-source collection of PDF and image tools that run entirely in your browser.{" "}
-              <span className="font-bold text-foreground">No uploads, no accounts, no servers</span> — nothing ever
+              A free collection of PDF and image tools that run entirely in your browser.{" "}
+              <span className="font-bold text-foreground">No uploads, no accounts, no watermarks</span> — nothing ever
               leaves your machine.
             </p>
 
