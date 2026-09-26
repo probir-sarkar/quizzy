@@ -2,15 +2,13 @@ import { Circle, CheckCircle2, XCircle, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const styles = {
-  button:
-    "w-full text-left px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border shadow-sm text-sm sm:text-base transition-all",
-  default:
-    "bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 border-gray-200 dark:border-gray-700 hover:shadow-md hover:bg-gray-50 dark:hover:bg-white/5",
-  correct: "bg-green-50 dark:bg-green-900/30 border-green-500 text-green-900 dark:text-green-100",
-  wrong: "bg-red-50 dark:bg-red-900/30 border-red-500 text-red-900 dark:text-red-100",
-  reveal: "bg-green-50/70 dark:bg-green-900/20 border-green-400 text-green-900/90 dark:text-green-200",
-  faded: "bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-700 opacity-60"
-};
+  button: "w-full text-left px-3.5 sm:px-4 py-3 border-2 border-foreground font-sans text-sm sm:text-base font-bold transition-all duration-150",
+  default: "bg-background text-foreground hover:bg-foreground hover:text-background",
+  correct: "bg-lime-300 text-neutral-950 border-foreground",
+  wrong: "bg-rose-300 text-neutral-950 border-foreground",
+  reveal: "bg-lime-300/40 text-foreground border-dashed border-foreground",
+  faded: "bg-background text-muted-foreground border-foreground/30 opacity-60"
+} as const;
 
 const answerVariants = {
   default: styles.default,
@@ -32,15 +30,19 @@ function getAnswerVariant(isPicked: boolean, isCorrect: boolean, answered: boole
 
 export function AnswerIcon({ isPicked, isCorrect, answered }: { isPicked: boolean; isCorrect: boolean; answered: boolean }) {
   if (!answered)
-    return <Circle className={cn("h-4 w-4 shrink-0 transition-all", isPicked && "fill-gray-900 dark:fill-gray-100")} />;
+    return (
+      <Circle
+        className={cn("h-4 w-4 shrink-0 transition-all", isPicked && "fill-current")}
+      />
+    );
   if (isPicked)
     return isCorrect ? (
-      <CheckCircle2 className="h-4 w-4 shrink-0 text-green-600 dark:text-green-500" />
+      <CheckCircle2 className="h-4 w-4 shrink-0" />
     ) : (
-      <XCircle className="h-4 w-4 shrink-0 text-red-600 dark:text-red-500" />
+      <XCircle className="h-4 w-4 shrink-0" />
     );
-  if (isCorrect) return <Check className="h-4 w-4 shrink-0 text-green-500" />;
-  return <Circle className="h-4 w-4 shrink-0 text-gray-400 dark:text-gray-600" />;
+  if (isCorrect) return <Check className="h-4 w-4 shrink-0" />;
+  return <Circle className="h-4 w-4 shrink-0 opacity-40" />;
 }
 
 export function AnswerButton({
@@ -66,9 +68,7 @@ export function AnswerButton({
       className={cn(
         styles.button,
         answerVariants[variant],
-        !answered &&
-        !disabled &&
-        "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300 dark:focus-visible:ring-white/20",
+        !answered && !disabled && "cursor-pointer",
         !answered && disabled && "cursor-not-allowed"
       )}
       onClick={onClick}
@@ -76,9 +76,7 @@ export function AnswerButton({
     >
       <span className="flex items-center gap-3">
         <AnswerIcon isPicked={isPicked} isCorrect={isCorrect} answered={answered} />
-        <span className="wrap-break-word">
-          {text}
-        </span>
+        <span className="wrap-break-word">{text}</span>
       </span>
     </button>
   );

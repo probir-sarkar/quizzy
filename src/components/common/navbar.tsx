@@ -1,170 +1,136 @@
 "use client";
 
-import { Sparkles, Menu, X, Home, BookOpen, Star, ChevronDown, Calendar, Search } from "lucide-react";
+import { Menu, X, ArrowUpRight } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { ScrollProgress } from "@/components/motion/scroll-progress";
+
+const navigationItems = [
+  { href: "/", label: "Home" },
+  { href: "/category", label: "Categories" },
+  { href: "/horoscope", label: "Horoscope" },
+  { href: "/this-day-in-history", label: "History" }
+];
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const router = useRouter();
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
-  const navigationItems = [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/category", label: "Categories", icon: BookOpen },
-    { href: "/horoscope", label: "Horoscope", icon: Star },
-    { href: "/this-day-in-history", label: "History", icon: Calendar }
-  ];
-
-  useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          setScrolled(window.scrollY > 20);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center p-4 pointer-events-none">
-      <motion.nav
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className={cn(
-          "pointer-events-auto transition-all duration-300 ease-in-out",
-          "flex items-center gap-4 px-4 h-14 rounded-2xl border w-full max-w-5xl",
-          scrolled
-            ? "bg-white/80 dark:bg-slate-950/80 border-white/20 dark:border-white/10 backdrop-blur-xl shadow-2xl scale-[1.01]"
-            : "bg-white/40 dark:bg-white/5 border-transparent backdrop-blur-sm"
-        )}
-      >
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group mr-auto">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-violet-500/20">
-            <Sparkles className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-bold text-sm tracking-tight dark:text-white text-slate-900">Quiz Zone</span>
-        </Link>
+    <>
+      <ScrollProgress />
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-1">
-          {navigationItems.map((item) => (
-            <Link key={item.href} href={item.href}>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs font-medium h-9 rounded-xl hover:bg-white/10 dark:hover:bg-white/5"
+      <header className="fixed inset-x-0 top-0 z-50 border-b-2 border-foreground bg-background/92 backdrop-blur-md">
+        <motion.nav
+          initial={{ y: -64 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="mx-auto flex h-16 max-w-[1400px] items-stretch justify-between px-4 sm:px-6"
+          aria-label="Main"
+        >
+          {/* Wordmark */}
+          <Link href="/" className="group flex items-center gap-3" aria-label="Quizzy home">
+            <span className="flex h-9 w-9 items-center justify-center bg-foreground font-sans text-lg font-black text-background shadow-pop transition-transform duration-300 [--pop:var(--pop-violet)] [--pop-x:3px] [--pop-y:3px] group-hover:-rotate-6">
+              Q
+            </span>
+            <span className="font-sans text-xl font-black tracking-tight uppercase">
+              Quizzy
+              <span className="text-[0.6em] align-super">®</span>
+            </span>
+          </Link>
+
+          {/* Desktop links */}
+          <div className="hidden items-center gap-7 md:flex">
+            {navigationItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "group relative font-mono text-xs font-bold uppercase tracking-[0.18em] transition-colors",
+                  isActive(item.href) ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                )}
               >
+                <span className={cn("mr-1.5 inline-block h-1.5 w-1.5 rounded-full align-[1px] transition-colors", isActive(item.href) ? "bg-foreground" : "bg-transparent group-hover:bg-muted-foreground/50")} />
                 {item.label}
-              </Button>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </div>
 
-          <div className="w-px h-4 bg-slate-500/20 mx-2" />
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
 
-          <ThemeToggle />
-
-          <Link href="/category">
-            <Button
-              variant="default"
-              size="sm"
-              className="ml-2 h-9 rounded-xl bg-violet-600 hover:bg-violet-500 text-white border-0 shadow-lg shadow-violet-600/20 text-xs font-bold cursor-pointer transition-transform active:scale-95"
+            <Link
+              href="/category"
+              className="pop-hover hidden items-center gap-1.5 border-2 border-foreground bg-foreground px-4 py-2 font-mono text-xs font-bold uppercase tracking-[0.14em] text-background shadow-pop [--pop:var(--pop-lime)] sm:inline-flex"
             >
               All Quizzes
-            </Button>
-          </Link>
-        </div>
-
-        {/* Mobile Toggle */}
-        <div className="md:hidden flex items-center gap-2">
-          <ThemeToggle />
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="h-9 w-9 rounded-xl overflow-hidden relative"
-          >
-            <AnimatePresence mode="wait">
-              {isMobileMenuOpen ? (
-                <motion.div
-                  key="close"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                >
-                  <X className="h-5 w-5" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="menu"
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
-                >
-                  <Menu className="h-5 w-5" />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </Button>
-        </div>
-      </motion.nav>
-
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            className="absolute top-20 left-4 right-4 md:hidden p-4 rounded-3xl bg-white/95 dark:bg-slate-950/95 border border-white/20 dark:border-white/10 backdrop-blur-2xl shadow-2xl z-50 pointer-events-auto"
-          >
-            <div className="grid grid-cols-2 gap-2">
-              {navigationItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Link key={item.href} href={item.href} onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-slate-500/5 hover:bg-violet-500/10 transition-colors group">
-                      <div className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                        <Icon className="w-5 h-5 text-violet-500" />
-                      </div>
-                      <span className="text-xs font-bold text-slate-600 dark:text-slate-300">{item.label}</span>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-            <Link href="/category" onClick={() => setIsMobileMenuOpen(false)}>
-              <Button className="w-full mt-4 h-12 rounded-2xl bg-violet-600 hover:bg-violet-500 text-white font-bold text-sm cursor-pointer shadow-lg shadow-violet-600/20">
-                Explore All Quizzes
-              </Button>
+              <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+
+            {/* Mobile toggle */}
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen((open) => !open)}
+              aria-expanded={isMobileMenuOpen}
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+              className="flex h-10 w-10 items-center justify-center border-2 border-foreground transition-colors hover:bg-foreground hover:text-background md:hidden"
+            >
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </motion.nav>
+
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="overflow-hidden border-t-2 border-dashed border-foreground/30 md:hidden"
+            >
+              <div className="flex flex-col px-4 py-2 sm:px-6">
+                {navigationItems.map((item, i) => (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.05 * i, duration: 0.3 }}
+                  >
+                    <Link
+                      href={item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={cn(
+                        "group flex items-center justify-between border-b border-dotted border-foreground/30 py-4 font-sans text-2xl font-black uppercase tracking-tight last:border-b-0",
+                        isActive(item.href) ? "text-foreground" : "text-muted-foreground"
+                      )}
+                    >
+                      <span>{item.label}</span>
+                      <span className="font-mono text-xs font-normal">0{i + 1}</span>
+                    </Link>
+                  </motion.div>
+                ))}
+                <Link
+                  href="/category"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="my-4 flex items-center justify-center gap-2 border-2 border-foreground bg-foreground py-3 font-mono text-xs font-bold uppercase tracking-[0.14em] text-background"
+                >
+                  All Quizzes
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </header>
+    </>
   );
 };
 

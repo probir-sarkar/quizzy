@@ -1,10 +1,9 @@
 "use client";
 
-import { TrendingUp, ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import type { QuizCardDto as QuizCard } from "@/server/quiz";
 import Link from "next/link";
-import { Card } from "../ui/card";
-import { getCardGradient } from "@/lib/visual-utils";
+import { motion, useReducedMotion } from "motion/react";
 
 interface TrendingSectionProps {
   quizzes: QuizCard[];
@@ -14,48 +13,60 @@ export default function TrendingSection({ quizzes }: TrendingSectionProps) {
   if (!quizzes || quizzes.length === 0) return null;
 
   return (
-    <section className="container mx-auto px-4 mt-20">
-      <div className="flex items-center justify-between mb-8 px-2">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20">
-            <TrendingUp className="w-5 h-5 text-amber-500" />
-          </div>
-          <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Trending Now</h2>
+    <section id="trending" className="mx-auto max-w-[1400px] px-4 pt-20 sm:px-6">
+      <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="mb-2 font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+            Most played this week
+          </p>
+          <h2 className="font-sans text-4xl font-black uppercase tracking-tight sm:text-6xl">Trending</h2>
         </div>
-      </div>
+        <p className="hidden font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground sm:block">
+          ( {quizzes.length} entries )
+        </p>
+      </header>
 
-      <div className="flex gap-6 overflow-x-auto pb-8 no-scrollbar mask-fade-right">
+      <ol className="border-t-2 border-foreground">
         {quizzes.map((quiz, i) => (
-          <div key={quiz.id} className="min-w-[300px] sm:min-w-[350px]">
-            <Link href={`/quiz/${quiz.slug}`}>
-              <Card className="group relative h-48 rounded-[2rem] border-0 overflow-hidden shadow-2xl">
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${getCardGradient(i)} opacity-90 group-hover:scale-110 transition-transform duration-500`}
-                />
-                <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors" />
-
-                <div className="relative h-full p-6 flex flex-col justify-between text-white">
-                  <div>
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] bg-white/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
-                      {quiz.category?.name}
-                    </span>
-                    <h3 className="text-lg font-black mt-4 leading-tight group-hover:translate-x-1 transition-transform line-clamp-2">
-                      {quiz.title}
-                    </h3>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium opacity-80">{quiz._count.questions} questions</span>
-                    <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:bg-white group-hover:text-slate-900 transition-all">
-                      <ArrowRight className="w-5 h-5" />
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </Link>
-          </div>
+          <TrendingRow key={quiz.id} quiz={quiz} index={i} />
         ))}
-      </div>
+      </ol>
     </section>
+  );
+}
+
+function TrendingRow({ quiz, index }: { quiz: QuizCard; index: number }) {
+  const reduce = useReducedMotion();
+
+  return (
+    <motion.li
+      initial={reduce ? false : { opacity: 0, y: 16 }}
+      whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.5, delay: Math.min(index * 0.04, 0.2), ease: [0.16, 1, 0.3, 1] }}
+      className="border-b-2 border-dotted border-foreground/40 last:border-b-2 last:border-solid last:border-foreground/0"
+    >
+      <Link
+        href={`/quiz/${quiz.slug}`}
+        className="group flex items-center gap-4 px-1 py-5 transition-colors duration-200 hover:bg-foreground sm:gap-8 sm:px-4"
+      >
+        <span className="font-mono text-sm font-bold text-muted-foreground transition-colors group-hover:text-background/70 sm:text-base">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+
+        <div className="min-w-0 flex-1">
+          <h3 className="font-sans text-xl font-black uppercase leading-tight tracking-tight transition-colors group-hover:text-background sm:text-3xl">
+            {quiz.title}
+          </h3>
+          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground transition-colors group-hover:text-background/70 sm:text-[11px]">
+            {quiz.category?.name ?? "General"} — {quiz._count.questions} questions — {quiz.difficulty}
+          </p>
+        </div>
+
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center border-2 border-foreground transition-all duration-200 group-hover:rotate-45 group-hover:border-background group-hover:bg-lime-300 group-hover:text-foreground sm:h-12 sm:w-12">
+          <ArrowUpRight className="h-5 w-5" />
+        </span>
+      </Link>
+    </motion.li>
   );
 }

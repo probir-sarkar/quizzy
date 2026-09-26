@@ -3,6 +3,7 @@
 import { Search, ArrowUpDown } from "lucide-react";
 import { useState, useMemo } from "react";
 import { CategoryCard } from "./category-card";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
 
 interface Category {
   id: number;
@@ -64,51 +65,48 @@ export function CategoryFilter({ categories }: CategoryFilterProps) {
   ];
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-6">
       {/* Filter Bar */}
-      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         {/* Search */}
-        <div className="relative flex-1 min-w-0">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+        <div className="relative min-w-0 flex-1">
+          <Search className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search categories..."
-            className="w-full pl-10 pr-4 py-2 sm:py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-50 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-all text-sm sm:text-base"
+            placeholder="Search the index..."
+            className="w-full border-2 border-foreground bg-background py-3 pr-4 pl-11 font-mono text-sm placeholder:text-muted-foreground"
           />
         </div>
 
         {/* Sort Dropdown */}
         <div className="relative sm:w-auto">
           <button
+            type="button"
             onClick={() => setIsSortOpen(!isSortOpen)}
-            className="flex items-center justify-center sm:justify-start gap-2 w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors text-sm"
+            className="flex w-full items-center justify-center gap-2 border-2 border-foreground bg-background px-4 py-3 font-mono text-xs font-bold uppercase tracking-[0.14em] transition-colors hover:bg-foreground hover:text-background sm:w-auto"
           >
-            <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
-            <span className="font-medium truncate">
-              {sortOptions.find((opt) => opt.value === sortBy)?.label}
-            </span>
+            <ArrowUpDown className="h-4 w-4 shrink-0" />
+            <span className="truncate">{sortOptions.find((opt) => opt.value === sortBy)?.label}</span>
           </button>
 
           {isSortOpen && (
             <>
-              <div
-                className="fixed inset-0 z-10"
-                onClick={() => setIsSortOpen(false)}
-              />
-              <div className="absolute right-0 left-0 sm:left-auto sm:min-w-48 mt-2 z-20 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg overflow-hidden">
+              <div className="fixed inset-0 z-10" onClick={() => setIsSortOpen(false)} />
+              <div className="absolute top-full right-0 left-0 z-20 mt-2 overflow-hidden border-2 border-foreground bg-card shadow-pop [--pop:var(--pop-violet)] [--pop-x:5px] [--pop-y:5px] sm:left-auto sm:min-w-48">
                 {sortOptions.map((option) => (
                   <button
                     key={option.value}
+                    type="button"
                     onClick={() => {
                       setSortBy(option.value);
                       setIsSortOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                    className={`w-full border-b border-dotted border-foreground/30 px-4 py-2.5 text-left font-mono text-xs font-bold uppercase tracking-[0.14em] transition-colors last:border-b-0 ${
                       sortBy === option.value
-                        ? "bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 font-medium"
-                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750"
+                        ? "bg-foreground text-background"
+                        : "hover:bg-muted"
                     }`}
                   >
                     {option.label}
@@ -122,24 +120,26 @@ export function CategoryFilter({ categories }: CategoryFilterProps) {
 
       {/* Results count */}
       {searchQuery && (
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
           {filteredCategories.length} {filteredCategories.length === 1 ? "category" : "categories"} found
         </p>
       )}
 
       {/* Render filtered categories */}
       {filteredCategories.length > 0 ? (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <Stagger gap={0.03} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filteredCategories.map((cat) => (
-            <CategoryCard key={cat.id} category={cat} />
+            <StaggerItem key={cat.id}>
+              <CategoryCard category={cat} />
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       ) : (
-        <div className="text-center py-20">
-          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
-            No categories found
-          </h3>
-          <p className="text-gray-500 dark:text-gray-400">Try adjusting your search or filters</p>
+        <div className="border-2 border-dashed border-foreground/40 py-20 text-center">
+          <h3 className="font-sans text-2xl font-black uppercase tracking-tight">Nothing filed under that</h3>
+          <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            Try adjusting your search or filters
+          </p>
         </div>
       )}
     </div>

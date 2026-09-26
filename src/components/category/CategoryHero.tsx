@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Sparkles, ChevronLeft } from "lucide-react";
-import React, { useMemo } from "react";
+import { ArrowLeft } from "lucide-react";
+import { useMemo } from "react";
+
+import { CountUp } from "@/components/motion/count-up";
+import { Reveal } from "@/components/motion/reveal";
 
 export type CategoryPageType = {
   name: string;
@@ -11,77 +14,70 @@ export type CategoryPageType = {
   subCategryCount: number;
 };
 
-function pickGradient(slug?: string) {
-  const gradients = [
-    "bg-gradient-to-r from-emerald-500 to-teal-600",
-    "bg-gradient-to-r from-amber-500 to-orange-600",
-    "bg-gradient-to-r from-rose-500 to-fuchsia-600",
-    "bg-gradient-to-r from-indigo-500 to-purple-600",
-    "bg-gradient-to-r from-sky-500 to-blue-600",
-    "bg-gradient-to-r from-lime-500 to-emerald-600"
-  ];
-  if (!slug) return gradients[0];
-  let h = 0;
-  for (let i = 0; i < slug.length; i++) h = (h << 5) - h + slug.charCodeAt(i);
-  const idx = Math.abs(h) % gradients.length;
-  return gradients[idx];
-}
+const POP_CYCLE = ["var(--pop-violet)", "var(--pop-lime)", "var(--pop-cyan)", "var(--pop-rose)", "var(--pop-amber)", "var(--pop-blue)"];
 
 export default function CategoryHero({ category }: { category: CategoryPageType }) {
-  const gradient = useMemo(() => pickGradient(category.slug), [category.slug]);
+  const pop = useMemo(() => {
+    if (!category.slug) return POP_CYCLE[0];
+    let h = 0;
+    for (let i = 0; i < category.slug.length; i++) h = (h << 5) - h + category.slug.charCodeAt(i);
+    return POP_CYCLE[Math.abs(h) % POP_CYCLE.length];
+  }, [category.slug]);
+
   if (!category) return null;
 
-  const description = `Explore quizzes in ${category.name}. Find popular quizzes, filter by difficulty, and challenge yourself!`;
+  const description = `Every quiz we publish under ${category.name}. Filter by sub-topic, keep honest score, and work your way through the archive.`;
 
   return (
-    <section className="relative overflow-hidden bg-gray-100 dark:bg-slate-950 pt-24 pb-12 md:pt-32 md:pb-20">
-      {/* Background blobs */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div
-          className={`absolute -top-1/2 -right-1/4 w-[70%] h-[70%] rounded-full opacity-10 dark:opacity-20 blur-[120px] animate-pulse ${gradient}`}
-        />
-        <div
-          className={`absolute -bottom-1/2 -left-1/4 w-[70%] h-[70%] rounded-full opacity-5 dark:opacity-10 blur-[120px] animate-pulse [animation-delay:2s] ${gradient}`}
-        />
-      </div>
-
-      <div className="relative container mx-auto px-4 sm:px-6">
-        {/* Back button */}
-        <div className="mb-6 md:mb-8">
+    <section className="border-b-2 border-foreground">
+      <div className="mx-auto max-w-[1400px] px-4 pt-28 pb-12 sm:px-6 md:pt-36">
+        <Reveal y={12}>
           <Link
             href="/category"
-            className="inline-flex items-center gap-2 rounded-full bg-white/80 hover:bg-white dark:bg-white/5 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 px-3 py-1.5 text-xs sm:text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors"
+            className="group inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground"
           >
-            <ChevronLeft className="w-3.5 h-3.5" />
-            Back to Categories
+            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+            All categories
           </Link>
-        </div>
+        </Reveal>
 
-        {/* Content */}
-        <div className="max-w-3xl w-full">
-          <div className="flex items-center gap-3 mb-4 md:mb-6">
-            <div className="p-2 rounded-xl bg-white/80 dark:bg-white/5 border border-gray-200 dark:border-white/10 backdrop-blur-sm">
-              <Sparkles className={`w-5 h-5 md:w-6 md:h-6 text-gray-700 dark:text-white`} />
-            </div>
-            <h1 className="text-3xl md:text-5xl font-black tracking-tight text-gray-900 dark:text-white break-words">{category.name}</h1>
-          </div>
+        <Reveal delay={0.05}>
+          <p className="mt-6 font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+            Category file — {category.quizCount} {category.quizCount === 1 ? "entry" : "entries"}
+          </p>
+        </Reveal>
 
-          <p className="text-gray-600 dark:text-slate-400 text-base md:text-xl leading-relaxed mb-8 max-w-2xl break-words">
+        <Reveal delay={0.1}>
+          <h1
+            className="mt-3 inline-block border-b-8 font-sans text-5xl font-black uppercase leading-[0.9] tracking-[-0.02em] wrap-break-word sm:text-7xl lg:text-8xl"
+            style={{ borderBottomColor: pop }}
+          >
+            {category.name}
+          </h1>
+        </Reveal>
+
+        <Reveal delay={0.15}>
+          <p className="mt-6 max-w-xl font-sans text-base leading-relaxed text-muted-foreground sm:text-lg">
             {description}
           </p>
+        </Reveal>
 
-          <div className="flex flex-wrap gap-3">
-            <div className="px-4 py-2 rounded-xl bg-white/80 dark:bg-white/5 border border-gray-200 dark:border-white/10 backdrop-blur-sm flex items-center gap-2">
-              <span className={`font-bold text-lg text-gray-900 dark:text-white`}>{category.quizCount}</span>
-              <span className="text-gray-600 dark:text-slate-400 text-sm font-medium">Quizzes</span>
+        <Reveal delay={0.2}>
+          <div className="rule-dotted mt-8 flex gap-12 pt-6">
+            <div>
+              <CountUp value={category.quizCount} className="font-sans text-4xl font-black tabular-nums sm:text-5xl" />
+              <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+                Quizzes
+              </p>
             </div>
-
-            <div className="px-4 py-2 rounded-xl bg-white/80 dark:bg-white/5 border border-gray-200 dark:border-white/10 backdrop-blur-sm flex items-center gap-2">
-              <span className={`font-bold text-lg text-gray-900 dark:text-white`}>{category.subCategryCount}</span>
-              <span className="text-gray-600 dark:text-slate-400 text-sm font-medium">Subcategories</span>
+            <div>
+              <CountUp value={category.subCategryCount} className="font-sans text-4xl font-black tabular-nums sm:text-5xl" />
+              <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
+                Sub-topics
+              </p>
             </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

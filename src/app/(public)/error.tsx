@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { AlertCircle, RefreshCw, Home } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import Link from "next/link";
 
 export default function Error({
@@ -16,46 +16,38 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-950 px-4">
-      <div className="max-w-md w-full text-center space-y-6">
-        <div className="flex justify-center">
-          <div className="p-4 rounded-full bg-red-100 dark:bg-red-900/20">
-            <AlertCircle className="w-12 h-12 text-red-600 dark:text-red-400" />
-          </div>
-        </div>
-
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Oops! Something went wrong
-        </h1>
-
-        <p className="text-gray-600 dark:text-gray-400">
-          We encountered an unexpected error. Don&apos;t worry, your quiz progress is safe!
+    <div className="flex min-h-[70vh] items-center justify-center px-4">
+      <div className="w-full max-w-md border-2 border-foreground bg-card p-8 text-center shadow-pop [--pop:var(--pop-rose)] [--pop-x:8px] [--pop-y:8px]">
+        <p className="font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+          Error 500 — press stopped
+        </p>
+        <h1 className="mt-3 font-sans text-4xl font-black uppercase tracking-tight">Ink spill</h1>
+        <p className="mt-3 font-sans text-sm leading-relaxed text-muted-foreground">
+          Something went wrong at the printing press. Don&apos;t worry — your quiz progress is safe.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
           <button
             onClick={reset}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-500 to-fuchsia-600 text-white font-medium rounded-lg hover:shadow-lg transition-all active:scale-95"
+            className="pop-hover inline-flex flex-1 cursor-pointer items-center justify-center gap-2 border-2 border-foreground bg-foreground px-5 py-3 font-mono text-xs font-bold uppercase tracking-[0.14em] text-background shadow-pop [--pop:var(--pop-lime)] [--pop-x:4px] [--pop-y:4px]"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className="h-4 w-4" />
             Try Again
           </button>
-
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 font-medium rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
+            className="pop-hover inline-flex flex-1 items-center justify-center border-2 border-foreground bg-background px-5 py-3 font-mono text-xs font-bold uppercase tracking-[0.14em] shadow-pop [--pop:var(--pop-violet)] [--pop-x:4px] [--pop-y:4px] hover:bg-foreground hover:text-background"
           >
-            <Home className="w-4 h-4" />
             Go Home
           </Link>
         </div>
 
         {process.env.NODE_ENV === "development" && error.message && (
           <details className="mt-6 text-left">
-            <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+            <summary className="cursor-pointer font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
               Error details
             </summary>
-            <pre className="mt-2 p-4 bg-gray-100 dark:bg-slate-900 rounded-lg text-xs overflow-auto text-red-600 dark:text-red-400">
+            <pre className="mt-2 overflow-auto border-2 border-dashed border-foreground/40 p-3 font-mono text-xs">
               {error.message}
             </pre>
           </details>

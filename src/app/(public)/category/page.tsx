@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { Sparkles, ChevronLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { CategoryCountSection, CategoryCountSkeleton } from "./category-count";
 import { CategoryListSection, CategoryListSkeleton } from "./category-list";
+import { Reveal } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
   title: "All Quiz Categories - Quizzy",
@@ -13,44 +14,47 @@ export const metadata: Metadata = {
 
 export default async function CategoriesPage() {
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gray-100 dark:bg-slate-950 pt-24 pb-12 md:pt-32 md:pb-20">
-        {/* Background blobs */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-1/2 -right-1/4 w-[70%] h-[70%] rounded-full bg-linear-to-br from-indigo-500/10 to-purple-500/10 dark:from-indigo-500/20 dark:to-purple-500/20 opacity-50 blur-[120px] animate-pulse" />
-          <div className="absolute -bottom-1/2 -left-1/4 w-[70%] h-[70%] rounded-full bg-linear-to-br from-pink-500/10 to-fuchsia-500/10 dark:from-pink-500/20 dark:to-fuchsia-500/20 opacity-30 blur-[120px] animate-pulse [animation-delay:2s]" />
-        </div>
-
-        <div className="relative container mx-auto px-4 sm:px-6">
-          <div className="mb-6 md:mb-8">
+    <main className="min-h-screen">
+      {/* Hero */}
+      <section className="border-b-2 border-foreground">
+        <div className="mx-auto max-w-[1400px] px-4 pt-28 pb-12 sm:px-6 md:pt-36">
+          <Reveal y={12}>
             <Link
               href="/"
               prefetch
-              className="inline-flex items-center gap-2 rounded-full bg-white/80 hover:bg-white dark:bg-white/5 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 px-3 py-1.5 text-xs sm:text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors"
+              className="group inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground"
             >
-              <ChevronLeft className="w-3.5 h-3.5" /> Back to Home
+              <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+              Back to home
             </Link>
-          </div>
+          </Reveal>
 
-          <div className="max-w-3xl w-full">
-            <div className="flex items-center gap-3 mb-4 md:mb-6">
-              <div className="p-2 rounded-xl bg-indigo-100 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20">
-                <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-indigo-600 dark:text-indigo-400" />
-              </div>
-              <h1 className="text-3xl md:text-5xl font-black tracking-tight text-gray-900 dark:text-white wrap-break-word">
-                All Categories
-              </h1>
-            </div>
-
-            <p className="text-gray-600 dark:text-slate-400 text-base md:text-xl leading-relaxed mb-8 max-w-2xl wrap-break-word">
-              Explore our diverse collection of quizzes. From science to pop culture, find your perfect challenge and
-              test your knowledge.
+          <Reveal delay={0.05}>
+            <p className="mt-6 font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+              The full index
             </p>
-            <Suspense fallback={<CategoryCountSkeleton />}>
-              <CategoryCountSection />
-            </Suspense>
-          </div>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <h1 className="mt-3 font-sans text-5xl font-black uppercase leading-[0.9] tracking-[-0.02em] sm:text-7xl lg:text-8xl">
+              All <span className="border-b-8 border-lime-300">Categories</span>
+            </h1>
+          </Reveal>
+
+          <Reveal delay={0.15}>
+            <p className="mt-6 max-w-xl font-sans text-base leading-relaxed text-muted-foreground sm:text-lg">
+              From science to pop culture — pick a shelf, start pulling books down. Every category keeps its own
+              scoreboard.
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.2}>
+            <div className="rule-dotted mt-8 pt-6">
+              <Suspense fallback={<CategoryCountSkeleton />}>
+                <CategoryCountSection />
+              </Suspense>
+            </div>
+          </Reveal>
         </div>
       </section>
 

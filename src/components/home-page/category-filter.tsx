@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -7,31 +5,40 @@ interface CategoryFiltersProps {
   categories: { name: string; slug: string }[];
 }
 
-export default function CategoryFilters({ categories }: CategoryFiltersProps) {
-  const badgeStyles = cn(
-    "relative px-6 py-2.5 rounded-2xl whitespace-nowrap cursor-pointer transition-all duration-300",
-    "text-sm font-semibold tracking-tight",
-    "bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 backdrop-blur-md",
-    "text-slate-600 dark:text-slate-400",
-    "hover:text-violet-600 dark:hover:text-white hover:-translate-y-0.5 active:scale-95",
-    "hover:border-violet-500/50 hover:bg-violet-50 dark:hover:bg-violet-500/10",
-    "shadow-sm dark:shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:shadow-md dark:hover:shadow-[0_4px_30px_rgba(139,92,246,0.15)]"
-  );
+const POP_CYCLE = [
+  "var(--pop-violet)",
+  "var(--pop-lime)",
+  "var(--pop-cyan)",
+  "var(--pop-rose)",
+  "var(--pop-amber)",
+  "var(--pop-blue)"
+];
 
+export default function CategoryFilters({ categories }: CategoryFiltersProps) {
   return (
-    <div className="px-4 mt-12 container mx-auto">
-      <div className="flex gap-3 overflow-x-auto pb-6 no-scrollbar mask-fade-right">
-        <Link href="/category" scroll={false}>
-          <div className={cn(badgeStyles, "bg-violet-600 text-white border-violet-500 shadow-violet-500/20")}>
+    <div id="categories" className="mx-auto max-w-[1400px] px-4 pt-20 sm:px-6">
+      <p className="mb-5 font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+        Jump straight in
+      </p>
+      <div className="no-scrollbar flex gap-4 overflow-x-auto pb-3">
+        <Link href="/category" className="shrink-0">
+          <span
+            className={cn(
+              "pop-hover inline-block border-2 border-foreground bg-foreground px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-[0.14em] text-background shadow-pop [--pop:var(--pop-lime)]"
+            )}
+          >
             Explore All
-          </div>
+          </span>
         </Link>
 
-        {categories.map((cat) => (
-          <Link key={cat.slug} href={`/category/${cat.slug}`} prefetch>
-            <div className={badgeStyles}>
+        {categories.map((cat, i) => (
+          <Link key={cat.slug} href={`/category/${cat.slug}`} prefetch className="shrink-0">
+            <span
+              className="pop-hover inline-block border-2 border-foreground bg-background px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-[0.14em] shadow-pop hover:bg-foreground hover:text-background"
+              style={{ "--pop": POP_CYCLE[i % POP_CYCLE.length] } as React.CSSProperties}
+            >
               {cat.name}
-            </div>
+            </span>
           </Link>
         ))}
       </div>

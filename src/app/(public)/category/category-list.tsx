@@ -7,18 +7,16 @@ export async function CategoryListSection() {
   const categories = data.categories;
 
   return (
-    <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-14">
-      <div className="max-w-6xl">
-        <CategoryFilter categories={categories} />
-      </div>
+    <section className="mx-auto max-w-[1400px] px-4 py-16 sm:px-6">
+      <CategoryFilter categories={categories} />
     </section>
   );
 }
 
 export function CategoryListSkeleton() {
   return (
-    <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-14">
-      <div className="max-w-6xl grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <section className="mx-auto max-w-[1400px] px-4 py-16 sm:px-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 24 }).map((_, i) => (
           <CategoryCardSkeleton key={i} />
         ))}
