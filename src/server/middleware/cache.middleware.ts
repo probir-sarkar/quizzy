@@ -6,6 +6,10 @@ export const ONE_HOUR = 60 * ONE_MINUTE;
 export const ONE_DAY = 24 * ONE_HOUR;
 export const cacheMiddleware = ({ ttl = ONE_HOUR }: { ttl?: number }) =>
   os.middleware(async ({ context, next, path }, input, output) => {
+    if (process.env.NODE_ENV === "development") {
+      return next({});
+    }
+
     const redis = getRedis();
     const cacheKey = path.join("/") + JSON.stringify(input);
 
