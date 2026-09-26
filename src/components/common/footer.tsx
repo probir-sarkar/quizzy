@@ -1,9 +1,6 @@
-import { Mail } from "lucide-react";
 import Link from "next/link";
 import CurrentYear from "./current-year";
 import { Suspense } from "react";
-import GithubIcon from "../icons/github-icon";
-import XIcon from "../icons/x-icon";
 import { Reveal } from "@/components/motion/reveal";
 
 type FooterLink = {
@@ -67,11 +64,6 @@ export default function Footer() {
               Thousands of hand-curated questions across every topic we could think of — no AI slop, no sign-up,
               no nonsense. Pick a category, keep score, argue about the answers.
             </p>
-            <div className="flex gap-3">
-              <SocialLink icon={<GithubIcon className="h-4 w-4" />} href="#" label="GitHub" />
-              <SocialLink icon={<XIcon className="h-4 w-4" />} href="#" label="X" />
-              <SocialLink icon={<Mail className="h-4 w-4" />} href="mailto:me@probirsarkar.com" label="Email" />
-            </div>
           </div>
 
           {footerLinks.map((section) => (
@@ -116,13 +108,3 @@ export default function Footer() {
     </footer>
   );
 }
-
-const SocialLink = ({ icon, href, label }: { icon: React.ReactNode; href: string; label: string }) => (
-  <Link
-    href={href}
-    aria-label={label}
-    className="pop-hover flex h-10 w-10 items-center justify-center border-2 border-foreground bg-background shadow-pop [--pop:var(--pop-cyan)] [--pop-x:3px] [--pop-y:3px] hover:bg-foreground hover:text-background"
-  >
-    {icon}
-  </Link>
-);
