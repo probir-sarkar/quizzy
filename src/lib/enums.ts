@@ -1,4 +1,4 @@
-// Database enum values mirrored from prisma8/contract.prisma (native_enum).
+// Database enum values mirrored from prisma/contract.prisma (native_enum).
 // Kept as const objects so both type and runtime usages (Object.values, member
 // access) work the same way the generated Prisma 7 enums did.
 export const QuizDifficulty = {
