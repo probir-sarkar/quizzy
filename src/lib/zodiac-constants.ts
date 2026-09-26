@@ -1,4 +1,4 @@
-import { ZodiacSign } from "@/generated/prisma/client";
+import { ZodiacSign } from "@/lib/enums";
 
 export const ZODIAC_SIGN_INFO = {
   ARIES: {

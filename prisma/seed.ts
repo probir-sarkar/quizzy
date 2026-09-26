@@ -1,7 +1,6 @@
-import { PrismaClient } from "@/generated/prisma/client";
 import { kebabCase } from "es-toolkit";
 import { categories } from "./categories";
-import prisma from "@/lib/prisma";
+import { db } from "@/lib/prisma";
 type InputCategory = {
   category: string;
   subcategories: string[];
@@ -9,15 +8,15 @@ type InputCategory = {
 
 export async function seedCategory(input: InputCategory) {
   // 1) Upsert category (you can key by name or slug; both are unique)
-  const category = await prisma.category.upsert({
-    where: { name: input.category },
-    update: {
-      slug: kebabCase(input.category)
-    },
+  const category = await db.orm.public.Category.upsert({
     create: {
       name: input.category,
       slug: kebabCase(input.category)
-    }
+    },
+    update: {
+      slug: kebabCase(input.category)
+    },
+    conflictOn: { name: input.category }
   });
 
   // 2) De-dup and normalize subcategory names
@@ -26,19 +25,16 @@ export async function seedCategory(input: InputCategory) {
   // 3) Upsert each SubCategory using the compound unique: categoryId + name
   await Promise.all(
     subNames.map((name) =>
-      prisma.subCategory.upsert({
-        where: {
-          // This matches your @@unique([categoryId, name]) → compound key name is "categoryId_name"
-          categoryId_name: { categoryId: category.id, name }
-        },
-        update: {
-          slug: kebabCase(name)
-        },
+      db.orm.public.SubCategory.upsert({
         create: {
           name,
           slug: kebabCase(name),
           categoryId: category.id
-        }
+        },
+        update: {
+          slug: kebabCase(name)
+        },
+        conflictOn: { categoryId: category.id, name }
       })
     )
   );
@@ -58,5 +54,5 @@ main()
     process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect();
+    await db.close();
   });

@@ -1,5 +1,5 @@
 import { os } from "@orpc/server";
-import prisma, { db } from "@/lib/prisma";
+import { db } from "@/lib/prisma";
 import { cacheMiddleware, ONE_DAY } from "../middleware/cache.middleware";
 
 export const getAllCategoriesWithStats = os.use(cacheMiddleware({ ttl: ONE_DAY })).handler(async () => {
@@ -23,6 +23,9 @@ export const getAllCategoriesWithStats = os.use(cacheMiddleware({ ttl: ONE_DAY }
 });
 
 export const getCategoryCounts = os.use(cacheMiddleware({ ttl: ONE_DAY })).handler(async () => {
-  const [categoryCount, subCategoryCount] = await Promise.all([prisma.category.count(), prisma.subCategory.count()]);
-  return { categoryCount, subCategoryCount };
+  const [categoryTotals, subCategoryTotals] = await Promise.all([
+    db.orm.public.Category.aggregate((agg) => ({ count: agg.count() })),
+    db.orm.public.SubCategory.aggregate((agg) => ({ count: agg.count() }))
+  ]);
+  return { categoryCount: categoryTotals.count, subCategoryCount: subCategoryTotals.count };
 });

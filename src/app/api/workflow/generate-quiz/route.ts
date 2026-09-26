@@ -1,6 +1,7 @@
 import { serve } from "@upstash/workflow/nextjs";
 import { extractJsonMiddleware, generateText, Output, wrapLanguageModel } from "ai";
-import prisma from "@/lib/prisma";
+import { randomUUID } from "node:crypto";
+import { db, asTimestamp } from "@/lib/prisma";
 import { kebabCase } from "es-toolkit";
 import { QuizDoc } from "@/app/api/workflow/generate-quiz/schema";
 import { model } from "@/lib/ai-models";
@@ -52,36 +53,51 @@ export const { POST } = serve(async (context) => {
     try {
       const { categoryId, subCategoryId, quizDoc } = generationResult;
 
-      return prisma.quiz.create({
-        data: {
+      await db.transaction(async (tx) => {
+        // Quiz.id has no client-side default in the v8 contract and updatedAt
+        // has no DB default, so both are supplied explicitly.
+        const quiz = await tx.orm.public.Quiz.create({
+          id: randomUUID(),
+          updatedAt: asTimestamp(new Date()),
           quizPageTitle: quizDoc.quizPageTitle,
           quizPageDescription: quizDoc.quizPageDescription,
           categoryId,
           subCategoryId,
-          tags: {
-            create: quizDoc.tags.map((name) => ({
-              tag: {
-                connectOrCreate: {
-                  where: { name },
-                  create: { name }
-                }
-              }
-            }))
-          },
           difficulty: quizDoc.difficulty,
           title: quizDoc.title,
           description: quizDoc.description,
           slug: kebabCase(quizDoc.quizPageTitle),
-          isPublished: false,
-          questions: {
-            create: quizDoc.questions.map((q) => ({
-              text: q.prompt,
-              options: q.options,
-              correctIndex: q.correctIndex,
-              explanation: q.explanation ?? null
-            }))
-          }
-        }
+          isPublished: false
+        });
+
+        await tx.orm.public.Question.createAll(
+          quizDoc.questions.map((q) => ({
+            id: randomUUID(),
+            quizId: quiz.id,
+            text: q.prompt,
+            options: q.options,
+            correctIndex: q.correctIndex,
+            explanation: q.explanation ?? null
+          }))
+        );
+
+        // Quiz↔Tag is a junction table (QuizTag); v8 has no N:M nested
+        // mutations, so tags are upserted and linked explicitly.
+        const tags = await Promise.all(
+          quizDoc.tags.map((name) =>
+            tx.orm.public.Tag.upsert({
+              create: { name },
+              update: {},
+              conflictOn: { name }
+            })
+          )
+        );
+
+        await tx.orm.public.QuizTag.createAll(
+          tags.map((tag) => ({ quizId: quiz.id, tagId: tag.id }))
+        );
+
+        return quiz;
       });
     } catch (error) {
       // Stop execution gracefully without error

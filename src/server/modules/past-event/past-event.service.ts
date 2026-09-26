@@ -1,42 +1,23 @@
-import prisma from '@/lib/prisma'
-import { PastEvent, EventCategory } from '@/generated/prisma/client'
+import { db } from '@/lib/prisma'
 
 export abstract class PastEventService {
-  static async getByMonthDay(month?: number, day?: number): Promise<{ events: PastEvent[], month: number, day: number }> {
+  static async getByMonthDay(month?: number, day?: number) {
     // Default to today's date if not provided
     const today = new Date();
     const selectedMonth = month ?? today.getMonth() + 1; // JavaScript months are 0-indexed
     const selectedDay = day ?? today.getDate();
 
     try {
-      const events = await prisma.pastEvent.findMany({
-        where: {
-          month: selectedMonth,
-          day: selectedDay,
-          isPublished: true
-        },
-        orderBy: [
-          { year: 'asc' },
-          { title: 'asc' }
-        ],
-        select: {
-          id: true,
-          month: true,
-          day: true,
-          year: true,
-          title: true,
-          slug: true,
-          description: true,
-          category: true,
-          tags: true,
-          sourceUrls: true,
-          eventDate: true,
-          metadata: true,
-          isPublished: true,
-          createdAt: true,
-          updatedAt: true
-        }
-      })
+      const rows = await db.orm.public.PastEvent
+        .where({ month: selectedMonth, day: selectedDay, isPublished: true })
+        .orderBy([(e) => e.year.asc(), (e) => e.title.asc()])
+        .all()
+
+      const events = rows.map((event) => ({
+        ...event,
+        tags: event.tags ?? [],
+        sourceUrls: event.sourceUrls ?? []
+      }))
 
       return { events, month: selectedMonth, day: selectedDay }
     } catch (error) {

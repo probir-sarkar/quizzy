@@ -1,5 +1,5 @@
-import prisma from "@/lib/prisma";
-import { QuizWhereInput } from "@/generated/prisma/models";
+import { db } from "@/lib/prisma";
+import { or } from "@prisma/orm-postgres/orm-client";
 import { shuffle } from "es-toolkit/array";
 import * as D from "./dto/quiz.schema";
 
@@ -33,108 +33,87 @@ export function shuffleOptions(question: QuestionType): QuestionType {
   };
 }
 
+// Map an include()'d questions count reducer onto the v7-style `_count` shape
+const withQuestionCount = <T extends { questions: number }>(quiz: T) => ({
+  ...quiz,
+  _count: { questions: quiz.questions }
+});
+
+// Map quizTags (with their tag) onto the v7-style `tags` array shape
+const toTagRows = <TTag>(quizTags: Array<{ quizId: string; tagId: number; tag: TTag }>) =>
+  quizTags.map(({ quizId, tagId, tag }) => ({ quizId, tagId, tag }));
+
 export abstract class QuizService {
   static async getHomePageStats() {
-    const [totalQuizzes, totalCategories, totalSubCategories] = await Promise.all([
-      prisma.quiz.count(),
-      prisma.category.count(),
-      prisma.subCategory.count()
+    const [quizTotals, categoryTotals, subCategoryTotals] = await Promise.all([
+      db.orm.public.Quiz.aggregate((agg) => ({ count: agg.count() })),
+      db.orm.public.Category.aggregate((agg) => ({ count: agg.count() })),
+      db.orm.public.SubCategory.aggregate((agg) => ({ count: agg.count() }))
     ]);
 
     return {
-      totalQuizzes,
-      totalCategories,
-      totalSubCategories
+      totalQuizzes: quizTotals.count,
+      totalCategories: categoryTotals.count,
+      totalSubCategories: subCategoryTotals.count
     };
   }
 
   static async getHomePageData() {
-    return prisma.category.findMany({
-      where: {
-        quizzes: {
-          some: {}
-        }
-      },
-      take: 12,
-      include: {
-        quizzes: {
-          take: 4,
-          orderBy: {
-            createdAt: "desc"
-          },
-          include: {
-            category: true,
-            _count: {
-              select: {
-                questions: true
-              }
-            }
-          }
-        }
-      }
-    });
+    const categories = await db.orm.public.Category
+      .where((cat) => cat.quizzes.some())
+      .limit(12)
+      .include("quizzes", (quizzes) =>
+        quizzes
+          .include("category", (category) => category)
+          .include("questions", (questions) => questions.count())
+          .orderBy((quiz) => quiz.createdAt.desc())
+          .limit(4)
+      )
+      .all();
+
+    return categories.map((category) => ({
+      ...category,
+      quizzes: category.quizzes.map(withQuestionCount)
+    }));
   }
 
   static async getCategories() {
-    return prisma.category.findMany({
-      orderBy: {
-        name: "asc"
-      }
-    });
+    return db.orm.public.Category.orderBy((cat) => cat.name.asc()).all();
   }
 
   static async getCategoryInfo(slug: string) {
-    return prisma.category.findUnique({
-      where: { slug },
-      include: {
-        subCategories: {
-          include: {
-            _count: {
-              select: {
-                quizzes: true
-              }
-            }
-          },
-          orderBy: {
-            quizzes: {
-              _count: "desc"
-            }
-          }
-        },
-        _count: {
-          select: {
-            quizzes: true
-          }
-        }
-      }
-    });
+    const category = await db.orm.public.Category
+      .include("subCategories", (subCategories) =>
+        subCategories.include("quizzes", (quizzes) => quizzes.count())
+      )
+      .include("quizzes", (quizzes) => quizzes.count())
+      .first({ slug });
+
+    if (!category) return null;
+
+    return {
+      ...category,
+      subCategories: category.subCategories
+        .map((sub) => ({ ...sub, _count: { quizzes: sub.quizzes } }))
+        .sort((a, b) => b._count.quizzes - a._count.quizzes),
+      _count: { quizzes: category.quizzes }
+    };
   }
 
   static async getSubCategoriesByCategory(slug: string) {
-    const category = await prisma.category.findUnique({
-      where: { slug },
-      select: {
-        subCategories: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-            _count: {
-              select: {
-                quizzes: true
-              }
-            }
-          },
-          orderBy: {
-            quizzes: {
-              _count: "desc"
-            }
-          }
-        }
-      }
-    });
+    const category = await db.orm.public.Category
+      .include("subCategories", (subCategories) =>
+        subCategories
+          .select("id", "name", "slug")
+          .include("quizzes", (quizzes) => quizzes.count())
+      )
+      .first({ slug });
 
-    return category?.subCategories ?? [];
+    if (!category) return [];
+
+    return category.subCategories
+      .map((sub) => ({ id: sub.id, name: sub.name, slug: sub.slug, _count: { quizzes: sub.quizzes } }))
+      .sort((a, b) => b._count.quizzes - a._count.quizzes);
   }
 
   static async getQuizzesByCategory({
@@ -147,62 +126,74 @@ export abstract class QuizService {
     const actualPerPage = perPage ?? DEFAULT_PER_PAGE;
     const skip = (actualPage - 1) * actualPerPage;
 
-    const where: QuizWhereInput = {
-      category: { slug: categorySlug }
-    };
+    const category = await db.orm.public.Category
+      .include("subCategories", (subCategories) =>
+        subCategories.include("quizzes", (quizzes) => quizzes.count())
+      )
+      .include("quizzes", (quizzes) => quizzes.count())
+      .first({ slug: categorySlug });
 
-    if (subCategorySlug) {
-      where.subCategory = { slug: subCategorySlug };
+    if (!category) {
+      return {
+        items: [],
+        category: null,
+        meta: {
+          total: 0,
+          totalPages: 1,
+          currentPage: actualPage,
+          perPage: actualPerPage
+        }
+      };
     }
 
-    const [category, total] = await Promise.all([
-      prisma.category.findUnique({
-        where: { slug: categorySlug },
-        include: {
-          subCategories: {
-            include: {
-              _count: {
-                select: {
-                  quizzes: true
-                }
-              }
-            },
-            orderBy: {
-              quizzes: {
-                _count: "desc"
-              }
-            }
-          },
-          _count: {
-            select: {
-              quizzes: true
-            }
-          }
-        }
-      }),
-      prisma.quiz.count({ where })
+    let subCategoryId: number | null = null;
+    if (subCategorySlug) {
+      const subCategory = await db.orm.public.SubCategory
+        .where((sub) => sub.categoryId.eq(category.id))
+        .where((sub) => sub.slug.eq(subCategorySlug))
+        .select("id")
+        .first();
+      subCategoryId = subCategory?.id ?? null;
+    }
+
+    const quizFilters = db.orm.public.Quiz.where((quiz) => quiz.categoryId.eq(category.id));
+    const filteredQuizzes = subCategoryId
+      ? quizFilters.where((quiz) => quiz.subCategoryId.eq(subCategoryId))
+      : quizFilters;
+
+    const [totals, items] = await Promise.all([
+      filteredQuizzes.aggregate((agg) => ({ count: agg.count() })),
+      filteredQuizzes
+        .orderBy((quiz) => quiz.createdAt.desc())
+        .offset(skip)
+        .limit(actualPerPage)
+        .include("category", (category) => category)
+        .include("subCategory", (subCategory) => subCategory)
+        .include("quizTags", (quizTags) =>
+          quizTags.include("tag", (tag) => tag)
+        )
+        .include("questions", (questions) => questions.count())
+        .all()
     ]);
 
-    const items = await prisma.quiz.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      skip,
-      take: actualPerPage,
-      include: {
-        category: true,
-        subCategory: true,
-        tags: { include: { tag: true } },
-        _count: { select: { questions: true } }
-      }
-    });
-
-    const totalPages = Math.max(1, Math.ceil(total / actualPerPage));
+    const totalPages = Math.max(1, Math.ceil(totals.count / actualPerPage));
 
     return {
-      items,
-      category,
+      items: items.map((quiz) => ({
+        ...quiz,
+        tags: toTagRows(quiz.quizTags),
+        _count: { questions: quiz.questions }
+      })),
+      category: {
+        ...category,
+        subCategories: category.subCategories.map((sub) => ({
+          ...sub,
+          _count: { quizzes: sub.quizzes }
+        })),
+        _count: { quizzes: category.quizzes }
+      },
       meta: {
-        total,
+        total: totals.count,
         totalPages,
         currentPage: actualPage,
         perPage: actualPerPage
@@ -211,32 +202,37 @@ export abstract class QuizService {
   }
 
   static async getCategoriesStats() {
-    const [totalCategories, totalSubcategories] = await Promise.all([
-      prisma.category.count(),
-      prisma.subCategory.count()
+    const [categoryTotals, subCategoryTotals] = await Promise.all([
+      db.orm.public.Category.aggregate((agg) => ({ count: agg.count() })),
+      db.orm.public.SubCategory.aggregate((agg) => ({ count: agg.count() }))
     ]);
 
     return {
-      totalCategories,
-      totalSubcategories
+      totalCategories: categoryTotals.count,
+      totalSubcategories: subCategoryTotals.count
     };
   }
 
   static async getAllCategoriesWithStats() {
-    const categories = await prisma.category.findMany({
-      include: {
-        _count: {
-          select: { quizzes: true, subCategories: true }
-        }
-      },
-      orderBy: { name: "asc" }
-    });
+    const categories = await db.orm.public.Category
+      .include("quizzes", (quizzes) => quizzes.count())
+      .include("subCategories", (subCategories) => subCategories.count())
+      .orderBy((cat) => cat.name.asc())
+      .all();
 
-    const totalCategories = categories.length;
-    const totalSubcategories = categories.reduce((sum, cat) => sum + (cat._count.subCategories ?? 0), 0);
+    const result = categories.map((cat) => ({
+      ...cat,
+      _count: {
+        quizzes: cat.quizzes,
+        subCategories: cat.subCategories
+      }
+    }));
+
+    const totalCategories = result.length;
+    const totalSubcategories = result.reduce((sum, cat) => sum + (cat._count.subCategories ?? 0), 0);
 
     return {
-      categories,
+      categories: result,
       totalCategories,
       totalSubcategories
     };
@@ -247,23 +243,29 @@ export abstract class QuizService {
     const actualPerPage = perPage ?? 12;
     const skip = (actualPage - 1) * actualPerPage;
 
-    const [items, totalCategories, totalSubcategories] = await Promise.all([
-      prisma.category.findMany({
-        skip,
-        take: actualPerPage,
-        include: {
-          subCategories: {},
-          _count: { select: { quizzes: true, subCategories: true } }
-        }
-      }),
-      prisma.category.count(),
-      prisma.subCategory.count()
+    const [items, categoryTotals, subCategoryTotals] = await Promise.all([
+      db.orm.public.Category
+        .offset(skip)
+        .limit(actualPerPage)
+        .include("subCategories", (subCategories) => subCategories)
+        .include("quizzes", (quizzes) => quizzes.count())
+        .all(),
+      db.orm.public.Category.aggregate((agg) => ({ count: agg.count() })),
+      db.orm.public.SubCategory.aggregate((agg) => ({ count: agg.count() }))
     ]);
 
+    const totalCategories = categoryTotals.count;
+    const totalSubcategories = subCategoryTotals.count;
     const totalPages = Math.max(1, Math.ceil(totalCategories / actualPerPage));
 
     return {
-      items,
+      items: items.map((cat) => ({
+        ...cat,
+        _count: {
+          quizzes: cat.quizzes,
+          subCategories: cat.subCategories.length
+        }
+      })),
       meta: {
         totalCategories,
         totalSubcategories,
@@ -276,52 +278,44 @@ export abstract class QuizService {
 
   // Cached base query for quiz - shared by getQuiz and getQuizForMetadata
   static cachedGetQuizBase = async (slug: string) => {
-    return prisma.quiz.findUnique({
-      where: { slug },
-      select: {
-        id: true,
-        quizPageTitle: true,
-        quizPageDescription: true,
-        difficulty: true,
-        title: true,
-        description: true,
-        slug: true,
-        isPublished: true,
-        publishedAt: true,
-        views: true,
-        categoryId: true,
-        subCategoryId: true,
-        category: {
-          select: {
-            id: true,
-            name: true,
-            slug: true
-          }
-        },
-        questions: {
-          select: {
-            id: true,
-            quizId: true,
-            text: true,
-            options: true,
-            correctIndex: true,
-            explanation: true
-          }
-        },
-        tags: {
-          select: {
-            quizId: true,
-            tagId: true,
-            tag: {
-              select: {
-                id: true,
-                name: true
-              }
-            }
-          }
-        }
-      }
-    });
+    const quiz = await db.orm.public.Quiz
+      .select(
+        "id",
+        "quizPageTitle",
+        "quizPageDescription",
+        "difficulty",
+        "title",
+        "description",
+        "slug",
+        "isPublished",
+        "publishedAt",
+        "views",
+        "categoryId",
+        "subCategoryId"
+      )
+      .include("category", (category) => category.select("id", "name", "slug"))
+      .include("questions", (questions) =>
+        questions
+          .select("id", "quizId", "text", "options", "correctIndex", "explanation")
+          .orderBy((question) => question.id.asc())
+      )
+      .include("quizTags", (quizTags) =>
+        quizTags
+          .select("quizId", "tagId")
+          .include("tag", (tag) => tag.select("id", "name"))
+      )
+      .first({ slug });
+
+    if (!quiz) return null;
+
+    return {
+      ...quiz,
+      questions: quiz.questions.map((question) => ({
+        ...question,
+        options: question.options ?? []
+      })),
+      tags: toTagRows(quiz.quizTags)
+    };
   };
 
   static async getQuiz(slug: string) {
@@ -338,53 +332,30 @@ export abstract class QuizService {
   }
 
   static async getMoreQuizzes(slug: string) {
-    const quiz = await prisma.quiz.findUnique({
-      where: { slug },
-      include: {
-        tags: {
-          include: {
-            tag: true
-          }
-        }
-      }
-    });
+    const quiz = await db.orm.public.Quiz
+      .select("id", "categoryId", "subCategoryId")
+      .include("quizTags", (quizTags) => quizTags.select("tagId"))
+      .first({ slug });
 
     if (!quiz) return [];
 
-    const tagIds = quiz.tags.map((t) => t.tagId);
-    return prisma.quiz.findMany({
-      where: {
-        id: {
-          not: quiz.id
-        },
-        OR: [
-          {
-            categoryId: quiz.categoryId
-          },
-          {
-            subCategoryId: quiz.subCategoryId
-          },
-          {
-            tags: {
-              some: {
-                tagId: {
-                  in: tagIds
-                }
-              }
-            }
-          }
-        ]
-      },
-      include: {
-        category: true,
-        _count: {
-          select: {
-            questions: true
-          }
-        }
-      },
-      take: 6
-    });
+    const tagIds = quiz.quizTags.map((t) => t.tagId);
+
+    const items = await db.orm.public.Quiz
+      .where((q) =>
+        or(
+          quiz.categoryId === null ? q.categoryId.isNull() : q.categoryId.eq(quiz.categoryId),
+          quiz.subCategoryId === null ? q.subCategoryId.isNull() : q.subCategoryId.eq(quiz.subCategoryId),
+          ...(tagIds.length ? [q.quizTags.some((qt) => qt.tagId.in(tagIds))] : [])
+        )
+      )
+      .where((q) => q.id.neq(quiz.id))
+      .include("category", (category) => category)
+      .include("questions", (questions) => questions.count())
+      .limit(6)
+      .all();
+
+    return items.map(withQuestionCount);
   }
 
   static async getQuizForMetadata(slug: string) {

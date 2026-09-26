@@ -1,28 +1,30 @@
+import "temporal-polyfill/global";
+import "temporal-polyfill/types/global";
 import "dotenv/config";
-import { PrismaPg } from "@prisma/adapter-pg";
 import postgres from "@prisma/orm-postgres/runtime";
 import type { Contract } from "@/generated/prisma8/contract.js";
 import contractJson from "@/generated/prisma8/contract.json" with { type: "json" };
-import { PrismaClient } from "@/generated/prisma/client";
 
 const connectionString = process.env.DATABASE_URL!;
 
-// Prisma v7 client (legacy, for routes not yet migrated)
-let prisma: PrismaClient;
+// Temporal-backed timestamp codecs decode/encode Temporal values; this
+// converts a JS Date (UTC) to the PlainDateTime shape `timestamp` columns take.
+export function asTimestamp(date: Date) {
+  return date.toTemporalInstant().toZonedDateTimeISO("UTC").toPlainDateTime();
+}
+
+type Db = ReturnType<typeof createDb>;
+
 declare global {
-  var prisma: PrismaClient | undefined;
+  var db: Db | undefined;
 }
 
-const adapter = new PrismaPg({ connectionString });
-
-if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient({ adapter });
-} else {
-  global.prisma ??= new PrismaClient({ adapter });
-  prisma = global.prisma;
+function createDb() {
+  return postgres<Contract>({ url: connectionString, contractJson });
 }
 
-export default prisma;
+export const db: Db = globalThis.db ?? createDb();
 
-// Prisma v8 ORM client (new, for migrated routes)
-export const db = postgres<Contract>({ url: connectionString, contractJson });
+if (process.env.NODE_ENV !== "production") {
+  globalThis.db = db;
+}

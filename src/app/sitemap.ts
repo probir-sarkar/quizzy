@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { ZodiacSign } from "@/generated/prisma/client";
+import { ZodiacSign } from "@/lib/enums";
 import { BASE_URL } from "@/lib/constants";
 import { client } from "@/lib/orpc";
 const currentDate = new Date();

@@ -1,5 +1,5 @@
 import { Sparkles, Target, Layers } from "lucide-react";
-import { QuizDifficulty } from "@/generated/prisma/enums";
+import { QuizDifficulty } from "@/lib/enums";
 import { cn } from "@/lib/utils";
 
 import { BreadcrumbItem } from "../common/Breadcrumbs";

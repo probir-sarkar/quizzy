@@ -1,5 +1,4 @@
-import prisma from "@/lib/prisma";
-import { ZodiacSign } from "@/generated/prisma/client";
+import { db, asTimestamp } from "@/lib/prisma";
 import { endOfDay, startOfDay } from "date-fns";
 
 export type AllHoroscopesData = Awaited<ReturnType<typeof HoroscopeService.getAllForDate>>;
@@ -9,16 +8,10 @@ export abstract class HoroscopeService {
     // Default to today if date not provided
     const targetDate = date ? new Date(date) : new Date();
 
-    return prisma.horoscope.findMany({
-      where: {
-        date: {
-          gte: startOfDay(targetDate),
-          lte: endOfDay(targetDate)
-        }
-      },
-      orderBy: {
-        zodiacSign: "asc"
-      }
-    });
+    return db.orm.public.Horoscope
+      .where((h) => h.date.gte(asTimestamp(startOfDay(targetDate))))
+      .where((h) => h.date.lte(asTimestamp(endOfDay(targetDate))))
+      .orderBy((h) => h.zodiacSign.asc())
+      .all();
   }
 }

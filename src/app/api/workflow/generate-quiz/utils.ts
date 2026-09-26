@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import { db } from "@/lib/prisma";
 
 type Difficulty = "easy" | "medium" | "hard";
 
@@ -15,9 +15,9 @@ export async function pickRandomSubCategory(): Promise<{
   category: { id: number; name: string };
   subCategory: { id: number; name: string };
 }> {
-  const total = await prisma.category.count({
-    where: { subCategories: { some: {} } }
-  });
+  const withSubCategories = db.orm.public.Category.where((cat) => cat.subCategories.some());
+
+  const { count: total } = await withSubCategories.aggregate((agg) => ({ count: agg.count() }));
 
   if (total === 0) {
     throw new Error("No categories with subcategories found. Seed some data first.");
@@ -25,18 +25,13 @@ export async function pickRandomSubCategory(): Promise<{
 
   const skipCat = Math.floor(Math.random() * total);
 
-  const pickedCategory = await prisma.category.findFirst({
-    where: { subCategories: { some: {} } },
-    skip: skipCat,
-    orderBy: { id: "asc" },
-    select: {
-      id: true,
-      name: true,
-      subCategories: {
-        select: { id: true, name: true }
-      }
-    }
-  });
+  const [pickedCategory] = await withSubCategories
+    .orderBy((cat) => cat.id.asc())
+    .offset(skipCat)
+    .limit(1)
+    .select("id", "name")
+    .include("subCategories", (subCategories) => subCategories.select("id", "name"))
+    .all();
 
   if (!pickedCategory || pickedCategory.subCategories.length === 0) {
     throw new Error("Selected category has no subcategories (unexpected).");
