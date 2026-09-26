@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { ZodiacSign } from "@/lib/enums";
 import { BASE_URL } from "@/lib/constants";
+import { allHistorySlugs } from "@/lib/history-utils";
 import { client } from "@/lib/orpc";
 const currentDate = new Date();
 
@@ -58,5 +59,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7
   }));
 
-  return [...staticPages, ...quizUrls, ...categoryUrls, ...horoscopeUrls];
+  const historyDateUrls: MetadataRoute.Sitemap = allHistorySlugs().map((slug) => ({
+    url: `${BASE_URL}/this-day-in-history/${slug}`,
+    lastModified: currentDate,
+    changeFrequency: "monthly" as const,
+    priority: 0.6
+  }));
+
+  return [...staticPages, ...quizUrls, ...categoryUrls, ...horoscopeUrls, ...historyDateUrls];
 }
