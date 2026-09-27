@@ -1,99 +1,66 @@
 import { ImageResponse } from "next/og";
 
-export const size = { width: 1200, height: 630 };
+import {
+  ItalicAccent,
+  OG_INK,
+  OG_MUTED,
+  OG_SIZE,
+  POP,
+  loadOgFonts,
+  OgShell
+} from "@/lib/og";
+
+export const alt =
+  "Quiz Zone horoscope desk — the stars, sorted. Daily readings for all 12 zodiac signs.";
+export const size = OG_SIZE;
 export const contentType = "image/png";
 
-export default function Image() {
-  const GRADIENT_FROM = "#7c3aed"; // purple
-  const GRADIENT_TO = "#ec4899";   // fuchsia
-
+export default async function Image() {
   return new ImageResponse(
     (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          background: `linear-gradient(90deg, ${GRADIENT_FROM}, ${GRADIENT_TO})`,
-          fontFamily:
-            'Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
-          textAlign: "center",
-        }}
-      >
-        {/* Icon */}
+      <OgShell section="Horoscope Desk">
         <div
           style={{
             display: "flex",
-            width: 100,
-            height: 100,
-            borderRadius: 24,
-            background: "rgba(255,255,255,0.12)",
-            alignItems: "center",
-            justifyContent: "center",
-            marginBottom: 16,
+            alignItems: "flex-end",
+            gap: 28,
+            fontSize: 100,
+            fontWeight: 900,
+            lineHeight: 0.9,
+            letterSpacing: -3,
+            textTransform: "uppercase",
+            color: OG_INK
           }}
         >
-          <div style={{ fontSize: 48 }}>✨</div>
+          <div style={{ display: "flex" }}>The</div>
+          <div
+            style={{
+              display: "flex",
+              borderBottom: `14px solid ${POP.lime}`,
+              paddingBottom: 8
+            }}
+          >
+            Stars,
+          </div>
+          <div style={{ display: "flex" }}>
+            <ItalicAccent fontSize={84}>sorted.</ItalicAccent>
+          </div>
         </div>
 
-        {/* Brand name */}
         <div
           style={{
-            display: "flex",
-            fontSize: 28,
-            fontWeight: 700,
-            color: "#fdf4ff", // soft lilac/white
-            marginBottom: 12,
-            letterSpacing: 0.5,
+            marginTop: 40,
+            maxWidth: 880,
+            fontSize: 31,
+            lineHeight: 1.4,
+            color: OG_MUTED
           }}
         >
-          Quiz Zone
+          What the sky has in store for your sign — a fresh reading for all 12
+          zodiac signs, every morning.
         </div>
-
-        {/* Title */}
-        <div
-          style={{
-            display: "flex",
-            fontSize: 56,
-            fontWeight: 800,
-            color: "#fff",
-          }}
-        >
-          Daily Horoscopes
-        </div>
-
-        {/* Subtitle */}
-        <div
-          style={{
-            display: "flex",
-            marginTop: 12,
-            fontSize: 24,
-            color: "rgba(255,255,255,0.9)",
-          }}
-        >
-          Discover what the stars have in store for you today
-        </div>
-
-        {/* Badge */}
-        <div
-          style={{
-            display: "flex",
-            marginTop: 36,
-            padding: "12px 24px",
-            borderRadius: 12,
-            background: "rgba(255,255,255,0.15)",
-            fontSize: 22,
-            fontWeight: 700,
-            color: "#fff",
-          }}
-        >
-          🌙 All 12 Zodiac Signs
-        </div>
-      </div>
+      </OgShell>
     ),
-    size
+    { ...size, fonts: await loadOgFonts() }
   );
 }

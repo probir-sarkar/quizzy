@@ -1,99 +1,68 @@
 import { ImageResponse } from "next/og";
 
-export const size = { width: 1200, height: 630 };
+import { client } from "@/lib/orpc";
+import { OG_INK, OG_MUTED, OG_SIZE, loadOgFonts, OgShell } from "@/lib/og";
+
+export const alt = "Quiz Zone — take the quiz.";
+export const size = OG_SIZE;
 export const contentType = "image/png";
 
-export default function Image() {
-  const GRADIENT_FROM = "#7c3aed"; // purple
-  const GRADIENT_TO = "#ec4899"; // fuchsia
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+function titleFontSize(length: number) {
+  if (length <= 24) return 110;
+  if (length <= 48) return 86;
+  if (length <= 80) return 66;
+  return 52;
+}
+
+export default async function Image({ params }: Props) {
+  const { slug } = await params;
+  const post = await client.getQuizMetadata({ slug });
+
+  const title = post?.quizPageTitle ?? post?.title ?? "Test your knowledge";
+  // Truncate at a word boundary so the ellipsis never orphans a letter.
+  const rawDescription = post?.description ?? "";
+  const description =
+    rawDescription.length > 120
+      ? rawDescription.slice(0, 120).replace(/\s+\S*$/, "") + "…"
+      : rawDescription;
 
   return new ImageResponse(
     (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          background: `linear-gradient(90deg, ${GRADIENT_FROM}, ${GRADIENT_TO})`,
-          fontFamily:
-            'Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
-          textAlign: "center",
-        }}
-      >
-        {/* Icon */}
+      <OgShell section={post?.category ? `${post.category.name} Quiz` : "Take the Quiz"}>
         <div
           style={{
+            maxWidth: 1020,
             display: "flex",
-            width: 100,
-            height: 100,
-            borderRadius: 24,
-            background: "rgba(255,255,255,0.12)",
-            alignItems: "center",
-            justifyContent: "center",
-            marginBottom: 16,
+            fontSize: titleFontSize(title.length),
+            fontWeight: 900,
+            lineHeight: 0.95,
+            letterSpacing: -2,
+            textTransform: "uppercase",
+            color: OG_INK
           }}
         >
-          <div style={{ fontSize: 48 }}>📝</div>
+          {title}
         </div>
 
-        {/* Brand name */}
-        <div
-          style={{
-            display: "flex",
-            fontSize: 28,
-            fontWeight: 700,
-            color: "#fdf4ff",
-            marginBottom: 12,
-            letterSpacing: 0.5,
-          }}
-        >
-          Quiz Zone
-        </div>
-
-        {/* Title */}
-        <div
-          style={{
-            display: "flex",
-            fontSize: 56,
-            fontWeight: 800,
-            color: "#fff",
-          }}
-        >
-          Test Your Knowledge
-        </div>
-
-        {/* Subtitle */}
-        <div
-          style={{
-            display: "flex",
-            marginTop: 12,
-            fontSize: 24,
-            color: "rgba(255,255,255,0.9)",
-          }}
-        >
-          Sharpen your skills with today&#39;s challenge
-        </div>
-
-        {/* Badge */}
-        <div
-          style={{
-            display: "flex",
-            marginTop: 36,
-            padding: "12px 24px",
-            borderRadius: 12,
-            background: "rgba(255,255,255,0.15)",
-            fontSize: 22,
-            fontWeight: 700,
-            color: "#fff",
-          }}
-        >
-          ✨ New Quiz Every Day
-        </div>
-      </div>
+        {description ? (
+          <div
+            style={{
+              marginTop: 32,
+              maxWidth: 880,
+              fontSize: 27,
+              lineHeight: 1.45,
+              color: OG_MUTED
+            }}
+          >
+            {description}
+          </div>
+        ) : null}
+      </OgShell>
     ),
-    size
+    { ...size, fonts: await loadOgFonts() }
   );
 }
