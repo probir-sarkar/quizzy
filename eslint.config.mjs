@@ -6,7 +6,7 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTypescript,
   // Extend the default ignores of eslint-config-next.
-  globalIgnores(["node_modules/**", "src/generated/**", "migrations/**"]),
+  globalIgnores(["node_modules/**", "src/generated/**", "migrations/**", ".kilo/**"]),
   {
     rules: {
       "no-unused-vars": "off",
