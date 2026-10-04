@@ -12,7 +12,6 @@ import { ScrollProgress } from "@/components/motion/scroll-progress";
 const navigationItems = [
   { href: "/", label: "Home" },
   { href: "/category", label: "Categories" },
-  { href: "/horoscope", label: "Horoscope" },
   { href: "/this-day-in-history", label: "History" }
 ];
 

@@ -10,7 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # Quizzy
 
-AI-free quiz site: categories → sub-categories → quizzes → questions, plus horoscopes and this-day-in-history events.
+AI-free quiz site: categories → sub-categories → quizzes → questions, plus this-day-in-history events.
 
 ## Stack
 
@@ -39,4 +39,4 @@ node --run prisma/seed.ts   # or: pnpm exec tsx prisma/seed.ts
 - The contract was inferred from the live DB: `Quiz.id`, `Question.id` and `updatedAt` have **no defaults** — supply them (e.g. `randomUUID()`) on create.
 - N:M relations are not supported by the ORM lane. Quiz↔Tag goes through the `QuizTag` junction relation (`quizTags` → `tag` includes), and writes create junction rows explicitly.
 - Server-side result shapes are kept v7-compatible (`_count.questions`, `tags[].tag.name`) via explicit mapping in `src/server/quiz.ts` — components depend on those shapes.
-- Enums (`ZodiacSign`, `QuizDifficulty`, `EventCategory`) live in `src/lib/enums.ts` — Prisma 8 generates no enum objects.
+- Enums (`QuizDifficulty`, `EventCategory`) live in `src/lib/enums.ts` — Prisma 8 generates no enum objects.

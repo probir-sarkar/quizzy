@@ -8,10 +8,6 @@
       "model": "Category",
       "namespace": "public"
     },
-    "Horoscope": {
-      "model": "Horoscope",
-      "namespace": "public"
-    },
     "PastEvent": {
       "model": "PastEvent",
       "namespace": "public"
@@ -124,119 +120,6 @@
               },
               "namespaceId": "public",
               "table": "Category"
-            }
-          },
-          "Horoscope": {
-            "fields": {
-              "createdAt": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/timestamp-temporal@1",
-                  "kind": "scalar",
-                  "typeParams": {
-                    "precision": 3
-                  }
-                }
-              },
-              "date": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/timestamp-temporal@1",
-                  "kind": "scalar",
-                  "typeParams": {
-                    "precision": 3
-                  }
-                }
-              },
-              "description": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              },
-              "id": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/int4@1",
-                  "kind": "scalar"
-                }
-              },
-              "luckyColor": {
-                "nullable": true,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              },
-              "luckyNumber": {
-                "nullable": true,
-                "type": {
-                  "codecId": "pg/int4@1",
-                  "kind": "scalar"
-                }
-              },
-              "mood": {
-                "nullable": true,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              },
-              "updatedAt": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/timestamp-temporal@1",
-                  "kind": "scalar",
-                  "typeParams": {
-                    "precision": 3
-                  }
-                }
-              },
-              "zodiacSign": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/enum@1",
-                  "kind": "scalar",
-                  "typeParams": {
-                    "typeName": "ZodiacSign"
-                  }
-                }
-              }
-            },
-            "relations": {},
-            "storage": {
-              "fields": {
-                "createdAt": {
-                  "column": "createdAt"
-                },
-                "date": {
-                  "column": "date"
-                },
-                "description": {
-                  "column": "description"
-                },
-                "id": {
-                  "column": "id"
-                },
-                "luckyColor": {
-                  "column": "luckyColor"
-                },
-                "luckyNumber": {
-                  "column": "luckyNumber"
-                },
-                "mood": {
-                  "column": "mood"
-                },
-                "updatedAt": {
-                  "column": "updatedAt"
-                },
-                "zodiacSign": {
-                  "column": "zodiacSign"
-                }
-              },
-              "namespaceId": "public",
-              "table": "Horoscope"
             }
           },
           "PastEvent": {
@@ -995,24 +878,6 @@
                 "hard"
               ],
               "typeName": "QuizDifficulty"
-            },
-            "ZodiacSign": {
-              "kind": "postgres-enum",
-              "members": [
-                "ARIES",
-                "TAURUS",
-                "GEMINI",
-                "CANCER",
-                "LEO",
-                "VIRGO",
-                "LIBRA",
-                "SCORPIO",
-                "SAGITTARIUS",
-                "CAPRICORN",
-                "AQUARIUS",
-                "PISCES"
-              ],
-              "typeName": "ZodiacSign"
             }
           },
           "table": {
@@ -1083,105 +948,6 @@
                 {
                   "columns": [
                     "slug"
-                  ]
-                }
-              ]
-            },
-            "Horoscope": {
-              "columns": {
-                "createdAt": {
-                  "codecId": "pg/timestamp-temporal@1",
-                  "default": {
-                    "expression": "now()",
-                    "kind": "function"
-                  },
-                  "nativeType": "timestamp",
-                  "nullable": false,
-                  "typeParams": {
-                    "precision": 3
-                  }
-                },
-                "date": {
-                  "codecId": "pg/timestamp-temporal@1",
-                  "nativeType": "timestamp",
-                  "nullable": false,
-                  "typeParams": {
-                    "precision": 3
-                  }
-                },
-                "description": {
-                  "codecId": "pg/text@1",
-                  "nativeType": "text",
-                  "nullable": false
-                },
-                "id": {
-                  "codecId": "pg/int4@1",
-                  "default": {
-                    "expression": "autoincrement()",
-                    "kind": "function"
-                  },
-                  "nativeType": "int4",
-                  "nullable": false
-                },
-                "luckyColor": {
-                  "codecId": "pg/text@1",
-                  "nativeType": "text",
-                  "nullable": true
-                },
-                "luckyNumber": {
-                  "codecId": "pg/int4@1",
-                  "nativeType": "int4",
-                  "nullable": true
-                },
-                "mood": {
-                  "codecId": "pg/text@1",
-                  "nativeType": "text",
-                  "nullable": true
-                },
-                "updatedAt": {
-                  "codecId": "pg/timestamp-temporal@1",
-                  "nativeType": "timestamp",
-                  "nullable": false,
-                  "typeParams": {
-                    "precision": 3
-                  }
-                },
-                "zodiacSign": {
-                  "codecId": "pg/enum@1",
-                  "nativeType": "ZodiacSign",
-                  "nullable": false,
-                  "typeParams": {
-                    "typeName": "ZodiacSign"
-                  },
-                  "valueSet": {
-                    "entityKind": "valueSet",
-                    "entityName": "ZodiacSign",
-                    "namespaceId": "public",
-                    "plane": "storage"
-                  }
-                }
-              },
-              "foreignKeys": [],
-              "indexes": [
-                {
-                  "columns": [
-                    "date"
-                  ],
-                  "name": "Horoscope_date_idx_b4ca319c",
-                  "prefix": "Horoscope_date_idx",
-                  "unique": false
-                }
-              ],
-              "primaryKey": {
-                "columns": [
-                  "id"
-                ]
-              },
-              "uniques": [
-                {
-                  "columns": [
-                    "zodiacSign",
-                    "date"
                   ]
                 }
               ]
@@ -1910,23 +1676,6 @@
                 "medium",
                 "hard"
               ]
-            },
-            "ZodiacSign": {
-              "kind": "valueSet",
-              "values": [
-                "ARIES",
-                "TAURUS",
-                "GEMINI",
-                "CANCER",
-                "LEO",
-                "VIRGO",
-                "LIBRA",
-                "SCORPIO",
-                "SAGITTARIUS",
-                "CAPRICORN",
-                "AQUARIUS",
-                "PISCES"
-              ]
             }
           }
         },
@@ -1934,7 +1683,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "08919b85a5150acb763e400d6c86863c5ad8e48651feac6697047a7677562140"
+    "storageHash": "19eb5373c784bc4fdab6d0241211d5f9b2f3fc0e8669b9464e3bf0a526dd7da7"
   },
   "capabilities": {
     "postgres": {

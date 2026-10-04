@@ -10,7 +10,7 @@ import {
   OgShell
 } from "@/lib/og";
 
-export const alt = "Quiz Zone — KNOW it ALL? Free quizzes, horoscopes and this day in history.";
+export const alt = "Quiz Zone — KNOW it ALL? Free quizzes and this day in history.";
 export const size = OG_SIZE;
 export const contentType = "image/png";
 
@@ -55,7 +55,7 @@ export default async function Image() {
             color: OG_MUTED
           }}
         >
-          Quizzes, horoscopes and this day in history — brain food printed fresh
+          Quizzes and this day in history — brain food printed fresh
           every morning.
         </div>
       </OgShell>

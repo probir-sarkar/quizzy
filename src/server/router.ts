@@ -8,7 +8,6 @@ import {
   getQuiz,
   getHomePageData
 } from "./quiz";
-import { getAllHoroscopesForDate } from "./horoscope";
 import { getPastEventsByMonthDay } from "./past-event";
 import { getAllCategoriesWithStats, getCategoryCounts } from "./category";
 
@@ -25,9 +24,6 @@ export const router = {
   getHomePageData,
   getAllCategoriesWithStats,
   getCategoryCounts,
-
-  // Horoscope routes
-  getAllHoroscopesForDate,
 
   // Past event routes
   getPastEventsByMonthDay

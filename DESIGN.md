@@ -177,7 +177,7 @@ Reference implementations live in the listed files — copy their structure.
   - Both get `pop-hover shadow-pop [--pop:…]` with a small offset.
 - **Stat block** — display numeral (optionally `<CountUp />`) over a mono
   uppercase label, usually under a `rule-dotted`.
-- **Plate (framed image)** — horoscope/history heroes: rotated bordered
+- **Plate (framed image)** — history heroes: rotated bordered
   figure, grayscale image, mono `Fig. N` caption. This is the only imagery
   pattern on the site.
 - **Marquee ticker** — `src/components/common/marquee.tsx` (pure CSS, pauses
@@ -267,7 +267,6 @@ All motion primitives live in `src/components/motion/` and wrap `motion/react`
 | Home page sections | `src/components/home-page/` |
 | Quiz page sections | `src/components/quiz-page/` |
 | Category components | `src/components/category/`, `src/app/(public)/category/` |
-| Horoscope page | `src/app/(public)/horoscope/page.tsx` |
 | History page + date picker | `src/app/(public)/this-day-in-history/`, `src/components/this-day-in-history/` |
 | Brand icon | `src/app/icon.svg` |
 | Image plates | `public/images/` |

@@ -1,12 +1,11 @@
 # Quizzy - AI-Powered Quiz Platform
 
-Quizzy is an intelligent quiz platform that automatically generates engaging quiz content and daily horoscopes using multiple AI providers. Built with modern web technologies for optimal performance and user experience.
+Quizzy is an intelligent quiz platform that automatically generates engaging quiz content using multiple AI providers. Built with modern web technologies for optimal performance and user experience.
 
 ## ✨ Features
 
 ### 🧠 AI-Powered Content Generation
 - **Automated Quiz Generation**: Creates diverse quiz questions using Groq AI models
-- **Daily Horoscopes**: Generates personalized horoscopes for all 12 zodiac signs using Z.AI's GLM model
 - **Multiple AI Providers**: Integrates Groq, Google AI, and Z.AI for robust content creation
 - **Structured Output Validation**: Ensures quality with Zod schema validation
 
@@ -139,7 +138,6 @@ src/
 │   ├── api/inngest/       # Inngest webhook endpoint
 │   ├── category/          # Category listing and detail pages
 │   ├── quiz/[slug]/       # Individual quiz pages
-│   └── horoscope/         # Daily horoscope display
 ├── components/
 │   ├── ui/                # Shadcn/ui base components
 │   ├── common/            # Shared components
@@ -160,7 +158,6 @@ backend/                   # Alternative Cloudflare Workers implementation
 ### Key Components
 
 - **Quiz Component**: Optimized question cards with instant color feedback
-- **Horoscope System**: Daily generation with zodiac sign integration
 - **AI Pipeline**: Structured content generation with validation
 - **Caching Layer**: Performance optimization with selective invalidation
 
@@ -168,14 +165,12 @@ backend/                   # Alternative Cloudflare Workers implementation
 
 ### Content Generation Pipeline
 - **Quiz Creation**: Automatic question generation with difficulty-based model selection
-- **Horoscope Generation**: Daily horoscopes for all zodiac signs
 - **Validation**: Structured output with Zod schemas
 - **Scheduling**: Cron-based generation with Inngest
 
 ### Supported AI Providers
 - **Groq**: Primary quiz content generation
 - **Google AI**: Alternative content generation
-- **Z.AI**: GLM-4.5-flash model for horoscopes
 
 ## 📱 Mobile Optimization
 

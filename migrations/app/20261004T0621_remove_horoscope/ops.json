@@ -1,0 +1,61 @@
+[
+  {
+    "id": "dropTable.Horoscope",
+    "label": "Drop table \"Horoscope\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Horoscope"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Horoscope\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Horoscope\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop table \"Horoscope\"",
+        "sql": "DROP TABLE \"public\".\"Horoscope\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Horoscope\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Horoscope\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropNativeEnumType.ZodiacSign",
+    "label": "Drop enum type \"ZodiacSign\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "type",
+        "name": "ZodiacSign"
+      }
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "drop enum type \"ZodiacSign\"",
+        "sql": "DROP TYPE \"public\".\"ZodiacSign\"",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  }
+]

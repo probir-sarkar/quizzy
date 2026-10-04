@@ -22,8 +22,8 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Quiz Zone – Fun Quizzes, Horoscopes & More",
-  description: "Quiz Zone – Your hub for quizzes, horoscopes, and fun knowledge adventures all in one place.",
+  title: "Quiz Zone – Fun Quizzes & More",
+  description: "Quiz Zone – Your hub for quizzes and fun knowledge adventures all in one place.",
   metadataBase: new URL(BASE_URL),
   alternates: {
     canonical: BASE_URL

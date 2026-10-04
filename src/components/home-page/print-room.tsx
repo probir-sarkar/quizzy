@@ -5,7 +5,7 @@ import { Reveal } from "@/components/motion/reveal";
 
 /**
  * Editorial band pairing display type with framed grayscale plates —
- * the home-page sibling of the horoscope/history heroes.
+ * the home-page sibling of the history heroes.
  */
 export default function PrintRoom() {
   return (

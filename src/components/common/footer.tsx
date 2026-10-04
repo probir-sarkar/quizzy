@@ -16,7 +16,6 @@ export default function Footer() {
       links: [
         { label: "Home", href: "/" },
         { label: "Categories", href: "/category" },
-        { label: "Horoscope", href: "/horoscope" },
         { label: "History", href: "/this-day-in-history" }
       ]
     },

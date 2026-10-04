@@ -9,23 +9,6 @@ export const QuizDifficulty = {
 
 export type QuizDifficulty = (typeof QuizDifficulty)[keyof typeof QuizDifficulty];
 
-export const ZodiacSign = {
-  ARIES: "ARIES",
-  TAURUS: "TAURUS",
-  GEMINI: "GEMINI",
-  CANCER: "CANCER",
-  LEO: "LEO",
-  VIRGO: "VIRGO",
-  LIBRA: "LIBRA",
-  SCORPIO: "SCORPIO",
-  SAGITTARIUS: "SAGITTARIUS",
-  CAPRICORN: "CAPRICORN",
-  AQUARIUS: "AQUARIUS",
-  PISCES: "PISCES"
-} as const;
-
-export type ZodiacSign = (typeof ZodiacSign)[keyof typeof ZodiacSign];
-
 export const EventCategory = {
   war: "war",
   discovery: "discovery",

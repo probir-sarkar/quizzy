@@ -128,7 +128,7 @@ const monoLabel = (fontSize: number, extra?: CSSProperties): CSSProperties => ({
 });
 
 type ShellProps = {
-  // Right-hand footer label, e.g. "Daily Press" or "Horoscope Desk".
+  // Right-hand footer label, e.g. "Daily Press" or "History Desk".
   section: string;
   children: ReactNode;
 };

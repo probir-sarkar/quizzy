@@ -1,5 +1,4 @@
 import { MetadataRoute } from "next";
-import { ZodiacSign } from "@/lib/enums";
 import { BASE_URL } from "@/lib/constants";
 import { allHistorySlugs } from "@/lib/history-utils";
 import { client } from "@/lib/orpc";
@@ -17,12 +16,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${BASE_URL}/category`,
-      lastModified: currentDate,
-      changeFrequency: "daily",
-      priority: 0.9
-    },
-    {
-      url: `${BASE_URL}/horoscope`,
       lastModified: currentDate,
       changeFrequency: "daily",
       priority: 0.9
@@ -52,13 +45,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7
   })) ?? [];
 
-  const horoscopeUrls: MetadataRoute.Sitemap = Object.values(ZodiacSign).map((sign) => ({
-    url: `${BASE_URL}/horoscope/${sign.toLowerCase()}`,
-    lastModified: currentDate,
-    changeFrequency: "daily" as const,
-    priority: 0.7
-  }));
-
   const historyDateUrls: MetadataRoute.Sitemap = allHistorySlugs().map((slug) => ({
     url: `${BASE_URL}/this-day-in-history/${slug}`,
     lastModified: currentDate,
@@ -66,5 +52,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6
   }));
 
-  return [...staticPages, ...quizUrls, ...categoryUrls, ...horoscopeUrls, ...historyDateUrls];
+  return [...staticPages, ...quizUrls, ...categoryUrls, ...historyDateUrls];
 }
