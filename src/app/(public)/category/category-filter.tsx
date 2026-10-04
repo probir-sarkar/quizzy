@@ -127,7 +127,7 @@ export function CategoryFilter({ categories }: CategoryFilterProps) {
 
       {/* Render filtered categories */}
       {filteredCategories.length > 0 ? (
-        <Stagger gap={0.03} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Stagger gap={0.03} className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filteredCategories.map((cat) => (
             <StaggerItem key={cat.id}>
               <CategoryCard category={cat} />

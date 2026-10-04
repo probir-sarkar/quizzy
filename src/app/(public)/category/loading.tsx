@@ -25,7 +25,7 @@ export default function CategoriesLoading() {
           <div className="h-12 w-full animate-pulse border-2 border-foreground/30 sm:w-56" />
         </div>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 9 }).map((_, i) => (
             <CategoryCardSkeleton key={i} />
           ))}

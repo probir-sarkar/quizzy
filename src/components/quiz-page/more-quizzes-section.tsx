@@ -23,7 +23,7 @@ export function MoreQuizzesSection({ slug }: MoreQuizzesSectionProps) {
       <div className="mt-20 border-t-2 border-foreground px-4 py-16 sm:px-6">
         <div className="mx-auto max-w-[1400px]">
           <div className="mb-8 h-10 w-64 animate-pulse border-2 border-foreground/30" />
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3].map((i) => (
               <div key={i} className="h-64 animate-pulse border-2 border-foreground/30" />
             ))}
@@ -48,7 +48,7 @@ export function MoreQuizzesSection({ slug }: MoreQuizzesSectionProps) {
             <h2 className="font-sans text-4xl font-black uppercase tracking-tight sm:text-6xl">Keep Going</h2>
           </div>
         </div>
-        <Stagger gap={0.05} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <Stagger gap={0.05} className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {moreQuizzes.map((q, i) => (
             <StaggerItem key={q.id} className="h-full">
               <QuizCard quiz={q} index={i} />
