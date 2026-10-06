@@ -1,5 +1,4 @@
-import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 
@@ -32,7 +31,7 @@ export default function PrintRoom() {
           </Reveal>
           <Reveal delay={0.15}>
             <Link
-              href="/category"
+              to="/category"
               className="pop-hover mt-8 inline-flex items-center gap-2 border-2 border-foreground bg-foreground px-6 py-3.5 font-mono text-xs font-bold uppercase tracking-[0.16em] text-background shadow-pop [--pop:var(--pop-cyan)]"
             >
               Browse the Archive
@@ -45,7 +44,7 @@ export default function PrintRoom() {
         <div className="lg:col-span-7">
           <Reveal delay={0.1} className="flex flex-wrap items-start justify-center gap-8 sm:gap-10">
             <figure className="pop-hover w-52 rotate-[-2deg] border-2 border-foreground bg-card p-3 shadow-pop [--pop:var(--pop-violet)] [--pop-x:8px] [--pop-y:8px] sm:w-60">
-              <Image
+              <img
                 src="/images/typewriter.jpg"
                 alt="Vintage Corona typewriter with round keys"
                 width={990}
@@ -59,7 +58,7 @@ export default function PrintRoom() {
             </figure>
 
             <figure className="pop-hover mt-10 w-52 rotate-[2.5deg] border-2 border-foreground bg-card p-3 shadow-pop [--pop:var(--pop-amber)] [--pop-x:8px] [--pop-y:8px] sm:w-60 sm:mt-16">
-              <Image
+              <img
                 src="/images/library.jpg"
                 alt="Narrow aisle between towering library bookshelves"
                 width={1066}

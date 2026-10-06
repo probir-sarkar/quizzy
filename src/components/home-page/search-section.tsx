@@ -1,4 +1,3 @@
-"use client";
 import { Search, Filter } from "lucide-react";
 
 const SearchSection = () => {

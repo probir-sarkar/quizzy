@@ -1,10 +1,7 @@
-"use client";
-
 import { Menu, X, ArrowUpRight } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ScrollProgress } from "@/components/motion/scroll-progress";
@@ -17,7 +14,7 @@ const navigationItems = [
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
@@ -34,7 +31,7 @@ const Navbar = () => {
           aria-label="Main"
         >
           {/* Wordmark */}
-          <Link href="/" className="group flex items-center gap-3" aria-label="Quizzy home">
+          <Link to="/" className="group flex items-center gap-3" aria-label="Quizzy home">
             <span className="flex h-9 w-9 items-center justify-center bg-foreground font-sans text-lg font-black text-background shadow-pop transition-transform duration-300 [--pop:var(--pop-violet)] [--pop-x:3px] [--pop-y:3px] group-hover:-rotate-6">
               Q
             </span>
@@ -49,7 +46,7 @@ const Navbar = () => {
             {navigationItems.map((item) => (
               <Link
                 key={item.href}
-                href={item.href}
+                to={item.href}
                 className={cn(
                   "group relative font-mono text-xs font-bold uppercase tracking-[0.18em] transition-colors",
                   isActive(item.href) ? "text-foreground" : "text-muted-foreground hover:text-foreground"
@@ -65,7 +62,7 @@ const Navbar = () => {
             <ThemeToggle />
 
             <Link
-              href="/category"
+              to="/category"
               className="pop-hover hidden items-center gap-1.5 border-2 border-foreground bg-foreground px-4 py-2 font-mono text-xs font-bold uppercase tracking-[0.14em] text-background shadow-pop [--pop:var(--pop-lime)] sm:inline-flex"
             >
               All Quizzes
@@ -104,7 +101,7 @@ const Navbar = () => {
                     transition={{ delay: 0.05 * i, duration: 0.3 }}
                   >
                     <Link
-                      href={item.href}
+                      to={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={cn(
                         "group flex items-center justify-between border-b border-dotted border-foreground/30 py-4 font-sans text-2xl font-black uppercase tracking-tight last:border-b-0",
@@ -117,7 +114,7 @@ const Navbar = () => {
                   </motion.div>
                 ))}
                 <Link
-                  href="/category"
+                  to="/category"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="my-4 flex items-center justify-center gap-2 border-2 border-foreground bg-foreground py-3 font-mono text-xs font-bold uppercase tracking-[0.14em] text-background"
                 >

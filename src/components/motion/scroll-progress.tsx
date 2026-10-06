@@ -1,5 +1,3 @@
-"use client";
-
 import { motion, useScroll, useSpring } from "motion/react";
 
 /** Fixed top-edge ink bar tracking scroll position through the page. */

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@tanstack/react-router";
 import CurrentYear from "./current-year";
 import { Suspense } from "react";
 import { Reveal } from "@/components/motion/reveal";
@@ -73,17 +73,17 @@ export default function Footer() {
               <ul className="space-y-2.5">
                 {section.links.map((link) => (
                   <li key={link.label}>
-                    {link.external ? (
+                    {link.external || link.href === "#" ? (
                       <a
                         href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        target={link.external ? "_blank" : undefined}
+                        rel={link.external ? "noopener noreferrer" : undefined}
                         className="font-sans text-sm font-bold underline-offset-4 hover:underline"
                       >
-                        {link.label} ↗
+                        {link.label} {link.external ? "↗" : ""}
                       </a>
                     ) : (
-                      <Link href={link.href} className="font-sans text-sm font-bold underline-offset-4 hover:underline">
+                      <Link to={link.href} className="font-sans text-sm font-bold underline-offset-4 hover:underline">
                         {link.label}
                       </Link>
                     )}

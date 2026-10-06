@@ -5,8 +5,9 @@ import type { CSSProperties, ReactNode } from "react";
 
 // ---------------------------------------------------------------------------
 // Shared primitives for the OG images (1200×630), following DESIGN.md's
-// monochrome editorial system. satori speaks no OKLCH, so the tokens from
-// globals.css (light theme) are approximated in hex.
+// monochrome editorial system, rendered by Takumi (takumi-js). Takumi speaks
+// no OKLCH, so the tokens from globals.css (light theme) are approximated in
+// hex.
 //
 // One minimal template for every card: big display title over a short muted
 // line, a fixed lime accent, and a footer strip with the brand tile — no

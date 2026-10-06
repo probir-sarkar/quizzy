@@ -1,5 +1,3 @@
-"use client";
-
 import { useQuery } from "@tanstack/react-query";
 import { QuizCard } from "@/components/home-page/quiz-card";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
