@@ -156,7 +156,9 @@ export default function HistoryView({ response, month, day }: Props) {
             </p>
           </div>
         ) : (
-          <Stagger gap={0.05} className="border-t-2 border-foreground">
+          // Keyed by date so the reveal cascade restarts; a reused container has its
+          // whileInView "once" already consumed and new items stay frozen at opacity 0.
+          <Stagger key={`${selectedMonth}-${selectedDay}`} gap={0.05} className="border-t-2 border-foreground">
             {eventsList.map((event) => (
               <StaggerItem key={event.id}>
                 <article className="grid grid-cols-1 gap-4 border-b-2 border-dotted border-foreground/40 py-8 md:grid-cols-12 md:gap-8">
