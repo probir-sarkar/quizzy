@@ -1,5 +1,5 @@
 # ============================================
-# Stage 1: Install Dependencies & Build Next.js application in standalone mode
+# Stage 1: Install dependencies & build the TanStack Start app (Nitro output)
 # ============================================
 
 FROM node:lts AS builder
@@ -18,11 +18,11 @@ COPY . .
 
 ENV NODE_ENV=production
 
-# Build Next.js application (standalone output mode)
+# Build (vite build && tsc --noEmit) — produces the Nitro server in .output/
 RUN pnpm build
 
 # ============================================
-# Stage 2: Run Next.js application
+# Stage 2: Run the Nitro Node server
 # ============================================
 
 FROM node:lts-trixie-slim AS runner
@@ -33,19 +33,10 @@ ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Disable Next.js telemetry at runtime
-ENV NEXT_TELEMETRY_DISABLED=1
-
-# Copy production assets
-COPY --from=builder --chown=node:node /app/public ./public
-
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown node:node .next
-
-# Leverage output traces to reduce image size
-COPY --from=builder --chown=node:node /app/.next/standalone ./
-COPY --from=builder --chown=node:node /app/.next/static ./.next/static
+# Nitro output bundles the server (server/index.mjs) and static assets (public/).
+# src/fonts holds the TTFs the OG image routes read from disk at runtime.
+COPY --from=builder --chown=node:node /app/.output ./.output
+COPY --from=builder --chown=node:node /app/src/fonts ./src/fonts
 
 # Switch to non-root user for security best practices
 USER node
@@ -53,5 +44,5 @@ USER node
 # Expose port 3000 to allow HTTP traffic
 EXPOSE 3000
 
-# Start Next.js standalone server
-CMD ["node", "server.js"]
+# DATABASE_URL / REDIS_URL / VITE_BASE_URL are provided at runtime by the platform
+CMD ["node", ".output/server/index.mjs"]

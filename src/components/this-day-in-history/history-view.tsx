@@ -1,13 +1,17 @@
 import { DatePickerClient } from "@/components/this-day-in-history/date-picker-client";
 import { ArrowUpRight } from "lucide-react";
-import Image from "next/image";
-import { client } from "@/lib/orpc";
+import type { RouterClient } from "@orpc/server";
+import type { router } from "@/server/router";
 import { Reveal } from "@/components/motion/reveal";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import { MONTH_NAMES } from "@/lib/history-utils";
 
+type PastEventsResponse = Awaited<ReturnType<RouterClient<typeof router>["getPastEventsByMonthDay"]>>;
+
 type Props = {
-  /** Omitted values fall back to today (mirrored by the API). */
+  /** Loader data — the API always echoes the resolved month/day (defaulting to today). */
+  response?: PastEventsResponse;
+  /** Search/slug values, used only if the response was empty. */
   month?: number;
   day?: number;
 };
@@ -57,9 +61,7 @@ const chipFor = (category: string) => CATEGORY_CHIP[category] ?? "bg-muted";
  * (`/this-day-in-history?month=5&day=25`) and the SEO slugs
  * (`/this-day-in-history/25th-may`).
  */
-export default async function HistoryView({ month, day }: Props) {
-  const response = await client.getPastEventsByMonthDay({ month, day });
-
+export default function HistoryView({ response, month, day }: Props) {
   const eventsList = response?.events ?? [];
   const selectedMonth = response?.month ?? month ?? new Date().getMonth() + 1;
   const selectedDay = response?.day ?? day ?? new Date().getDate();
@@ -112,7 +114,7 @@ export default async function HistoryView({ month, day }: Props) {
           {/* Newspaper plate */}
           <Reveal delay={0.1} className="hidden justify-center lg:col-span-4 lg:flex">
             <figure className="pop-hover relative w-72 rotate-2 border-2 border-foreground bg-card p-3 shadow-pop [--pop:var(--pop-amber)] [--pop-x:10px] [--pop-y:10px] xl:w-80">
-              <Image
+              <img
                 src="/images/newspapers.jpg"
                 alt="Stack of folded vintage newspapers"
                 width={1573}

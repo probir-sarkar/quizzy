@@ -1,4 +1,3 @@
-"use client";
 import type { QuestionDto as QuestionType } from "@/server/quiz";
 import { useState } from "react";
 

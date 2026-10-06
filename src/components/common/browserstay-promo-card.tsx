@@ -1,5 +1,3 @@
-"use client";
-
 import { ArrowUpRight, ShieldCheck, Zap, FileImage, Lock } from "lucide-react";
 
 interface BrowserStayPromoCardProps {

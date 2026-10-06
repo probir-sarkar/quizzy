@@ -1,12 +1,20 @@
 import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTypescript from "eslint-config-next/typescript";
+import tseslint from "typescript-eslint";
+import reactHooks from "eslint-plugin-react-hooks";
 
 const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTypescript,
-  // Extend the default ignores of eslint-config-next.
-  globalIgnores(["node_modules/**", "src/generated/**", "migrations/**", ".kilo/**"]),
+  ...tseslint.configs.recommended,
+  reactHooks.configs.flat["recommended-latest"],
+  globalIgnores([
+    "node_modules/**",
+    "src/generated/**",
+    "migrations/**",
+    "src/routeTree.gen.ts",
+    "dist/**",
+    ".output/**",
+    ".tanstack/**",
+    ".kilo/**"
+  ]),
   {
     rules: {
       "no-unused-vars": "off",

@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@tanstack/react-router";
 import { Reveal } from "@/components/motion/reveal";
 
 function SectionHeader({ id, title }: { id: string; title: string }) {
@@ -14,7 +14,7 @@ function SectionHeader({ id, title }: { id: string; title: string }) {
         </h2>
 
         <Link
-          href={`/category/${id}`}
+          to="/category/$slug" params={{ slug: id }}
           className="group inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.2em] underline-offset-4 hover:underline"
           aria-label={`Link to ${title}`}
         >

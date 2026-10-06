@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
 interface CategoryFiltersProps {
@@ -21,7 +21,7 @@ export default function CategoryFilters({ categories }: CategoryFiltersProps) {
         Jump straight in
       </p>
       <div className="no-scrollbar flex gap-4 overflow-x-auto pb-3">
-        <Link href="/category" className="shrink-0">
+        <Link to="/category" className="shrink-0">
           <span
             className={cn(
               "pop-hover inline-block border-2 border-foreground bg-foreground px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-[0.14em] text-background shadow-pop [--pop:var(--pop-lime)]"
@@ -32,7 +32,7 @@ export default function CategoryFilters({ categories }: CategoryFiltersProps) {
         </Link>
 
         {categories.map((cat, i) => (
-          <Link key={cat.slug} href={`/category/${cat.slug}`} prefetch className="shrink-0">
+          <Link key={cat.slug} to="/category/$slug" params={{ slug: cat.slug }}className="shrink-0">
             <span
               className="pop-hover inline-block border-2 border-foreground bg-background px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-[0.14em] shadow-pop hover:bg-foreground hover:text-background"
               style={{ "--pop": POP_CYCLE[i % POP_CYCLE.length] } as React.CSSProperties}

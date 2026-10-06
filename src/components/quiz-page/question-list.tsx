@@ -1,4 +1,3 @@
-"use client";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { Info, RotateCcw } from "lucide-react";
 import { motion } from "motion/react";

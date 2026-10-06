@@ -1,8 +1,6 @@
-"use client";
-
 import { ArrowUpRight } from "lucide-react";
 import type { QuizCardDto as QuizCardType } from "@/server/quiz";
-import Link from "next/link";
+import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 
 type Difficulty = "easy" | "medium" | "hard";
@@ -22,7 +20,7 @@ export function QuizCard({ quiz, index }: { quiz: QuizCardType; index: number })
       whileTap={{ scale: 0.98 }}
       className="h-full"
     >
-      <Link href={`/quiz/${quiz.slug}`} className="block h-full">
+      <Link to="/quiz/$slug" params={{ slug: quiz.slug }} className="block h-full">
         <article
           className="pop-hover group flex h-full flex-col border-2 border-foreground bg-card shadow-pop [--pop-x:6px] [--pop-y:6px]"
           style={{ "--pop": POP_COLORS[index % POP_COLORS.length] } as React.CSSProperties}

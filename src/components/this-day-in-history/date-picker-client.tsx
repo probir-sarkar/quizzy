@@ -1,9 +1,7 @@
-"use client";
-
 import { ChevronLeft, ChevronRight, RotateCcw, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "@tanstack/react-router";
 import { formatHistorySlug } from "@/lib/history-utils";
 
 interface DatePickerClientProps {
@@ -43,13 +41,13 @@ export function DatePickerClient({
   monthNames,
   today
 }: DatePickerClientProps) {
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const prevDay = getDateOffset(selectedMonth, selectedDay, -1);
   const nextDay = getDateOffset(selectedMonth, selectedDay, 1);
 
   const navigateToDate = (month: number, day: number) => {
-    router.push(`/this-day-in-history/${formatHistorySlug(month, day)}`);
+    navigate({ to: "/this-day-in-history/$slug", params: { slug: formatHistorySlug(month, day) } });
   };
 
   const handleMonthChange = (month: string) => {
@@ -64,7 +62,7 @@ export function DatePickerClient({
 
   const handlePrevDay = () => navigateToDate(prevDay.month, prevDay.day);
   const handleNextDay = () => navigateToDate(nextDay.month, nextDay.day);
-  const handleToday = () => router.push("/this-day-in-history");
+  const handleToday = () => navigate({ to: "/this-day-in-history" });
 
   const stepButton =
     "flex h-11 w-11 cursor-pointer items-center justify-center border-2 border-foreground bg-background transition-colors hover:bg-foreground hover:text-background";
