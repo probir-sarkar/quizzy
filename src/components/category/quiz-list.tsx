@@ -98,7 +98,13 @@ export function QuizList({ categorySlug }: QuizListProps) {
       <div id="quizzes" className="mx-auto max-w-[1400px] px-4 py-12 sm:px-6">
         {quizzes.length > 0 ? (
           <>
-            <Stagger gap={0.03} className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+            {/* Keyed by list identity so the reveal cascade restarts; a reused container
+                leaves newly swapped items frozen at opacity 0 (whileInView "once" consumed). */}
+            <Stagger
+              key={`${currentPage}-${selectedSubcategory ?? "all"}`}
+              gap={0.03}
+              className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
+            >
               {quizzes.map((q, i) => (
                 <StaggerItem key={q.id} className="h-full">
                   <QuizCard quiz={q} index={i} />
